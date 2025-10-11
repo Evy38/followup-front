@@ -1,59 +1,136 @@
-# FollowupFront
+# 📱 FollowUp Front – Application Mobile de Suivi des Candidatures
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.5.
+**Projet développé dans le cadre du Titre Professionnel CDA (Concepteur Développeur d’Applications)**  
+Frontend mobile réalisé avec **Angular** (PWA activée)  
+Backend géré séparément (Symfony / API REST)
 
-## Development server
+---
 
-To start a local development server, run:
+## 🧭 Contexte du projet
 
-```bash
-ng serve
-```
+**FollowUp** est une application mobile destinée à accompagner les chercheurs d’emploi dans le **suivi de leurs candidatures**.
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+L’application permet à un utilisateur :
+- d’enregistrer ses candidatures (entreprises, postes, dates, statut, notes),
+- de visualiser ses statistiques (taux de réponses, relances, réussites),
+- et de suivre ses démarches au quotidien depuis son smartphone.
 
-## Code scaffolding
+Le projet s’inscrit dans une démarche **mobile-first**, avec une architecture moderne et évolutive :
+- **Frontend mobile Angular (PWA)**
+- **Backend API Symfony**
+- **Frontend web admin Twig**
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+---
 
-```bash
-ng generate component component-name
-```
+## 🧰 Technologies principales
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+| Domaine | Technologies |
+|----------|---------------|
+| Framework | Angular 18+ |
+| Langage | TypeScript, HTML, SCSS |
+| Outil de build | Angular CLI |
+| PWA | Service Worker, Manifest Web |
+| Gestion de dépendances | npm |
+| Versionnage | Git + GitHub |
+| Serveur de dev | Node.js / http-server |
 
-```bash
-ng generate --help
-```
+---
 
-## Building
+## ⚙️ Installation & exécution locale
 
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
+### 1️⃣ Cloner le dépôt
 
 ```bash
-ng e2e
-```
+git clone https://github.com/Evy38/followup-front.git
+cd followup-front
+2️⃣ Installer les dépendances
+npm install
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+3️⃣ Lancer le serveur de développement
+ng serve -o
 
-## Additional Resources
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+➡️ L’application s’ouvre automatiquement sur http://localhost:4200
+
+🚀 Build de production (PWA activée)
+Génération de la build
+ng build --configuration production
+
+
+Le dossier de sortie se trouve dans :
+
+dist/followup-front/browser/
+
+Test local de la PWA
+npx http-server dist/followup-front/browser -p 4201 --spa
+
+
+➡️ Puis ouvrir http://127.0.0.1:4201
+
+🌐 Fonctionnalités PWA
+
+L’application Angular intègre la configuration Progressive Web App (PWA) pour permettre :
+
+l’installation sur mobile (icône + splash screen),
+
+la mise en cache local pour un affichage plus rapide,
+
+une base pour le mode hors connexion (offline-ready),
+
+la compatibilité avec un déploiement futur HTTPS.
+
+Fichiers clés :
+Fichier	Rôle
+manifest.webmanifest	Décrit l’application (nom, icônes, couleurs)
+ngsw-config.json	Définit les ressources mises en cache
+ngsw-worker.js	Service Worker (gère le cache et les mises à jour)
+app.config.ts	Active le Service Worker en production
+📁 Structure du projet
+followup-front/
+│
+├── src/
+│   ├── app/               # Composants Angular
+│   ├── assets/            # Images et ressources
+│   ├── environments/      # Variables d’environnement
+│   ├── main.ts            # Point d’entrée principal
+│   ├── manifest.webmanifest
+│   └── index.html
+│
+├── angular.json           # Configuration du projet Angular
+├── ngsw-config.json       # Configuration du service worker
+├── package.json           # Dépendances et scripts npm
+└── README.md
+
+📚 Bonnes pratiques mises en œuvre
+
+Architecture modulaire Angular (standalone components, routing clair)
+
+Approche mobile-first (responsive design SCSS)
+
+Respect des bonnes pratiques PWA (manifest, cache, service worker)
+
+Versionnement Git avec conventions de commit
+
+Préparation au déploiement CI/CD (structure stable et reproductible)
+
+📈 Pistes d’évolution
+
+Connexion à l’API Symfony (authentification JWT)
+
+Ajout d’un tableau de bord statistique (graphes de suivi)
+
+Amélioration du mode hors ligne complet
+
+Déploiement sur un serveur HTTPS (Netlify / Firebase Hosting)
+
+👩‍💻 Auteur
+
+Cécile [Evy38]
+Développeuse Fullstack en formation CDA – Simplon Grenoble
+📍 France
+💼 GitHub – Evy38
+
+🏁 Licence
+
+Projet ouvert à usage pédagogique dans le cadre du Titre Professionnel CDA.
+Reproduction libre à des fins d’apprentissage.
