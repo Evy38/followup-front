@@ -1,0 +1,38 @@
+<div class="login-container">
+  <div class="login-card">
+    <img src="icons/logoFUSF.png" alt="Logo FollowUp" class="logo" />
+    <p class="subtitle">Suivez vos candidatures avec sérénité 🌿</p>
+
+    <form (ngSubmit)="login()" class="form">
+      <label for="email">Adresse email :</label>
+      <input
+        type="email"
+        id="email"
+        name="email"
+        [(ngModel)]="email"
+        required
+        placeholder="exemple@mail.com"
+        autocomplete="username"
+      />
+
+      <label for="password">Mot de passe :</label>
+      <input
+        type="password"
+        id="password"
+        name="password"
+        [(ngModel)]="password"
+        required
+        placeholder="••••••••"
+        autocomplete="current-password"
+      />
+
+      <button type="submit" [disabled]="loading" class="btn-primary">
+        {{ loading ? 'Connexion...' : 'Se connecter' }}
+      </button>
+
+      <button type="button" class="btn-secondary">
+        S’inscrire
+      </button>
+    </form>
+  </div>
+</div>
