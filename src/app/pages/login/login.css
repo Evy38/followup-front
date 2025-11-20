@@ -219,12 +219,22 @@ button {
 }
 
 /* Secondaire (S’inscrire) */
-.btn-secondary {
+/* .btn-secondary {
   background: #ffffff;
   color: #0077b6;
   border: 1px solid #cbd5e1;
   box-shadow: none;
+} */
+ .btn-primary {
+  background: linear-gradient(180deg, #0096c7 0%, #0077b6 100%);
+  color: white;
+  box-shadow: 0 5px 0 #005f8c;
 }
+.full-width {
+  width: 100%;
+  display: block;
+}
+
 
 /* ============ MESSAGES ============ */
 .message {
