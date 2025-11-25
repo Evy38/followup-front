@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit, PLATFORM_ID, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
-import { AuthService } from '../../services/auth';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -30,7 +30,7 @@ export class LoginComponent implements OnInit {
   registerMessage = '';
   registerError = '';
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) { }
 
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
@@ -52,16 +52,9 @@ export class LoginComponent implements OnInit {
     this.message = '';
 
     this.auth.login(this.email, this.password).subscribe({
-      next: (res) => {
+      next: () => {
         this.loading = false;
         this.message = 'Connexion réussie 🎉';
-
-        if (res.token) {
-          localStorage.setItem('token', res.token);
-          window.location.href = '/#/dashboard';
-        } else {
-          console.warn('Pas de token dans la réponse', res);
-        }
       },
       error: (err) => {
         this.loading = false;
@@ -103,7 +96,12 @@ export class LoginComponent implements OnInit {
     this.registerLoading = true;
 
     this.auth
-      .register(email, this.registerPassword)
+      .register({
+        firstName: this.registerFirstName,
+        lastName: this.registerLastName,
+        email: email,
+        password: this.registerPassword
+      })
       .subscribe({
         next: () => {
           this.registerLoading = false;
@@ -114,7 +112,7 @@ export class LoginComponent implements OnInit {
           this.registerPassword = '';
           this.registerConfirmPassword = '';
         },
-        error: (err) => {
+        error: (err: any) => {
           this.registerLoading = false;
           console.error('Erreur inscription', err);
           this.registerError =
@@ -125,7 +123,7 @@ export class LoginComponent implements OnInit {
   }
 
   // --------- GOOGLE OAUTH ---------
-  get googleAuthUrl(): string {
-    return 'http://localhost:8080/auth/google';
+  googleLogin() {
+    this.auth.googleLogin();
   }
 }

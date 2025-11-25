@@ -2,15 +2,18 @@ import { Routes } from '@angular/router';
 import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
+  { 
+    path: '', 
+    redirectTo: 'login', // ✅ Toujours rediriger vers login par défaut
+    pathMatch: 'full' 
+  },
 
-  // Page de connexion
   {
-    path: '',
+    path: 'login',
     loadComponent: () =>
       import('./pages/login/login').then(m => m.LoginComponent),
   },
 
-  // Dashboard sécurisé
   {
     path: 'dashboard',
     canActivate: [authGuard],
@@ -18,4 +21,6 @@ export const routes: Routes = [
       import('./pages/dashboard/dashboard.component')
         .then(m => m.DashboardComponent),
   },
+
+  { path: '**', redirectTo: 'login' }, // ✅ Redirection vers login en cas de route inconnue
 ];

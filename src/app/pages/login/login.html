@@ -5,7 +5,8 @@
     <p class="subtitle">Suivez vos candidatures avec sérénité 🌿</p>
 
     <!-- BOUTON GOOGLE -->
-    <a class="google-btn" [href]="googleAuthUrl">
+    <a class="google-btn" href="#" (click)="googleLogin(); $event.preventDefault()" role="button"
+      aria-label="Connexion avec Google">
       <img src="icons/google-icon.png" alt="Google" class="google-icon" />
       Continuer avec Google
     </a>
@@ -17,26 +18,12 @@
     <!-- FORMULAIRE DE CONNEXION -->
     <form (ngSubmit)="login()" class="form">
       <label for="email">Adresse email (Gmail) :</label>
-      <input
-        type="email"
-        id="email"
-        name="email"
-        [(ngModel)]="email"
-        required
-        placeholder="monjob.followup@gmail.com"
-        autocomplete="username"
-      />
+      <input type="email" id="email" name="email" [(ngModel)]="email" required placeholder="monjob.followup@gmail.com"
+        autocomplete="username" />
 
       <label for="password">Mot de passe :</label>
-      <input
-        type="password"
-        id="password"
-        name="password"
-        [(ngModel)]="password"
-        required
-        placeholder="••••••••"
-        autocomplete="current-password"
-      />
+      <input type="password" id="password" name="password" [(ngModel)]="password" required placeholder="••••••••"
+        autocomplete="current-password" />
 
       <p class="info-text">
         Pour FollowUp, utilisez toujours la même adresse Gmail sur les sites de
@@ -56,60 +43,25 @@
     </button>
 
     <!-- PANEL D’INSCRIPTION -->
-    <form
-      *ngIf="showRegister"
-      #registerForm="ngForm"
-      (ngSubmit)="submitRegister(registerForm)"
-      class="form register-form"
-    >
+    <form *ngIf="showRegister" #registerForm="ngForm" (ngSubmit)="submitRegister(registerForm)"
+      class="form register-form">
       <h2 class="register-title">Créer un compte</h2>
 
       <label for="r-lastName">Nom :</label>
-      <input
-        id="r-lastName"
-        name="lastName"
-        type="text"
-        [(ngModel)]="registerLastName"
-        required
-      />
+      <input id="r-lastName" name="lastName" type="text" [(ngModel)]="registerLastName" required />
 
       <label for="r-firstName">Prénom :</label>
-      <input
-        id="r-firstName"
-        name="firstName"
-        type="text"
-        [(ngModel)]="registerFirstName"
-        required
-      />
+      <input id="r-firstName" name="firstName" type="text" [(ngModel)]="registerFirstName" required />
 
       <label for="r-email">Adresse Gmail :</label>
-      <input
-        id="r-email"
-        name="email"
-        type="email"
-        [(ngModel)]="registerEmail"
-        required
-        placeholder="monjob.followup@gmail.com"
-      />
+      <input id="r-email" name="email" type="email" [(ngModel)]="registerEmail" required
+        placeholder="monjob.followup@gmail.com" />
 
       <label for="r-password">Mot de passe :</label>
-      <input
-        id="r-password"
-        name="password"
-        type="password"
-        [(ngModel)]="registerPassword"
-        required
-        minlength="8"
-      />
+      <input id="r-password" name="password" type="password" [(ngModel)]="registerPassword" required minlength="8" />
 
       <label for="r-confirm">Confirmer le mot de passe :</label>
-      <input
-        id="r-confirm"
-        name="confirmPassword"
-        type="password"
-        [(ngModel)]="registerConfirmPassword"
-        required
-      />
+      <input id="r-confirm" name="confirmPassword" type="password" [(ngModel)]="registerConfirmPassword" required />
 
       <p class="error" *ngIf="registerError">{{ registerError }}</p>
       <p class="success" *ngIf="registerMessage">{{ registerMessage }}</p>
