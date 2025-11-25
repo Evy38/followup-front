@@ -1,0 +1,72 @@
+/* ----- DESKTOP (sidebar verticale) ----- */
+@media (min-width: 768px) {
+    .nav {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        width: 120px;
+        /* plus large pour respirer */
+        height: 100vh;
+        background: #ffffff;
+        box-shadow: 2px 0 12px rgba(0, 0, 0, 0.06);
+        display: flex;
+        flex-direction: column;
+        padding-top: 35px;
+        /* espace haut → comme la maquette */
+        align-items: center;
+    }
+
+    /* LOGO */
+    .nav__logo {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        margin-bottom: 45px;
+        /* gros espace sous le logo → maquette */
+    }
+
+    .nav__logo img {
+        width: 65px;
+        /* légèrement plus large */
+        height: auto;
+    }
+
+    /* CONTAINER DES ICÔNES */
+    .nav__links {
+        display: flex;
+        flex-direction: column;
+        gap: 38px;
+        /* espace vertical entre chaque icône */
+        width: 100%;
+        align-items: center;
+    }
+
+    /* LIENS */
+    .nav__item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-decoration: none;
+        color: #4a5460;
+        font-size: 0.75rem;
+    }
+
+    .nav__icon {
+        width: 40px;
+        /* taille icône desktop = plus gros */
+        height: 40px;
+        filter: grayscale(1) brightness(0.6);
+        transition: 0.2s ease;
+    }
+
+    /* Icône active = recolorisée en bleu */
+    .nav__item--active .nav__icon {
+        filter: brightness(0) saturate(100%) invert(34%) sepia(93%) saturate(2380%) hue-rotate(201deg) brightness(96%) contrast(100%);
+    }
+
+    .nav__item--active {
+        color: #1a73e8;
+        font-weight: 600;
+    }
+}

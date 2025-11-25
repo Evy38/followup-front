@@ -1,11 +1,12 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './guards/auth.guard';
+import { AppLayoutComponent } from './layout/app-layout.component';
 
 export const routes: Routes = [
-  { 
-    path: '', 
+  {
+    path: '',
     redirectTo: 'login', // ✅ Toujours rediriger vers login par défaut
-    pathMatch: 'full' 
+    pathMatch: 'full'
   },
 
   {
@@ -15,11 +16,18 @@ export const routes: Routes = [
   },
 
   {
-    path: 'dashboard',
-    canActivate: [authGuard],
-    loadComponent: () =>
-      import('./pages/dashboard/dashboard.component')
-        .then(m => m.DashboardComponent),
+    path: '',
+    component: AppLayoutComponent,
+    children: [
+      {
+        path: 'dashboard',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import('./pages/dashboard/dashboard.component').then(
+            (m) => m.DashboardComponent,
+          ),
+      },
+    ],
   },
 
   { path: '**', redirectTo: 'login' }, // ✅ Redirection vers login en cas de route inconnue

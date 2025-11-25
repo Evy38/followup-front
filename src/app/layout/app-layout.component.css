@@ -1,0 +1,23 @@
+.layout {
+  min-height: 100vh;
+}
+
+/* On laisse de la place pour la barre du bas en mobile */
+.layout__content {
+  padding: 16px;
+  padding-bottom: 80px; /* hauteur navbar mobile */
+}
+
+/* Sur desktop, contenu à droite de la sidebar */
+@media (min-width: 768px) {
+  .layout {
+    display: flex;
+  }
+
+  .layout__content {
+    flex: 1;
+    padding: 24px 32px;
+    margin-left: 90px; /* largeur de la sidebar */
+    padding-bottom: 24px;
+  }
+}
