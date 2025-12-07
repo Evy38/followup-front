@@ -51,6 +51,13 @@ app-root {
   text-align: center;
   animation: fadeIn 0.6s ease-in-out;
   background: rgba(255, 255, 255, 0.95); /* 🔹 AJOUT pour lisibilité mobile */
+  position: absolute;
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Quand le formulaire d'inscription s'ouvre */
+.login-card.slide-out-up {
+  animation: slideOutUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 /* Animation douce */
@@ -63,6 +70,19 @@ app-root {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* Animation : Carte de connexion qui monte et sort du cadre */
+@keyframes slideOutUp {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(-150vh);
   }
 }
 
@@ -150,6 +170,14 @@ input {
   background: rgba(255, 255, 255, 0.9);
 }
 
+.forgot-link {
+  display: block;
+  margin: -0.3rem 0 0.4rem auto;
+  font-size: 0.8rem;
+  color: #0b6ea9;
+  text-decoration: underline;
+}
+
 input:focus {
   border-color: #0077b6;
   box-shadow: 0 0 0 2px rgba(0, 119, 182, 0.2);
@@ -218,7 +246,7 @@ button {
   z-index: 2;
 }
 
-/* Secondaire (S’inscrire) */
+/* Secondaire (S'inscrire) */
 /* .btn-secondary {
   background: #ffffff;
   color: #0077b6;
@@ -251,18 +279,6 @@ button {
 .success {
   color: #15803d;
   font-size: 0.8rem;
-}
-
-/* Panel inscription */
-.register-form {
-  margin-top: 0.4rem;
-}
-
-.register-title {
-  font-size: 1rem;
-  font-weight: 700;
-  color: #1a3a57;
-  margin-bottom: 0.4rem;
 }
 
 /* ============ RESPONSIVE : TABLETTES & DESKTOP ============ */

@@ -12,7 +12,15 @@ export const routes: Routes = [
   {
     path: 'login',
     loadComponent: () =>
-      import('./pages/login/login').then(m => m.LoginComponent),
+      import('./pages/auth/login/login').then(m => m.LoginComponent),
+  },
+
+  {
+    path: 'forgot-password',
+    loadComponent: () =>
+      import('./pages/auth/forgot-password/forgot-password.component').then(
+        m => m.ForgotPasswordComponent,
+      ),
   },
 
   {

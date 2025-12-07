@@ -1,0 +1,33 @@
+<div *ngIf="isVisible" [ngClass]="{ 'signup-card': true, 'slide-in-up': isVisible }">
+  <form #registerForm="ngForm" (ngSubmit)="submitRegister(registerForm)" class="form register-form">
+    <h2 class="register-title">Créer un compte</h2>
+
+    <label for="signup-lastName">Nom :</label>
+    <input id="signup-lastName" name="lastName" type="text" [(ngModel)]="lastName" required autocomplete="family-name" />
+
+    <label for="signup-firstName">Prénom :</label>
+    <input id="signup-firstName" name="firstName" type="text" [(ngModel)]="firstName" required autocomplete="given-name" />
+
+    <label for="signup-email">Adresse Gmail :</label>
+    <input id="signup-email" name="email" type="email" [(ngModel)]="email" required
+      placeholder="monjob.followup@gmail.com" autocomplete="email" />
+
+    <label for="signup-password">Mot de passe :</label>
+    <input id="signup-password" name="password" type="password" [(ngModel)]="password" required minlength="8" autocomplete="new-password" />
+
+    <label for="signup-confirm">Confirmer le mot de passe :</label>
+    <input id="signup-confirm" name="confirmPassword" type="password" [(ngModel)]="confirmPassword" required autocomplete="new-password" />
+
+    <p class="error" *ngIf="error">{{ error }}</p>
+    <p class="success" *ngIf="message">{{ message }}</p>
+
+    <button type="submit" [disabled]="loading">
+      {{ loading ? 'Création...' : "Valider l'inscription" }}
+    </button>
+  </form>
+
+  <!-- BOUTON POUR FERMER L'INSCRIPTION -->
+  <button type="button" class="btn-primary full-width" (click)="toggleSignup()" [disabled]="loading">
+    Retour à la connexion
+  </button>
+</div>

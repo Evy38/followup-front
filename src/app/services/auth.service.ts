@@ -76,6 +76,17 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/register`, payload);
   }
 
+  forgotPassword(email: string): Observable<any> {
+    console.log('📧 AuthService: envoi requête forgot password', email);
+    return this.http.post(`${this.apiUrl}/password/request`, { email }).pipe(
+      tap({
+        next: (response) => console.log('📧 AuthService: réponse reçue', response),
+        error: (error) => console.error('📧 AuthService: erreur', error),
+        complete: () => console.log('📧 AuthService: complete')
+      })
+    );
+  }
+
   logout(): void {
     this.removeToken();
     this.router.navigate(['/login']);
