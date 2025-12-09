@@ -1,42 +1,74 @@
 import { Routes } from '@angular/router';
+
 import { authGuard } from './guards/auth.guard';
-import { AppLayoutComponent } from './layout/app-layout.component';
+
+// layouts
+import { PublicLayoutComponent } from './layout/public-layout/public-layout';
+import { PrivateLayoutComponent } from './layout/private-layout/private-layout';
 
 export const routes: Routes = [
+
+  // ============================
+  // 🔹 ZONE PUBLIQUE
+  // ============================
   {
     path: '',
-    redirectTo: 'login', // ✅ Toujours rediriger vers login par défaut
-    pathMatch: 'full'
+    component: PublicLayoutComponent,
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./pages/home/home/home').then(m => m.Home),
+      },
+      {
+        path: 'about',
+        loadComponent: () =>
+          import('./pages/home/about/about').then(m => m.About),
+      },
+      {
+        path: 'features',
+        loadComponent: () =>
+          import('./pages/home/features/features').then(m => m.Features),
+      },
+      {
+        path: 'pricing',
+        loadComponent: () =>
+          import('./pages/home/pricing/pricing').then(m => m.Pricing),
+      },
+
+      {
+        path: 'login',
+        loadComponent: () =>
+          import('./pages/auth/login/login').then(m => m.LoginComponent),
+      },
+      {
+        path: 'forgot-password',
+        loadComponent: () =>
+          import('./pages/auth/forgot-password/forgot-password.component').then(
+            m => m.ForgotPasswordComponent
+          ),
+      },
+    ],
   },
 
-  {
-    path: 'login',
-    loadComponent: () =>
-      import('./pages/auth/login/login').then(m => m.LoginComponent),
-  },
-
-  {
-    path: 'forgot-password',
-    loadComponent: () =>
-      import('./pages/auth/forgot-password/forgot-password.component').then(
-        m => m.ForgotPasswordComponent,
-      ),
-  },
-
+  // ============================
+  // 🔒 ZONE PRIVÉE
+  // ============================
   {
     path: '',
-    component: AppLayoutComponent,
+    component: PrivateLayoutComponent,
     children: [
       {
         path: 'dashboard',
         canActivate: [authGuard],
         loadComponent: () =>
           import('./pages/dashboard/dashboard.component').then(
-            (m) => m.DashboardComponent,
+            m => m.DashboardComponent
           ),
       },
     ],
   },
 
-  { path: '**', redirectTo: 'login' }, // ✅ Redirection vers login en cas de route inconnue
+  // fallback
+  { path: '**', redirectTo: '' },
 ];
