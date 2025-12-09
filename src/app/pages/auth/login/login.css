@@ -307,3 +307,45 @@ button {
     font-size: 1rem;
   }
 }
+
+/* ============ MOBILE SAFETY ============ */
+@media (max-width: 480px) {
+  .login-card {
+    max-height: 90vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    padding: 1rem;
+  }
+
+  .logo {
+    max-width: 70%;
+    height: auto;
+  }
+
+  .form,
+  .google-btn,
+  .separator,
+  input,
+  button,
+  .forgot-link {
+    max-width: 100%;
+  }
+
+  input,
+  button {
+    width: 100%;
+  }
+
+  h1,
+  .subtitle,
+  .info-text {
+    word-wrap: break-word;
+    overflow-wrap: anywhere;
+    hyphens: auto;
+  }
+
+  .login-container {
+    padding: 0 8px; /* évite que le contenu touche les bords */
+  }
+}

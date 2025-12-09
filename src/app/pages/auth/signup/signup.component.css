@@ -156,3 +156,35 @@ button {
     padding: 2rem;
   }
 }
+
+/* ============ MOBILE SAFETY ============ */
+@media (max-width: 480px) {
+  .signup-card {
+    max-height: 90vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    padding: 1rem;
+  }
+
+  .form,
+  input,
+  button,
+  .register-title,
+  .register-form {
+    max-width: 100%;
+  }
+
+  input,
+  button {
+    width: 100%;
+  }
+
+  .register-title,
+  .error,
+  .success {
+    word-wrap: break-word;
+    overflow-wrap: anywhere;
+    hyphens: auto;
+  }
+}

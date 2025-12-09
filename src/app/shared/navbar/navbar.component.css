@@ -22,12 +22,12 @@
         display: flex;
         justify-content: center;
         width: 100%;
-        margin-bottom: 45px;
+        margin-bottom: 85px;
         /* gros espace sous le logo → maquette */
     }
 
     .nav__logo img {
-        width: 65px;
+        width: 110px;
         /* légèrement plus large */
         height: auto;
     }
@@ -36,7 +36,7 @@
     .nav__links {
         display: flex;
         flex-direction: column;
-        gap: 38px;
+        gap: 68px;
         /* espace vertical entre chaque icône */
         width: 100%;
         align-items: center;
