@@ -5,6 +5,8 @@ import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
 import { SignupComponent } from '../signup/signup.component';
 import { WelcomeComponent } from '../welcome/welcome.component';
+import { Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-login',
@@ -28,7 +30,7 @@ export class LoginComponent implements OnInit {
   // --------- SIGNUP ---------
   showSignup = false;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) { }
+  constructor(private router: Router,@Inject(PLATFORM_ID) private platformId: Object,) { }
 
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
@@ -96,4 +98,10 @@ export class LoginComponent implements OnInit {
   googleLogin() {
     this.auth.googleLogin();
   }
+
+  // --------- FERMETURE DE LA CARD DE CONNEXION ---------
+  closeOverlay() {
+  this.router.navigate([{ outlets: { overlay: null } }]);
+}
+
 }

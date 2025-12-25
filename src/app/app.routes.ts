@@ -1,15 +1,11 @@
 import { Routes } from '@angular/router';
-
 import { authGuard } from './guards/auth.guard';
-
-// layouts
 import { PublicLayoutComponent } from './layout/public-layout/public-layout';
 import { PrivateLayoutComponent } from './layout/private-layout/private-layout';
 
 export const routes: Routes = [
-
   // ============================
-  // 🔹 ZONE PUBLIQUE
+  // ZONE PUBLIQUE
   // ============================
   {
     path: '',
@@ -38,28 +34,8 @@ export const routes: Routes = [
     ],
   },
 
-  // Auth routes sans navbar
-  {
-    path: '',
-    component: (await import('./layout/auth-layout/auth-layout')).AuthLayoutComponent,
-    children: [
-      {
-        path: 'login',
-        loadComponent: () =>
-          import('./pages/auth/login/login').then(m => m.LoginComponent),
-      },
-      {
-        path: 'forgot-password',
-        loadComponent: () =>
-          import('./pages/auth/forgot-password/forgot-password.component').then(
-            m => m.ForgotPasswordComponent
-          ),
-      },
-    ],
-  },
-
   // ============================
-  // 🔒 ZONE PRIVÉE
+  // ZONE PRIVEE
   // ============================
   {
     path: '',
@@ -74,6 +50,20 @@ export const routes: Routes = [
           ),
       },
     ],
+  },
+
+  // ============================
+  // OVERLAY AUTH (router-outlet secondaire)
+  // ============================
+  {
+    path: 'login',
+    outlet: 'overlay',
+    loadComponent: () => import('./pages/auth/login/login').then(m => m.LoginComponent),
+  },
+  {
+    path: 'forgot-password',
+    outlet: 'overlay',
+    loadComponent: () => import('./pages/auth/forgot-password/forgot-password.component').then(m => m.ForgotPasswordComponent),
   },
 
   // fallback

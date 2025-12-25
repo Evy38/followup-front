@@ -1,13 +1,18 @@
 <div class="login-container">
   <!-- CARD DE BIENVENUE -->
   @if (showWelcome) {
-    <app-welcome (chooseGmail)="onChooseGmail()" (chooseEmail)="onChooseEmail()"></app-welcome>
+  <app-welcome (chooseGmail)="onChooseGmail()" (chooseEmail)="onChooseEmail()"></app-welcome>
   }
 
   <!-- CARTE DE CONNEXION -->
   <div [ngClass]="{ 'login-card': true, 'slide-out-up': showSignup }">
+
+    <button type="button" class="close-btn" aria-label="Fermer" (click)="closeOverlay()">
+      ✕
+    </button>
+
     <!-- LOGO + BASELINE -->
-    <img src="icons/logoFUSF.png" alt="Logo FollowUp" class="logo" />
+    <!-- <img src="icons/logoFUSF.png" alt="Logo FollowUp" class="logo" /> -->
     <p class="subtitle">Suivez vos candidatures avec sérénité 🌿</p>
 
     <!-- BOUTON GOOGLE -->
@@ -31,7 +36,9 @@
       <input type="password" id="password" name="password" [(ngModel)]="password" required placeholder="••••••••"
         autocomplete="current-password" />
 
-      <a class="forgot-link" routerLink="/forgot-password">J'ai oublié mon mot de passe</a>
+      <a class="forgot-link" [routerLink]="['/', { outlets: { overlay: ['forgot-password'] } }]">
+        J'ai oublié mon mot de passe
+      </a>
 
       <p class="info-text">
         Pour FollowUp, utilisez toujours la même adresse Gmail sur les sites de
@@ -39,7 +46,7 @@
       </p>
 
       @if (message) {
-        <p class="message">{{ message }}</p>
+      <p class="message">{{ message }}</p>
       }
 
       <button type="submit" [disabled]="loading">

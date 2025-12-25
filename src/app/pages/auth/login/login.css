@@ -24,35 +24,97 @@ app-root {
 }
 
 /* ============ STRUCTURE GLOBALE ============ */
+/* Overlay mobile-first, positionné en bas sous la navbar */
 .login-container {
   position: fixed;
   inset: 0;
+  z-index: 200;
+
   display: flex;
-  justify-content: center;
   align-items: center;
-  min-height: 100vh;
-  min-width: 100vw;
+  justify-content: center;
 
-  background-image: url('/icons/fondAccueilTel.png'); /* ✅ fond mobile */
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-attachment: scroll;
+  padding-top: var(--navbar-height, 72px);
+  padding-bottom: 16px;
 
-  font-family: 'Poppins', sans-serif;
+  background: rgba(0, 0, 0, 0.25); /* léger voile */
+  backdrop-filter: blur(2px);
+}
+.close-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+
+  width: 32px;
+  height: 32px;
+
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+
+  font-size: 1.2rem;
+  font-weight: 600;
+  line-height: 1;
+
+  color: #6b7280;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.close-btn:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: #111827;
+}
+
+
+@media (min-width: 768px) {
+  .login-container {
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 32px;
+  }
 }
 
 /* ============ CARTE ============ */
+/* Carte posée en bas, mobile-first */
+/* Carte posée en bas, plus petite et espacée de la navbar */
 .login-card {
-  border-radius: 16px;
-  padding: 1.2rem;
-  width: 90%;
-  max-width: 320px;
-  text-align: center;
-  animation: fadeIn 0.6s ease-in-out;
-  background: rgba(255, 255, 255, 0.95); /* 🔹 AJOUT pour lisibilité mobile */
-  position: absolute;
-  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  width: min(92vw, 360px);
+  padding: 1.2rem 1.2rem 1.3rem;
+
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+
+  animation: fadeInUp 0.35s ease-out;
+  position: relative; /* Pour que .close-btn soit relative à la card */
+}
+
+@media (min-width: 768px) {
+  .login-card {
+    max-width: 340px;
+    padding: 2rem 2rem 2rem 2rem;
+    border-radius: 32px;
+    margin-top: 32px;
+  }
+}
+
+@media (min-width: 768px) {
+  .login-card {
+    max-width: 400px;
+    padding: 2rem 2rem 2.5rem 2rem;
+    border-radius: 32px;
+    margin-bottom: 0;
+  }
 }
 
 /* Quand le formulaire d'inscription s'ouvre */
@@ -87,11 +149,19 @@ app-root {
 }
 
 /* ============ LOGO ============ */
-.logo {
-  width: 200px;
+
+/* .logo {
+  width: 25px;
   height: auto;
   margin: 0 auto 0.5rem;
-}
+  display: block;
+} */
+
+/* @media (min-width: 768px) {
+  .logo {
+    width: 40px;
+  }
+} */
 
 /* ============ TITRES ============ */
 h1 {
@@ -180,7 +250,7 @@ input {
 
 input:focus {
   border-color: #0077b6;
-  box-shadow: 0 0 0 2px rgba(0, 119, 182, 0.2);
+  box-shadow: 0 0 0 2px rgba(0, 119, 182, 0.6);
 }
 
 .info-text {
@@ -284,25 +354,12 @@ button {
 /* ============ RESPONSIVE : TABLETTES & DESKTOP ============ */
 @media (min-width: 768px) {
   .login-container {
-    background-image: url('/icons/fondAccueil.png');
-    background-attachment: fixed;
+    background: none;
   }
-
-  .login-card {
-    background: rgba(255, 255, 255, 0.96);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.6);
-    max-width: 400px;
-    padding: 2rem;
-  }
-
-  .logo {
-    width: 300px;
-  }
-
+  /* .logo inutile ici, la taille est gérée plus haut */
   h1 {
     font-size: 1.8rem;
   }
-
   .subtitle {
     font-size: 1rem;
   }
@@ -318,10 +375,7 @@ button {
     padding: 1rem;
   }
 
-  .logo {
-    max-width: 70%;
-    height: auto;
-  }
+  /* .logo inutile ici, la taille est gérée plus haut */
 
   .form,
   .google-btn,
@@ -347,5 +401,15 @@ button {
 
   .login-container {
     padding: 0 8px; /* évite que le contenu touche les bords */
+  }
+}
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
 }

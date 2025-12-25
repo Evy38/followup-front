@@ -18,10 +18,11 @@ export class ForgotPasswordComponent {
   error = '';
 
   constructor(
-    private auth: AuthService, 
+
+    private auth: AuthService,
     private router: Router,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) { }
 
   submit(form: NgForm) {
     this.message = '';
@@ -56,6 +57,11 @@ export class ForgotPasswordComponent {
   }
 
   backToLogin() {
-    this.router.navigate(['/login']);
+    this.router.navigate([{ outlets: { overlay: ['login'] } }]);
   }
+
+  // --------- FERMETURE DE LA CARD DE CONNEXION ---------
+  closeOverlay() {
+  this.router.navigate([{ outlets: { overlay: null } }]);
+}
 }

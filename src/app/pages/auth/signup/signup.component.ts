@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter, inject, ViewEncapsulation } fro
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-signup',
@@ -13,6 +14,7 @@ import { AuthService } from '../../../services/auth.service';
 })
 export class SignupComponent {
   private auth = inject(AuthService);
+  protected router = inject(Router);
 
   @Input() isVisible = false;
   @Output() closeSignup = new EventEmitter<void>();
@@ -94,4 +96,7 @@ export class SignupComponent {
     this.password = '';
     this.confirmPassword = '';
   }
+    closeOverlay() {
+  this.router.navigate([{ outlets: { overlay: null } }]);
+}
 }
