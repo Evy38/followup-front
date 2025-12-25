@@ -35,7 +35,14 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./pages/home/pricing/pricing').then(m => m.Pricing),
       },
+    ],
+  },
 
+  // Auth routes sans navbar
+  {
+    path: '',
+    component: (await import('./layout/auth-layout/auth-layout')).AuthLayoutComponent,
+    children: [
       {
         path: 'login',
         loadComponent: () =>
