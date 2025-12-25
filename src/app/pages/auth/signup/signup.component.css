@@ -14,30 +14,32 @@
   animation: slideInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
+/* Croix de fermeture sans effet parasite */
 .close-btn {
   position: absolute;
   top: 12px;
   right: 12px;
-
   width: 32px;
   height: 32px;
-
-  border-radius: 50%;
   border: none;
-  background: transparent;
-
-  font-size: 1.2rem;
+  background: transparent !important;
+  border-radius: 50%;
+  font-size: 1.6rem;
   font-weight: 600;
   line-height: 1;
-
   color: #6b7280;
   cursor: pointer;
-
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: none !important;
+  outline: none;
+  z-index: 20;
+}
 
-  transition: background 0.15s ease, color 0.15s ease;
+.close-btn::before,
+.close-btn::after {
+  display: none !important;
 }
 
 .close-btn:hover {
