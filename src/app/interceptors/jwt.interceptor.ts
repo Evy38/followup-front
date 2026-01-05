@@ -6,8 +6,7 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
     '/api/login',
     '/api/register',
     '/api/password/request',
-    '/api/password/reset',
-    '/auth/google'
+    '/api/password/reset'
   ];
 
   // Vérifier si la requête est vers une route publique
@@ -16,7 +15,7 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
   // N'ajouter le token que si ce n'est pas une route publique
   if (!isPublicRoute) {
     const token = localStorage.getItem('token');
-    
+
     if (token) {
       req = req.clone({
         setHeaders: {

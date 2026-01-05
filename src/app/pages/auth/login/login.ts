@@ -30,7 +30,7 @@ export class LoginComponent implements OnInit {
   // --------- SIGNUP ---------
   showSignup = false;
 
-  constructor(private router: Router,@Inject(PLATFORM_ID) private platformId: Object,) { }
+  constructor(private router: Router, @Inject(PLATFORM_ID) private platformId: Object,) { }
 
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
@@ -62,7 +62,8 @@ export class LoginComponent implements OnInit {
 
   onChooseGmail() {
     this.closeWelcome();
-    // Reste sur la page de connexion avec Gmail
+    // Démarre le login Google immédiatement
+    this.googleLogin();
   }
 
   onChooseEmail() {
@@ -79,15 +80,15 @@ export class LoginComponent implements OnInit {
     this.auth.login(this.email, this.password).subscribe({
       next: () => {
         this.loading = false;
-        this.message = 'Connexion réussie 🎉';
+        this.router.navigate(['/dashboard']);
       },
-      error: (err) => {
+      error: () => {
         this.loading = false;
         this.message = 'Identifiants invalides ❌';
-        console.error('Erreur de connexion:', err);
-      },
+      }
     });
   }
+
 
   // --------- SIGNUP ---------
   closeSignup() {
@@ -101,7 +102,7 @@ export class LoginComponent implements OnInit {
 
   // --------- FERMETURE DE LA CARD DE CONNEXION ---------
   closeOverlay() {
-  this.router.navigate([{ outlets: { overlay: null } }]);
-}
+    this.router.navigate([{ outlets: { overlay: null } }]);
+  }
 
 }

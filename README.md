@@ -1,186 +1,191 @@
-# FollowUp - Application de Suivi de Candidatures
+# FollowUp – Frontend (Angular PWA)
 
-## 📋 Description
-Application Angular PWA pour le suivi et la gestion des candidatures d'emploi.
+Application frontend **Angular (SPA + PWA)** destinée au suivi et à la gestion des candidatures d’emploi.  
+Cette application consomme une **API REST Symfony sécurisée par JWT**.
 
-## 🏗️ Architecture Technique
+---
+
+## 📋 Présentation
+
+FollowUp est une application **mobile-first** permettant à un utilisateur de :
+
+- s’authentifier (email/mot de passe ou Google OAuth),
+- gérer ses candidatures d’emploi,
+- centraliser le suivi de sa recherche de manière structurée.
+
+Le frontend est conçu comme une **Single Page Application** avec gestion d’état côté client et protection des routes.
+
+---
+
+## 🏗️ Architecture technique
 
 ### Stack
-- **Frontend** : Angular 20.3 (Standalone Components)
-- **Backend** : [API REST - détails à compléter]
-- **Base de données** : [À préciser]
-- **Authentification** : JWT
-- **PWA** : Service Worker + Manifest
 
-### Structure du projet
-```
+- **Framework** : Angular 20.x
+- **Architecture** : Standalone Components
+- **Routing** : Angular Router (outlet principal + outlet secondaire)
+- **Authentification** : JWT (via API backend)
+- **HTTP** : HttpClient + Interceptor JWT
+- **PWA** : Service Worker + Manifest
+- **SSR** : Désactivé (SPA volontaire)
+
+---
+
+## 📁 Structure du projet
+
 src/
 ├── app/
-│   ├── pages/
-│   │   └── login/           # Page de connexion
-│   ├── services/
-│   │   └── auth.ts          # Service d'authentification
-│   ├── guards/              # Protection des routes (à créer)
-│   ├── components/          # Composants réutilisables (à créer)
-│   └── models/              # Interfaces TypeScript (à créer)
-├── assets/                  # Images et ressources statiques
-└── public/                  # Fichiers publics (manifest, icons)
-```
+│ ├── pages/
+│ │ ├── home/ # Pages publiques (home, about, pricing…)
+│ │ ├── auth/ # Login, signup, forgot-password, OAuth
+│ │ └── dashboard/ # Zone privée
+│ │
+│ ├── layout/
+│ │ ├── public-layout/ # Layout public avec navbar
+│ │ └── private-layout/ # Layout protégé (dashboard)
+│ │
+│ ├── services/
+│ │ └── auth.service.ts # Gestion authentification & JWT
+│ │
+│ ├── guards/
+│ │ └── auth.guard.ts # Protection des routes privées
+│ │
+│ ├── interceptors/
+│ │ └── jwt.interceptor.ts # Injection automatique du token
+│ │
+│ ├── shared/
+│ │ └── navbar/ # Composants UI réutilisables
+│ │
+│ └── app.routes.ts # Définition des routes
+│
+├── assets/ # Images, icônes, illustrations
+├── public/ # manifest.webmanifest, icônes PWA
+└── index.html
 
-## 🚀 Installation & Démarrage
 
-```bash
-# Installation des dépendances
+---
+
+## 🔐 Authentification & Sécurité
+
+### Méthodes d’authentification
+
+- **Email / mot de passe**
+- **Google OAuth 2.0**
+
+### Fonctionnement
+
+1. L’utilisateur s’authentifie via l’API backend
+2. Le backend renvoie un **JWT**
+3. Le token est stocké côté client (`localStorage`)
+4. Un **HTTP Interceptor** ajoute automatiquement le token aux requêtes protégées
+5. Les routes privées sont sécurisées via un **AuthGuard**
+
+---
+
+### Endpoints consommés (backend)
+
+| Méthode | Endpoint | Description |
+|-------|---------|------------|
+| POST | `/api/login_check` | Connexion JWT |
+| POST | `/api/register` | Inscription |
+| POST | `/api/password/request` | Demande de reset |
+| POST | `/api/password/reset` | Réinitialisation |
+| GET | `/auth/google` | OAuth Google |
+
+---
+
+## 🧭 Routing & Navigation
+
+### Séparation claire des zones
+
+- **Zone publique**  
+  - `/`
+  - `/about`
+  - `/features`
+  - `/pricing`
+
+- **Zone privée (protégée)**  
+  - `/dashboard`
+
+- **Authentification en overlay**  
+  - `/login` (outlet secondaire)
+  - `/forgot-password` (outlet secondaire)
+
+👉 Les écrans d’authentification sont affichés via un **router-outlet secondaire** afin de préserver la navigation et l’UX.
+
+---
+
+## 📱 Progressive Web App (PWA)
+
+- Service Worker activé en production
+- Manifest configuré
+- Application installable sur mobile
+- Mise à jour automatique avec confirmation utilisateur
+
+---
+
+## 🎨 Design & UX
+
+### Principes
+
+- Mobile-first
+- Composants standalone
+- Animations légères
+- UX centrée sur la simplicité
+
+### Palette principale
+
+```css
+--primary: #0077b6;
+--secondary: #0096c7;
+--accent: #1a3a57;
+--text: #334;
+--text-light: #5b6c75;
+
+🚀 Installation & lancement
+
+# Installation
 npm install
 
-# Développement
+# Lancement en dev
 npm start
-# → http://localhost:4200
+# http://localhost:4200
 
 # Build production
 npm run build
 
-# Tests
-npm test
-```
+🧪 Tests
 
-## ⚙️ Configuration
+Les tests frontend ne sont pas encore implémentés.
 
-### Variables d'environnement
-```typescript
-// src/environments/environment.ts
-export const environment = {
-  production: false,
-  apiUrl: 'http://localhost:8080/api',
-  // Autres configs...
-};
-```
+Prévu :
 
-### API Backend
-- **URL de base** : `http://localhost:8080/api`
-- **Endpoints** :
-  - `POST /auth/login` - Connexion
-  - `POST /auth/register` - Inscription
-  - [À compléter avec les autres endpoints]
+Tests unitaires (Jasmine / Karma ou Vitest)
 
-## 📱 Fonctionnalités
+Tests E2E (Cypress ou Playwright)
 
-### ✅ Implémentées
-- [x] Page de connexion responsive
-- [x] Authentification JWT
-- [x] PWA (Service Worker)
-- [x] Configuration SSR
-- [x] Design mobile-first
+📦 Déploiement
 
-### 🚧 En cours / À faire
-- [ ] Dashboard principal
-- [ ] CRUD candidatures
-- [ ] Filtres et recherche
-- [ ] Statistiques et graphiques
-- [ ] Gestion profil utilisateur
-- [ ] Notifications push (PWA)
+Build Angular classique (/dist)
 
-## 🎨 Design System
+Compatible hébergement statique
 
-### Couleurs principales
-```css
---primary: #0077b6;     /* Bleu principal */
---secondary: #0096c7;   /* Bleu secondaire */
---accent: #1a3a57;      /* Bleu foncé titres */
---text: #334;           /* Texte principal */
---text-light: #5b6c75;  /* Texte secondaire */
-```
+API backend séparée
 
-### Breakpoints
-```css
-/* Mobile-first */
-@media (min-width: 768px) { /* Tablette */ }
-@media (min-width: 1024px) { /* Desktop */ }
-```
+📌 Choix techniques assumés
 
-## 🧪 Tests
+❌ Pas de SSR : application orientée usage authentifié
 
-### Structure des tests
-- **Unit tests** : Jasmine + Karma
-- **E2E tests** : [À préciser - Cypress/Playwright ?]
+✅ JWT stateless
 
-### Commandes
-```bash
-npm test              # Tests unitaires
-npm run test:watch    # Tests en mode watch
-npm run e2e           # Tests E2E
-```
+✅ Séparation claire public / privé
 
-## 📦 Déploiement
+✅ OAuth traité hors API REST
 
-### Build production
-```bash
-npm run build
-# Fichiers générés dans /dist/followup-front
-```
+👩‍💻 Auteur
 
-### PWA
-- **Service Worker** : Mise en cache automatique
-- **Manifest** : Installation en app native
-- **Offline** : Fonctionnalités de base disponibles hors ligne
+Cécile
+Projet réalisé dans le cadre du Titre Professionnel Concepteur Développeur d’Applications (CDA)
 
-## 🔐 Sécurité
-
-### Authentification
-- **JWT Token** : Stocké en localStorage
-- **Guards** : Protection des routes (à implémenter)
-- **Intercepteurs** : Ajout automatique du token (à implémenter)
-
-### Validation
-- **Frontend** : Validation Angular Reactive Forms
-- **Backend** : Validation côté serveur
-
-## 🐛 Debug & Logs
-
-### Outils de développement
-- **Angular DevTools** : Extension Chrome/Firefox
-- **Logs** : Console.log en développement
-- **Erreurs** : Gestion centralisée (à implémenter)
-
-## 🤝 Contribution
-
-### Git Workflow
-```bash
-# Branche principale
-main
-
-# Branches de feature
-feature/nom-de-la-fonctionnalite
-
-# Commits
-feat: nouvelle fonctionnalité
-fix: correction de bug
-docs: documentation
-style: formatage
-refactor: refactoring
-test: ajout de tests
-```
-
-## 📈 Performance
-
-### PWA Scores (à mesurer)
-- **Performance** : [À tester avec Lighthouse]
-- **Accessibilité** : [À tester]
-- **SEO** : [À tester]
-- **PWA** : [À tester]
-
-## 📞 Support & Contact
-
-### Issues connues
-- [À documenter]
-
-### Roadmap
-1. **Phase 1** : Authentification + CRUD de base
-2. **Phase 2** : Dashboard et statistiques
-3. **Phase 3** : Fonctionnalités avancées PWA
-
----
-
-**Dernière mise à jour** : 9 novembre 2025
-**Version** : 1.0.0-beta
-**Auteur** : Cécile
+Dernière mise à jour : 2025
+Version : 1.0.0

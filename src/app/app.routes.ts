@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { authGuard } from './guards/auth.guard';
 import { PublicLayoutComponent } from './layout/public-layout/public-layout';
 import { PrivateLayoutComponent } from './layout/private-layout/private-layout';
+import { GoogleCallbackComponent } from './pages/auth/google-callback/google-callback.component';
 
 export const routes: Routes = [
   // ============================
@@ -64,6 +65,12 @@ export const routes: Routes = [
     path: 'forgot-password',
     outlet: 'overlay',
     loadComponent: () => import('./pages/auth/forgot-password/forgot-password.component').then(m => m.ForgotPasswordComponent),
+  },
+
+  // Route de callback Google OAuth (pas d'outlet)
+  {
+    path: 'google-callback',
+    component: GoogleCallbackComponent,
   },
 
   // fallback
