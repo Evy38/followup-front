@@ -28,9 +28,8 @@
 }
 
 .nav__logo img {
-    height: 80px;
+    height: 80%;
     width: auto;
-    margin-left: 2px;
 }
 
 .nav__links {
