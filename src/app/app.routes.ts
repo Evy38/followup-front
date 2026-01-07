@@ -1,8 +1,8 @@
 import { Routes } from '@angular/router';
-import { authGuard } from './guards/auth.guard';
-import { PublicLayoutComponent } from './layout/public-layout/public-layout';
-import { PrivateLayoutComponent } from './layout/private-layout/private-layout';
-import { GoogleCallbackComponent } from './pages/auth/google-callback/google-callback.component';
+import { authGuard } from './core/auth/auth.guard';
+import { PublicLayoutComponent } from './layouts/public-layout/public-layout';
+import { PrivateLayoutComponent } from './layouts/private-layout/private-layout';
+import { GoogleCallbackComponent } from './features/auth/google-callback/google-callback.component';
 
 export const routes: Routes = [
   // ============================
@@ -15,22 +15,22 @@ export const routes: Routes = [
       {
         path: '',
         loadComponent: () =>
-          import('./pages/home/home/home').then(m => m.Home),
+          import('./features/public/home/home').then(m => m.HomeComponent),
       },
       {
         path: 'about',
         loadComponent: () =>
-          import('./pages/home/about/about').then(m => m.About),
+          import('./features/public/about/about').then(m => m.AboutComponent),
       },
       {
         path: 'features',
         loadComponent: () =>
-          import('./pages/home/features/features').then(m => m.Features),
+          import('./features/public/features/features').then(m => m.FeaturesComponent),
       },
       {
         path: 'pricing',
         loadComponent: () =>
-          import('./pages/home/pricing/pricing').then(m => m.Pricing),
+          import('./features/public/pricing/pricing').then(m => m.PricingComponent),
       },
     ],
   },
@@ -46,7 +46,7 @@ export const routes: Routes = [
         path: 'dashboard',
         canActivate: [authGuard],
         loadComponent: () =>
-          import('./pages/dashboard/dashboard.component').then(
+          import('./features/dashboard/dashboard.component').then(
             m => m.DashboardComponent
           ),
       },
@@ -59,12 +59,12 @@ export const routes: Routes = [
   {
     path: 'login',
     outlet: 'overlay',
-    loadComponent: () => import('./pages/auth/login/login').then(m => m.LoginComponent),
+    loadComponent: () => import('./features/auth/login/login').then(m => m.LoginComponent),
   },
   {
     path: 'forgot-password',
     outlet: 'overlay',
-    loadComponent: () => import('./pages/auth/forgot-password/forgot-password.component').then(m => m.ForgotPasswordComponent),
+    loadComponent: () => import('./features/auth/forgot-password/forgot-password.component').then(m => m.ForgotPasswordComponent),
   },
 
   // Route de callback Google OAuth (pas d'outlet)

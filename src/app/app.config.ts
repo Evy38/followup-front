@@ -4,7 +4,7 @@ import { provideRouter, withHashLocation } from '@angular/router';
 import { routes } from './app.routes';
 import { provideServiceWorker } from '@angular/service-worker';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
-import { jwtInterceptor } from './interceptors/jwt.interceptor';
+import { jwtInterceptor } from './core/auth/jwt.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
