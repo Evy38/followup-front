@@ -9,11 +9,11 @@ Cette application consomme une **API REST Symfony sécurisée par JWT**.
 
 FollowUp est une application **mobile-first** permettant à un utilisateur de :
 
-- s’authentifier (email/mot de passe ou Google OAuth),
-- gérer ses candidatures d’emploi,
-- centraliser le suivi de sa recherche de manière structurée.
+- s’authentifier (email / mot de passe ou Google OAuth),
+- gérer et suivre ses candidatures d’emploi,
+- centraliser sa recherche de manière claire et structurée.
 
-Le frontend est conçu comme une **Single Page Application** avec gestion d’état côté client et protection des routes.
+Le frontend est conçu comme une **Single Page Application (SPA)** avec séparation stricte des responsabilités et protection des routes.
 
 ---
 
@@ -24,10 +24,10 @@ Le frontend est conçu comme une **Single Page Application** avec gestion d’é
 - **Framework** : Angular 20.x
 - **Architecture** : Standalone Components
 - **Routing** : Angular Router (outlet principal + outlet secondaire)
-- **Authentification** : JWT (via API backend)
+- **Authentification** : JWT (fourni par l’API backend)
 - **HTTP** : HttpClient + Interceptor JWT
 - **PWA** : Service Worker + Manifest
-- **SSR** : Désactivé (SPA volontaire)
+- **SSR** : volontairement désactivé (SPA)
 
 ---
 
@@ -35,33 +35,41 @@ Le frontend est conçu comme une **Single Page Application** avec gestion d’é
 
 src/
 ├── app/
-│ ├── pages/
-│ │ ├── home/ # Pages publiques (home, about, pricing…)
-│ │ ├── auth/ # Login, signup, forgot-password, OAuth
+│ ├── core/
+│ │ ├── auth/
+│ │ │ ├── auth.service.ts
+│ │ │ ├── auth.guard.ts
+│ │ │ └── jwt.interceptor.ts
+│ │ └── pwa/
+│ │ └── update.service.ts
+│ │
+│ ├── features/
+│ │ ├── public/ # Pages publiques (home, about, pricing…)
+│ │ ├── auth/ # Login, signup, reset password, OAuth
 │ │ └── dashboard/ # Zone privée
 │ │
-│ ├── layout/
+│ ├── layouts/
 │ │ ├── public-layout/ # Layout public avec navbar
 │ │ └── private-layout/ # Layout protégé (dashboard)
 │ │
-│ ├── services/
-│ │ └── auth.service.ts # Gestion authentification & JWT
-│ │
-│ ├── guards/
-│ │ └── auth.guard.ts # Protection des routes privées
-│ │
-│ ├── interceptors/
-│ │ └── jwt.interceptor.ts # Injection automatique du token
-│ │
 │ ├── shared/
+│ │ └── components/
 │ │ └── navbar/ # Composants UI réutilisables
 │ │
-│ └── app.routes.ts # Définition des routes
+│ ├── app.routes.ts # Définition des routes
+│ ├── app.config.ts # Configuration globale
+│ └── app.ts # Composant racine
 │
 ├── assets/ # Images, icônes, illustrations
-├── public/ # manifest.webmanifest, icônes PWA
+├── public/ # Manifest PWA et icônes
 └── index.html
 
+
+👉 Cette organisation respecte les bonnes pratiques Angular :
+- **core** : logique transverse (auth, sécurité, PWA),
+- **features** : fonctionnalités métier,
+- **shared** : composants réutilisables,
+- **layouts** : structuration visuelle des zones.
 
 ---
 
@@ -75,7 +83,7 @@ src/
 ### Fonctionnement
 
 1. L’utilisateur s’authentifie via l’API backend
-2. Le backend renvoie un **JWT**
+2. Le backend retourne un **JWT**
 3. Le token est stocké côté client (`localStorage`)
 4. Un **HTTP Interceptor** ajoute automatiquement le token aux requêtes protégées
 5. Les routes privées sont sécurisées via un **AuthGuard**
@@ -98,20 +106,23 @@ src/
 
 ### Séparation claire des zones
 
-- **Zone publique**  
+- **Zone publique**
   - `/`
   - `/about`
   - `/features`
   - `/pricing`
 
-- **Zone privée (protégée)**  
+- **Zone privée (protégée)**
   - `/dashboard`
 
-- **Authentification en overlay**  
-  - `/login` (outlet secondaire)
-  - `/forgot-password` (outlet secondaire)
+- **Authentification en overlay**
+  - `/login`
+  - `/forgot-password`
 
-👉 Les écrans d’authentification sont affichés via un **router-outlet secondaire** afin de préserver la navigation et l’UX.
+👉 Les écrans d’authentification sont affichés via un **router-outlet secondaire**, ce qui permet :
+- de conserver le contexte de navigation,
+- d’améliorer l’expérience utilisateur,
+- d’éviter les ruptures de navigation.
 
 ---
 
@@ -120,7 +131,7 @@ src/
 - Service Worker activé en production
 - Manifest configuré
 - Application installable sur mobile
-- Mise à jour automatique avec confirmation utilisateur
+- Gestion des mises à jour avec confirmation utilisateur
 
 ---
 
@@ -130,8 +141,8 @@ src/
 
 - Mobile-first
 - Composants standalone
-- Animations légères
-- UX centrée sur la simplicité
+- Navigation simple et lisible
+- UX orientée utilisateur authentifié
 
 ### Palette principale
 
@@ -141,13 +152,15 @@ src/
 --accent: #1a3a57;
 --text: #334;
 --text-light: #5b6c75;
+ 
+ ---
 
-🚀 Installation & lancement
+## 🚀 Installation & lancement
 
-# Installation
+# Installation des dépendances
 npm install
 
-# Lancement en dev
+# Lancement en développement
 npm start
 # http://localhost:4200
 
@@ -162,7 +175,7 @@ Prévu :
 
 Tests unitaires (Jasmine / Karma ou Vitest)
 
-Tests E2E (Cypress ou Playwright)
+Tests end-to-end (Cypress ou Playwright)
 
 📦 Déploiement
 
@@ -170,7 +183,7 @@ Build Angular classique (/dist)
 
 Compatible hébergement statique
 
-API backend séparée
+API backend déployée séparément
 
 📌 Choix techniques assumés
 
@@ -182,10 +195,13 @@ API backend séparée
 
 ✅ OAuth traité hors API REST
 
+✅ Architecture scalable et maintenable
+
 👩‍💻 Auteur
 
 Cécile
 Projet réalisé dans le cadre du Titre Professionnel Concepteur Développeur d’Applications (CDA)
 
-Dernière mise à jour : 2025
+Année : 2025
+
 Version : 1.0.0
