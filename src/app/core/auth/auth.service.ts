@@ -63,17 +63,25 @@ export class AuthService {
 
   login(email: string, password: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/login_check`, {
-      username: email,
+      email,
       password
     }).pipe(
       tap((response: any) => {
         if (response?.token) {
           this.setToken(response.token);
-          this.router.navigate(['/dashboard']);
+          this.router.navigate([
+            {
+              outlets: {
+                primary: 'dashboard',
+                overlay: null
+              }
+            }
+          ]);
         }
       })
     );
   }
+
 
   register(payload: RegisterPayload): Observable<any> {
     return this.http.post(`${this.apiUrl}/register`, payload);
@@ -92,8 +100,16 @@ export class AuthService {
 
   logout(): void {
     this.removeToken();
-    this.router.navigate(['/login']);
+    this.router.navigate([
+      {
+        outlets: {
+          primary: '',
+          overlay: 'login'
+        }
+      }
+    ]);
   }
+
 
   googleLogin(): void {
     if (this.isBrowser) {

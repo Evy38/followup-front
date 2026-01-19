@@ -1,0 +1,15 @@
+<div class="verify-container">
+  <h2 *ngIf="status === 'loading'">Validation en cours…</h2>
+
+  <div *ngIf="status === 'success'">
+    <h2>✅ Compte confirmé</h2>
+    <p>{{ message }}</p>
+    <a routerLink="/login">Se connecter</a>
+  </div>
+
+  <div *ngIf="status === 'error'">
+    <h2>❌ Erreur</h2>
+    <p>{{ message }}</p>
+    <a routerLink="/">Retour à l’accueil</a>
+  </div>
+</div>

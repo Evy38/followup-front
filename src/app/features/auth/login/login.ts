@@ -80,7 +80,7 @@ export class LoginComponent implements OnInit {
     this.auth.login(this.email, this.password).subscribe({
       next: () => {
         this.loading = false;
-        this.router.navigate(['/dashboard']);
+        this.router.navigate([{ outlets: { primary: 'dashboard', overlay: null } }]);
       },
       error: () => {
         this.loading = false;
