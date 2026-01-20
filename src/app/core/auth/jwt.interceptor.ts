@@ -6,7 +6,8 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
     '/api/login',
     '/api/register',
     '/api/password/request',
-    '/api/password/reset'
+    '/api/password/reset',
+    '/api/verify-email'
   ];
 
   // Vérifier si la requête est vers une route publique

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 
@@ -12,17 +12,21 @@ import { CommonModule } from '@angular/common';
 })
 export class VerifyEmailComponent implements OnInit {
   status: 'loading' | 'success' | 'error' = 'loading';
+  private requestSent = false;
   message = '';
 
   constructor(
     private route: ActivatedRoute,
-    private http: HttpClient,
-    private router: Router
+    private http: HttpClient
   ) {}
 
   ngOnInit(): void {
-    const token = this.route.snapshot.queryParamMap.get('token');
+    if (this.requestSent) {
+      return;
+    }
+    this.requestSent = true;
 
+    const token = this.route.snapshot.queryParamMap.get('token');
     if (!token) {
       this.status = 'error';
       this.message = 'Lien de validation invalide.';
@@ -30,26 +34,21 @@ export class VerifyEmailComponent implements OnInit {
     }
 
     this.http
-      .get('http://localhost:8080/api/verify-email', {
-        params: { token },
+      .get<{ message?: string }>('http://localhost:8080/api/verify-email', {
+        params: { token }
       })
       .subscribe({
-        next: () => {
+        next: (res) => {
           this.status = 'success';
-          this.message = 'Votre compte est maintenant activé.';
-
-          // 🔴 NETTOYAGE DE L’URL (IMPORTANT)
-          this.router.navigate([], {
-            replaceUrl: true,
-            queryParams: {},
-          });
+          this.message = res?.message || 'Votre compte est maintenant activé.';
         },
         error: (err) => {
           this.status = 'error';
           this.message =
-            err?.error?.error ??
-            'Le lien de validation est invalide ou expiré.';
-        },
+            err?.status === 400
+              ? (err?.error?.error || err?.error?.message || 'Le lien de validation est invalide ou expiré.')
+              : (err?.error?.error || err?.error?.message || 'Une erreur est survenue. Veuillez réessayer.');
+        }
       });
   }
 }

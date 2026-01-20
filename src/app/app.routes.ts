@@ -32,6 +32,12 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/public/pricing/pricing').then(m => m.PricingComponent),
       },
+      {
+        path: 'verify-email',
+        loadComponent: () =>
+          import('./features/auth/verify-email/verify-email.component')
+            .then(m => m.VerifyEmailComponent),
+      },
     ],
   },
 
@@ -53,12 +59,7 @@ export const routes: Routes = [
     ],
   },
 
-  {
-    path: 'verify-email',
-    loadComponent: () =>
-      import('./features/auth/verify-email/verify-email.component')
-        .then(m => m.VerifyEmailComponent),
-  },
+
 
 
   // ============================
