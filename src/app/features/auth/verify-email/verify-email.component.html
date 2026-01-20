@@ -1,15 +1,37 @@
 <div class="verify-container">
-  <h2 *ngIf="status === 'loading'">Validation en cours…</h2>
+  <div class="verify-card">
 
-  <div *ngIf="status === 'success'">
-    <h2>✅ Compte confirmé</h2>
-    <p>{{ message }}</p>
-    <a routerLink="/login">Se connecter</a>
-  </div>
+    <!-- LOADING -->
+    @if (status === 'loading') {
+    <div class="state loading">
+      <div class="spinner"></div>
+      <h2>Validation en cours…</h2>
+      <p>Nous vérifions votre adresse email.</p>
+    </div>
+    }
 
-  <div *ngIf="status === 'error'">
-    <h2>❌ Erreur</h2>
-    <p>{{ message }}</p>
-    <a routerLink="/">Retour à l’accueil</a>
+    <!-- SUCCESS -->
+    @if (status === 'success') {
+    <div class="state success">
+      <div class="icon success-icon">✓</div>
+      <h2>Compte confirmé</h2>
+      <p>{{ message }}</p>
+      <button type="button" class="btn primary btn-overlay" (click)="openLoginOverlay()">
+        Se connecter
+      </button>
+
+    </div>
+    }
+
+    <!-- ERROR -->
+    @if (status === 'error') {
+    <div class="state error">
+      <div class="icon error-icon">✕</div>
+      <h2>Erreur de validation</h2>
+      <p>{{ message }}</p>
+      <a routerLink="/" class="btn secondary">Retour à l’accueil</a>
+    </div>
+    }
+
   </div>
 </div>

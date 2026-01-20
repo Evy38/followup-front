@@ -9,7 +9,8 @@ import { NavbarComponent } from '../../shared/components/navbar/navbar.component
   styleUrls: ['./public-layout.css'],
   imports: [
     RouterOutlet,
-    NavbarComponent
+    NavbarComponent,
+    RouterOutlet,
   ],
 })
 export class PublicLayoutComponent {}

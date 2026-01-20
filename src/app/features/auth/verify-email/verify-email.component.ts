@@ -2,11 +2,14 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-verify-email',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './verify-email.component.html',
   styleUrl: './verify-email.component.css',
 })
@@ -18,8 +21,9 @@ export class VerifyEmailComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private http: HttpClient,
-    private cdr: ChangeDetectorRef
-  ) {}
+    private cdr: ChangeDetectorRef,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
     if (this.requestSent) {
@@ -56,4 +60,12 @@ export class VerifyEmailComponent implements OnInit {
         }
       });
   }
+
+  openLoginOverlay(): void {
+    this.router.navigate(
+      [{ outlets: { overlay: ['login'] } }],
+      { replaceUrl: false }
+    );
+  }
+
 }

@@ -1,0 +1,156 @@
+/* Quand l'overlay login est ouvert, on baisse le z-index de la page de validation */
+body:has(.login-container) .verify-container {
+  z-index: 1;
+  position: relative;
+  filter: blur(1.5px) grayscale(0.1);
+  pointer-events: none;
+}
+/* Style spécifique pour le bouton overlay (connexion) */
+.btn-overlay {
+  margin-top: 1.2rem;
+  width: 100%;
+  display: inline-block;
+  font-weight: 600;
+  font-size: 1.08rem;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #2e7dff 0%, #4fd1c5 100%);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(46, 125, 255, 0.08);
+  transition: background 0.2s, box-shadow 0.2s;
+  border: none;
+  padding: 0.85rem 0;
+  text-align: center;
+  text-decoration: none;
+}
+.btn-overlay:hover, .btn-overlay:focus {
+  background: linear-gradient(90deg, #2563eb 0%, #38b2ac 100%);
+  box-shadow: 0 4px 16px rgba(46, 125, 255, 0.13);
+  color: #fff;
+}
+/* === CONTAINER GLOBAL === */
+.verify-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(
+    180deg,
+    #f6f8f7 0%,
+    #eef2f1 100%
+  );
+  padding: 1rem;
+}
+
+/* === CARD === */
+.verify-card {
+  width: 100%;
+  max-width: 420px;
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 2rem 1.75rem;
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  animation: fadeInUp 0.4s ease-out;
+}
+
+/* === STATES === */
+.state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.state h2 {
+  font-size: 1.4rem;
+  margin: 0.5rem 0 0;
+  color: #1f2d2b;
+}
+
+.state p {
+  font-size: 0.95rem;
+  color: #5f6f6c;
+  margin: 0;
+}
+
+/* === ICONS === */
+.icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+.success-icon {
+  background: #e6f4ef;
+  color: #1f8f6b;
+}
+
+.error-icon {
+  background: #fdecec;
+  color: #c0392b;
+}
+
+/* === SPINNER === */
+.spinner {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 4px solid #dfe6e4;
+  border-top-color: #1f8f6b;
+  animation: spin 1s linear infinite;
+}
+
+/* === BUTTONS === */
+.btn {
+  margin-top: 1rem;
+  display: inline-block;
+  padding: 0.6rem 1.2rem;
+  border-radius: 999px;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.btn.primary {
+  background: #1f8f6b;
+  color: #ffffff;
+}
+
+.btn.primary:hover {
+  background: #187558;
+  transform: translateY(-1px);
+}
+
+.btn.secondary {
+  background: #eef2f1;
+  color: #1f2d2b;
+}
+
+.btn.secondary:hover {
+  background: #e2e8e6;
+}
+
+/* === ANIMATIONS === */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
