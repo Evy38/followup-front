@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
@@ -17,7 +17,8 @@ export class VerifyEmailComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private http: HttpClient
+    private http: HttpClient,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -39,15 +40,19 @@ export class VerifyEmailComponent implements OnInit {
       })
       .subscribe({
         next: (res) => {
+          console.log('Réponse reçue', res);
           this.status = 'success';
           this.message = res?.message || 'Votre compte est maintenant activé.';
+          this.cdr.detectChanges();
         },
         error: (err) => {
+          console.log('Erreur reçue', err);
           this.status = 'error';
           this.message =
             err?.status === 400
               ? (err?.error?.error || err?.error?.message || 'Le lien de validation est invalide ou expiré.')
               : (err?.error?.error || err?.error?.message || 'Une erreur est survenue. Veuillez réessayer.');
+          this.cdr.detectChanges();
         }
       });
   }
