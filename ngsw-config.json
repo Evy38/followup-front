@@ -1,6 +1,13 @@
 {
   "$schema": "./node_modules/@angular/service-worker/config/schema.json",
   "index": "/index.html",
+
+    "navigationUrls": [
+    "/**",
+    "!/verify-email",
+    "!/api/**"
+  ],
+  
   "assetGroups": [
     {
       "name": "app",
@@ -30,7 +37,7 @@
     {
       "name": "api",
       "urls": [
-        "http://127.0.0.1:8000/**",
+        "http://127.0.0.1:8080/**",
         "https://api.followup.local/**"
       ],
       "cacheConfig": {
@@ -41,4 +48,5 @@
       }
     }
   ]
+  
 }

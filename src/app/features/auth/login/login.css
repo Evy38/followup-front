@@ -1,0 +1,417 @@
+/* ✅ RESET GLOBAL - Supprime tous les espaces par défaut */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Supprime les marges par défaut des éléments Angular */
+app-root {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* ============ STRUCTURE GLOBALE ============ */
+/* Overlay mobile-first, positionné en bas sous la navbar */
+.login-container {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding-top: var(--navbar-height, 72px);
+  padding-bottom: 16px;
+
+  background: rgba(0, 0, 0, 0.25); /* léger voile */
+  backdrop-filter: blur(2px);
+}
+/* Croix de fermeture sans effet parasite */
+.close-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent !important;
+  border-radius: 50%;
+  font-size: 1.6rem;
+  font-weight: 600;
+  line-height: 1;
+  color: #6b7280;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: none !important;
+  outline: none;
+  z-index: 20;
+}
+
+.close-btn::before,
+.close-btn::after {
+  display: none !important;
+}
+
+.close-btn:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: #111827;
+}
+
+
+@media (min-width: 768px) {
+  .login-container {
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 32px;
+  }
+}
+
+/* ============ CARTE ============ */
+/* Carte posée en bas, mobile-first */
+/* Carte posée en bas, plus petite et espacée de la navbar */
+.login-card {
+  width: min(92vw, 360px);
+  padding: 1.2rem 1.2rem 1.3rem;
+
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+
+  animation: fadeInUp 0.35s ease-out;
+  position: relative; /* Pour que .close-btn soit relative à la card */
+}
+
+@media (min-width: 768px) {
+  .login-card {
+    max-width: 340px;
+    padding: 2rem 2rem 2rem 2rem;
+    border-radius: 32px;
+    margin-top: 32px;
+  }
+}
+
+@media (min-width: 768px) {
+  .login-card {
+    max-width: 400px;
+    padding: 2rem 2rem 2.5rem 2rem;
+    border-radius: 32px;
+    margin-bottom: 0;
+  }
+}
+
+/* Quand le formulaire d'inscription s'ouvre */
+.login-card.slide-out-up {
+  animation: slideOutUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Animation douce */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Animation : Carte de connexion qui monte et sort du cadre */
+@keyframes slideOutUp {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(-150vh);
+  }
+}
+
+/* ============ LOGO ============ */
+
+/* .logo {
+  width: 25px;
+  height: auto;
+  margin: 0 auto 0.5rem;
+  display: block;
+} */
+
+/* @media (min-width: 768px) {
+  .logo {
+    width: 40px;
+  }
+} */
+
+/* ============ TITRES ============ */
+h1 {
+  font-size: 1.4rem;
+  color: #1a3a57;
+  margin-bottom: 0.25rem;
+}
+
+.subtitle {
+  font-size: 0.9rem;
+  color: #5b6c75;
+  margin-bottom: 1rem;
+}
+
+/* ============ GOOGLE BUTTON (AJOUT) ============ */
+.google-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0.6rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid #d0d7e6;
+  background: #ffffff;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #3c4043;
+  text-decoration: none;
+  margin-bottom: 0.8rem;
+}
+
+.google-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.separator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.8rem;
+  font-size: 0.8rem;
+  color: #7a8690;
+}
+
+.separator::before,
+.separator::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #d0d7e6;
+  margin: 0 8px;
+}
+
+/* ============ FORMULAIRE ============ */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  margin-bottom: 0.8rem;
+}
+
+label {
+  font-weight: 600;
+  color: #334;
+  text-align: left;
+  font-size: 0.85rem;
+}
+
+input {
+  padding: 0.7rem;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  outline: none;
+  font-size: 0.95rem;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.forgot-link {
+  display: block;
+  margin: -0.3rem 0 0.4rem auto;
+  font-size: 0.8rem;
+  color: #0b6ea9;
+  text-decoration: underline;
+}
+
+input:focus {
+  border-color: #0077b6;
+  box-shadow: 0 0 0 2px rgba(0, 119, 182, 0.6);
+}
+
+.info-text {
+  font-size: 0.75rem;
+  color: #6b7280;
+  text-align: left;
+}
+
+/* ============ BOUTONS ============ */
+button {
+  position: relative;
+  overflow: hidden;
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 0.7rem 1rem;
+  border-radius: 10px;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  color: white;
+  background: linear-gradient(180deg, #0096c7 0%, #0077b6 100%);
+  box-shadow: 0 5px 0 #005f8c;
+  transition: all 0.15s ease-in-out;
+  margin-bottom: 0.5rem;
+}
+
+button:disabled {
+  opacity: 0.7;
+  cursor: default;
+}
+
+/* Effet pressé */
+button:active:not(:disabled) {
+  transform: translateY(4px);
+  box-shadow: 0 1px 0 #005f8c;
+}
+
+/* Effet de brillance (hover desktop) */
+button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  transition: left 0.6s ease;
+  z-index: 1;
+}
+
+button:hover::before {
+  left: 100%;
+}
+
+button span,
+button {
+  position: relative;
+  z-index: 2;
+}
+
+/* Secondaire (S'inscrire) */
+/* .btn-secondary {
+  background: #ffffff;
+  color: #0077b6;
+  border: 1px solid #cbd5e1;
+  box-shadow: none;
+} */
+ .btn-primary {
+  background: linear-gradient(180deg, #0096c7 0%, #0077b6 100%);
+  color: white;
+  box-shadow: 0 5px 0 #005f8c;
+}
+.full-width {
+  width: 100%;
+  display: block;
+}
+
+
+/* ============ MESSAGES ============ */
+.message {
+  font-size: 0.85rem;
+  margin-top: 0.3rem;
+  color: #1d4ed8;
+}
+
+.error {
+  color: #d93025;
+  font-size: 0.8rem;
+}
+
+.success {
+  color: #15803d;
+  font-size: 0.8rem;
+}
+
+/* ============ RESPONSIVE : TABLETTES & DESKTOP ============ */
+@media (min-width: 768px) {
+  .login-container {
+    background: none;
+  }
+  /* .logo inutile ici, la taille est gérée plus haut */
+  h1 {
+    font-size: 1.8rem;
+  }
+  .subtitle {
+    font-size: 1rem;
+  }
+}
+
+/* ============ MOBILE SAFETY ============ */
+@media (max-width: 480px) {
+  .login-card {
+    max-height: 90vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    padding: 1rem;
+  }
+
+  /* .logo inutile ici, la taille est gérée plus haut */
+
+  .form,
+  .google-btn,
+  .separator,
+  input,
+  button,
+  .forgot-link {
+    max-width: 100%;
+  }
+
+  input,
+  button {
+    width: 100%;
+  }
+
+  h1,
+  .subtitle,
+  .info-text {
+    word-wrap: break-word;
+    overflow-wrap: anywhere;
+    hyphens: auto;
+  }
+
+  .login-container {
+    padding: 0 8px; /* évite que le contenu touche les bords */
+  }
+}
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

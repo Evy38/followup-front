@@ -1,0 +1,65 @@
+<div class="login-container">
+  <!-- CARD DE BIENVENUE -->
+  @if (showWelcome) {
+  <app-welcome (chooseGmail)="onChooseGmail()" (chooseEmail)="onChooseEmail()"></app-welcome>
+  }
+
+  <!-- CARTE DE CONNEXION -->
+  <div [ngClass]="{ 'login-card': true, 'slide-out-up': showSignup }">
+
+    <button type="button" class="close-btn" aria-label="Fermer" (click)="closeOverlay()">
+      ✕
+    </button>
+
+    <!-- LOGO + BASELINE -->
+    <!-- <img src="assets/icons/logoFUSF.png" alt="Logo FollowUp" class="logo" /> -->
+    <p class="subtitle">Suivez vos candidatures avec sérénité 🌿</p>
+
+    <!-- BOUTON GOOGLE -->
+    <a class="google-btn" href="#" (click)="googleLogin(); $event.preventDefault()" role="button"
+      aria-label="Connexion avec Google">
+      <img src="assets/icons/google-icon.png" alt="Google" class="google-icon" />
+      Continuer avec Google
+    </a>
+
+    <div class="separator">
+      <span>ou</span>
+    </div>
+
+    <!-- FORMULAIRE DE CONNEXION -->
+    <form (ngSubmit)="login()" class="form">
+      <label for="email">Adresse email (Gmail) :</label>
+      <input type="email" id="email" name="email" [(ngModel)]="email" required placeholder="monjob.followup@gmail.com"
+        autocomplete="username" />
+
+      <label for="password">Mot de passe :</label>
+      <input type="password" id="password" name="password" [(ngModel)]="password" required placeholder="••••••••"
+        autocomplete="current-password" />
+
+      <a class="forgot-link" [routerLink]="['/', { outlets: { overlay: ['forgot-password'] } }]">
+        J'ai oublié mon mot de passe
+      </a>
+
+      <p class="info-text">
+        Pour FollowUp, utilisez toujours la même adresse Gmail sur les sites de
+        recherche d'emploi.
+      </p>
+
+      @if (message) {
+      <p class="message">{{ message }}</p>
+      }
+
+      <button type="submit" [disabled]="loading">
+        {{ loading ? 'Connexion...' : 'Se connecter' }}
+      </button>
+    </form>
+
+    <!-- BOUTON POUR AFFICHER LE FORMULAIRE D'INSCRIPTION -->
+    <button type="button" class="btn-primary full-width" (click)="toggleSignup()">
+      {{ showSignup ? 'Fermer le formulaire' : "S'inscrire" }}
+    </button>
+  </div>
+
+  <!-- COMPOSANT D'INSCRIPTION -->
+  <app-signup [isVisible]="showSignup" (closeSignup)="closeSignup()"></app-signup>
+</div>

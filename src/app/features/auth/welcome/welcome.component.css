@@ -1,0 +1,173 @@
+/* ============ CARTE DE BIENVENUE ============ */
+.welcome-card {
+  border-radius: 16px;
+  padding: 1.5rem;
+  width: 90%;
+  max-width: 340px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.95);
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 30;
+  animation: slideInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Animation : Carte de bienvenue qui arrive par le bas */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% + 150vh));
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
+/* ============ TEXTE ============ */
+.welcome-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #1a3a57;
+  margin-bottom: 1rem;
+}
+
+.welcome-text {
+  font-size: 0.95rem;
+  color: #5b6c75;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.welcome-question {
+  font-size: 0.95rem;
+  color: #334;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+/* ============ BOUTONS ============ */
+.button-group {
+  display: flex;
+  gap: 0.8rem;
+  justify-content: center;
+}
+
+button {
+  position: relative;
+  overflow: hidden;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.8rem 1.5rem;
+  border-radius: 50px;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  transition: all 0.15s ease-in-out;
+  min-width: 80px;
+}
+
+.btn-yes {
+  color: white;
+  background: linear-gradient(180deg, #0096c7 0%, #0077b6 100%);
+  box-shadow: 0 5px 0 #005f8c;
+}
+
+.btn-yes:active:not(:disabled) {
+  transform: translateY(4px);
+  box-shadow: 0 1px 0 #005f8c;
+}
+
+.btn-yes::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  transition: left 0.6s ease;
+  z-index: 1;
+}
+
+.btn-yes:hover::before {
+  left: 100%;
+}
+
+.btn-no {
+  color: #0077b6;
+  background: #ffffff;
+  border: 2px solid #cbd5e1;
+  box-shadow: 0 5px 0 #e2e8f0;
+}
+
+.btn-no:active:not(:disabled) {
+  transform: translateY(4px);
+  box-shadow: 0 1px 0 #e2e8f0;
+}
+
+.btn-no::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(0, 119, 182, 0.1),
+    transparent
+  );
+  transition: left 0.6s ease;
+  z-index: 1;
+}
+
+.btn-no:hover::before {
+  left: 100%;
+}
+
+button:disabled {
+  opacity: 0.7;
+  cursor: default;
+}
+
+/* ============ RESPONSIVE ============ */
+@media (min-width: 768px) {
+  .welcome-card {
+    max-width: 400px;
+    padding: 2rem;
+  }
+
+  .welcome-title {
+    font-size: 1.5rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .welcome-text {
+    font-size: 1rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .welcome-question {
+    font-size: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  button {
+    font-size: 1.05rem;
+    padding: 0.9rem 2rem;
+    min-width: 100px;
+  }
+}

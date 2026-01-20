@@ -1,0 +1,79 @@
+/* ----- NAVBAR HORIZONTALE EN HAUT ----- */
+.nav {
+    position: sticky;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 70px;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2.5vw;
+    z-index: 100;
+    border-radius: 16px 16px 0 0;
+    margin: 18px auto 0 auto;
+    /* Pour simuler l'effet adre */
+    box-sizing: border-box;
+    min-width: 320px;
+    max-width: 98vw;
+}
+
+.nav__logo {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+.nav__logo img {
+    height: 80%;
+    width: auto;
+}
+
+.nav__links {
+    display: flex;
+    flex-direction: row;
+    gap: 32px;
+    align-items: center;
+    margin-right: 8px;
+}
+
+.nav__item {
+    text-decoration: none;
+    color: #222;
+    font-size: 1.05rem;
+    font-weight: 500;
+    padding: 4px 14px;
+    border-radius: 4px;
+    transition: background 0.15s, color 0.15s;
+}
+
+.nav__item:hover {
+    background: #f2f6fa;
+    color: #1a73e8;
+}
+
+.nav__item--active {
+    color: #1a73e8;
+    font-weight: 600;
+    background: #e3f0fd;
+}
+
+/* Style bouton pour Connexion/Inscription */
+.nav__item--cta {
+    color: #1a73e8;
+    border: 1.5px solid #1a73e8;
+    background: #f7fbff;
+    border-radius: 6px;
+    border-radius: 8px;
+    font-weight: 600;
+    margin-left: 12px;
+    margin-left: 18px;
+}
+.nav__item--cta:hover {
+    background: #1a73e8;
+    color: #fff;
+    border: 1.5px solid #1a73e8;
+}
