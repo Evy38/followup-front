@@ -37,9 +37,11 @@ app-root {
   padding-top: var(--navbar-height, 72px);
   padding-bottom: 16px;
 
-  background: rgba(0, 0, 0, 0.25); /* léger voile */
+  background: rgba(0, 0, 0, 0.25);
+  /* léger voile */
   backdrop-filter: blur(2px);
 }
+
 /* Croix de fermeture sans effet parasite */
 .close-btn {
   position: absolute;
@@ -98,8 +100,74 @@ app-root {
   gap: 0.6rem;
 
   animation: fadeInUp 0.35s ease-out;
-  position: relative; /* Pour que .close-btn soit relative à la card */
+  position: relative;
+  /* Pour que .close-btn soit relative à la card */
 }
+
+/* ============ EMAIL NON CONFIRMÉ ============ */
+.verify-box {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+
+  padding: 14px;
+  margin-bottom: 12px;
+
+  border-radius: 14px;
+  background: linear-gradient(180deg,
+      rgba(255, 245, 230, 0.9),
+      rgba(255, 238, 210, 0.95));
+  border: 1px solid #f1d6a8;
+}
+
+.verify-icon {
+  font-size: 1.4rem;
+  line-height: 1;
+  margin-top: 2px;
+}
+
+.verify-content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.verify-title {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #92400e;
+}
+
+.verify-text {
+  font-size: 0.85rem;
+  color: #7c4a03;
+  line-height: 1.4;
+}
+
+.verify-btn {
+  margin-top: 6px;
+  align-self: flex-start;
+
+  padding: 0.45rem 0.8rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+
+  border-radius: 999px;
+  background: #ffffff;
+  color: #b45309;
+  border: 1px solid #f1d6a8;
+
+  box-shadow: none;
+}
+
+.verify-btn:hover {
+  background: #fff7ed;
+}
+
+.verify-btn:disabled {
+  opacity: 0.6;
+}
+
 
 @media (min-width: 768px) {
   .login-card {
@@ -298,12 +366,10 @@ button::before {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    120deg,
-    transparent,
-    rgba(255, 255, 255, 0.4),
-    transparent
-  );
+  background: linear-gradient(120deg,
+      transparent,
+      rgba(255, 255, 255, 0.4),
+      transparent);
   transition: left 0.6s ease;
   z-index: 1;
 }
@@ -325,11 +391,12 @@ button {
   border: 1px solid #cbd5e1;
   box-shadow: none;
 } */
- .btn-primary {
+.btn-primary {
   background: linear-gradient(180deg, #0096c7 0%, #0077b6 100%);
   color: white;
   box-shadow: 0 5px 0 #005f8c;
 }
+
 .full-width {
   width: 100%;
   display: block;
@@ -358,10 +425,12 @@ button {
   .login-container {
     background: none;
   }
+
   /* .logo inutile ici, la taille est gérée plus haut */
   h1 {
     font-size: 1.8rem;
   }
+
   .subtitle {
     font-size: 1rem;
   }
@@ -402,14 +471,17 @@ button {
   }
 
   .login-container {
-    padding: 0 8px; /* évite que le contenu touche les bords */
+    padding: 0 8px;
+    /* évite que le contenu touche les bords */
   }
 }
+
 @keyframes fadeInUp {
   from {
     opacity: 0;
     transform: translateY(40px) scale(0.98);
   }
+
   to {
     opacity: 1;
     transform: translateY(0) scale(1);

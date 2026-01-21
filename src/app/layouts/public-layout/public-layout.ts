@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { NavbarComponent } from '../../shared/components/navbar/navbar.component';
+import { ToastComponent } from '../../shared/toast/toast.component';
 
 @Component({
   selector: 'app-public-layout',
@@ -10,6 +11,7 @@ import { NavbarComponent } from '../../shared/components/navbar/navbar.component
   imports: [
     RouterOutlet,
     NavbarComponent,
+    ToastComponent,
     RouterOutlet,
   ],
 })
