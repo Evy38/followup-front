@@ -105,8 +105,9 @@ export class LoginComponent implements OnInit {
               this.auth.removeToken();
               this.cdr.detectChanges();
             } else {
-              // Ici, tu peux naviguer ou fermer l'overlay si besoin
-              // Par exemple : this.router.navigate(['/dashboard']);
+              // Redirection vers le dashboard après connexion réussie
+              this.router.navigate(['/dashboard']);
+              this.closeOverlay();
             }
           },
           error: (err) => {
