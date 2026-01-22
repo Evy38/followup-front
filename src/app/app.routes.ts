@@ -52,28 +52,28 @@ export const routes: Routes = [
         path: 'dashboard',
         canActivate: [authGuard],
         loadComponent: () =>
-          import('./features/dashboard/dashboard.component').then(m => m.DashboardComponent),
+          import('./features/dashboard/pages/home/dashboard-home.component').then(m => m.DashboardComponent),
         data: { topbar: 'dashboard' }
       },
       {
         path: 'candidatures',
         canActivate: [authGuard],
         loadComponent: () =>
-          import('./features/dashboard/candidatures.component').then(m => m.CandidaturesComponent),
+          import('./features/dashboard/pages/candidatures/candidatures.component').then(m => m.CandidaturesComponent),
         data: { topbar: 'candidatures' }
       },
       {
         path: 'annonces',
         canActivate: [authGuard],
         loadComponent: () =>
-          import('./features/dashboard/annonces.component').then(m => m.AnnoncesComponent),
+          import('./features/dashboard/pages/annonces/annonces.component').then(m => m.AnnoncesComponent),
         data: { topbar: 'annonces' }
       },
       {
         path: 'relances',
         canActivate: [authGuard],
         loadComponent: () =>
-          import('./features/dashboard/relances.component').then(m => m.RelancesComponent),
+          import('./features/dashboard/pages/relances/relances.component').then(m => m.RelancesComponent),
         data: { topbar: 'dashboard' } // tu ajusteras quand tu voudras une topbar dédiée
       },
     ],
