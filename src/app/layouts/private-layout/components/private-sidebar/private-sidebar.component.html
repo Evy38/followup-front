@@ -1,20 +1,38 @@
+
 <aside class="sidebar" aria-label="Navigation privée">
-  <div class="sidebar__profile">
-    <div class="sidebar__avatar"></div>
-    <div class="sidebar__name">
-      <div class="label">NOM</div>
-      <div class="label">Prénom</div>
+  <div class="sidebar-profile">
+    <div class="avatar-wrapper">
+      <img src="/assets/icons/avatar.png" alt="Avatar" class="avatar-img" />
     </div>
+    <div class="profile-info">
+      <div class="profile-name">NOM</div>
+      <div class="profile-firstname">Prénom</div>
+      <div class="profile-email">nom.email@gmail.com</div>
+    </div>
+    <div class="profile-separator"></div>
   </div>
 
-  <nav class="sidebar__nav">
-    <a routerLink="/dashboard" routerLinkActive="active" class="item">Dashboard</a>
-    <a routerLink="/candidatures" routerLinkActive="active" class="item">Candidatures</a>
-    <a routerLink="/annonces" routerLinkActive="active" class="item">Annonces</a>
-    <a routerLink="/relances" routerLinkActive="active" class="item">Relances</a>
+  <nav class="sidebar-nav">
+    <a routerLink="/dashboard" routerLinkActive="active" class="sidebar-item">
+      <img src="/assets/icons/home.png" class="sidebar-icon" alt="Dashboard" />
+      <span>Dashboard</span>
+    </a>
+    <a routerLink="/candidatures" routerLinkActive="active" class="sidebar-item">
+      <img src="/assets/icons/Profil.png" class="sidebar-icon" alt="Candidatures" />
+      <span>Candidatures</span>
+    </a>
+    <a routerLink="/annonces" routerLinkActive="active" class="sidebar-item">
+      <img src="/assets/icons/annonces.png" class="sidebar-icon" alt="Annonces" />
+      <span>Annonces</span>
+    </a>
+    <a routerLink="/relances" routerLinkActive="active" class="sidebar-item">
+      <img src="/assets/icons/relances.png" class="sidebar-icon" alt="Relances" />
+      <span>Relances</span>
+    </a>
   </nav>
 
-  <div class="sidebar__bottom">
-    <button type="button" class="logout" (click)="logout()">Déconnexion</button>
+  <div class="sidebar-logo">
+    <img src="/assets/icons/logoFU.png" alt="FollowUp Logo" class="logo-img" />
+    <div class="logo-text">FollowUp</div>
   </div>
 </aside>
