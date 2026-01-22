@@ -1,0 +1,32 @@
+<header class="topbar" aria-label="Barre d’actions">
+  @if (topbarContext$ | async; as ctx) {
+
+    @switch (ctx) {
+
+      @case ('dashboard') {
+        <div class="topbar__tabs">
+          <button type="button" class="tab">Emails/Relances</button>
+          <button type="button" class="tab">Favoris</button>
+          <button type="button" class="tab">Mes docs</button>
+        </div>
+
+        <div class="topbar__right">
+          <button type="button" class="icon">🔔</button>
+        </div>
+      }
+
+      @case ('annonces') {
+        <div class="topbar__search">
+          <input type="search" placeholder="Rechercher une annonce…" />
+          <button type="button">Rechercher</button>
+        </div>
+      }
+
+      @default {
+        <div class="topbar__tabs">
+          <span class="tab">Section: {{ ctx }}</span>
+        </div>
+      }
+    }
+  }
+</header>

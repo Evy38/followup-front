@@ -1,0 +1,7 @@
+.sidebar { width: 260px; height: 100vh; border-right: 1px solid #ddd; padding: 16px; box-sizing: border-box; }
+.sidebar__profile { margin-bottom: 24px; }
+.sidebar__avatar { width: 64px; height: 64px; border-radius: 50%; background: #ddd; margin-bottom: 12px; }
+.item { display: block; padding: 10px 8px; text-decoration: none; color: inherit; border-radius: 6px; }
+.item.active { background: rgba(0,0,0,0.06); }
+.sidebar__bottom { margin-top: 24px; }
+.logout { width: 100%; padding: 10px; }

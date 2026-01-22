@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { NavbarComponent } from '../../shared/components/navbar/navbar.component';
+import { NavbarComponent } from '../../shared/public-navbar/public-navbar.component';
 import { ToastComponent } from '../../shared/toast/toast.component';
 
 @Component({

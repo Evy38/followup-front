@@ -52,9 +52,29 @@ export const routes: Routes = [
         path: 'dashboard',
         canActivate: [authGuard],
         loadComponent: () =>
-          import('./features/dashboard/dashboard.component').then(
-            m => m.DashboardComponent
-          ),
+          import('./features/dashboard/dashboard.component').then(m => m.DashboardComponent),
+        data: { topbar: 'dashboard' }
+      },
+      {
+        path: 'candidatures',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import('./features/dashboard/candidatures.component').then(m => m.CandidaturesComponent),
+        data: { topbar: 'candidatures' }
+      },
+      {
+        path: 'annonces',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import('./features/dashboard/annonces.component').then(m => m.AnnoncesComponent),
+        data: { topbar: 'annonces' }
+      },
+      {
+        path: 'relances',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import('./features/dashboard/relances.component').then(m => m.RelancesComponent),
+        data: { topbar: 'dashboard' } // tu ajusteras quand tu voudras une topbar dédiée
       },
     ],
   },
@@ -76,11 +96,11 @@ export const routes: Routes = [
     loadComponent: () => import('./features/auth/forgot-password/forgot-password.component').then(m => m.ForgotPasswordComponent),
   },
   {
-  path: 'reset-password',
-  loadComponent: () =>
-    import('./features/auth/reset-password/reset-password.component')
-      .then(m => m.ResetPasswordComponent),
-},
+    path: 'reset-password',
+    loadComponent: () =>
+      import('./features/auth/reset-password/reset-password.component')
+        .then(m => m.ResetPasswordComponent),
+  },
 
 
   // Route de callback Google OAuth (pas d'outlet)

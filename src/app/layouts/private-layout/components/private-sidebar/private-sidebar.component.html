@@ -1,0 +1,20 @@
+<aside class="sidebar" aria-label="Navigation privée">
+  <div class="sidebar__profile">
+    <div class="sidebar__avatar"></div>
+    <div class="sidebar__name">
+      <div class="label">NOM</div>
+      <div class="label">Prénom</div>
+    </div>
+  </div>
+
+  <nav class="sidebar__nav">
+    <a routerLink="/dashboard" routerLinkActive="active" class="item">Dashboard</a>
+    <a routerLink="/candidatures" routerLinkActive="active" class="item">Candidatures</a>
+    <a routerLink="/annonces" routerLinkActive="active" class="item">Annonces</a>
+    <a routerLink="/relances" routerLinkActive="active" class="item">Relances</a>
+  </nav>
+
+  <div class="sidebar__bottom">
+    <button type="button" class="logout" (click)="logout()">Déconnexion</button>
+  </div>
+</aside>

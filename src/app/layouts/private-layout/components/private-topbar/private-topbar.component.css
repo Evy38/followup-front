@@ -1,0 +1,5 @@
+.topbar { height: 64px; border-bottom: 1px solid #ddd; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; box-sizing: border-box; }
+.topbar__tabs { display: flex; gap: 12px; }
+.tab { padding: 8px 10px; }
+.topbar__search { display: flex; gap: 10px; width: 100%; max-width: 520px; }
+.topbar__search input { flex: 1; padding: 8px; }
