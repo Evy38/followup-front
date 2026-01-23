@@ -5,9 +5,16 @@
       <img src="/assets/icons/avatar.png" alt="Avatar" class="avatar-img" />
     </div>
     <div class="profile-info">
-      <div class="profile-name">NOM</div>
-      <div class="profile-firstname">Prénom</div>
-      <div class="profile-email">nom.email@gmail.com</div>
+      <ng-container *ngIf="auth.user$ | async as user">
+        <div class="profile-name">{{ user.lastName || 'NOM' }}</div>
+        <div class="profile-firstname">{{ user.firstName || 'Prénom' }}</div>
+        <div class="profile-email">{{ user.email || 'nom.email@gmail.com' }}</div>
+      </ng-container>
+      <ng-container *ngIf="!(auth.user$ | async)">
+        <div class="profile-name">NOM</div>
+        <div class="profile-firstname">Prénom</div>
+        <div class="profile-email">nom.email@gmail.com</div>
+      </ng-container>
     </div>
     <div class="profile-separator"></div>
   </div>
