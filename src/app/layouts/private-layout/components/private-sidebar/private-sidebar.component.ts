@@ -13,6 +13,16 @@ import { AuthService } from '../../../../core/auth/auth.service';
 export class PrivateSidebarComponent {
   auth = inject(AuthService);
 
+  userMenuOpen = false;
+
+  toggleUserMenu() {
+    this.userMenuOpen = !this.userMenuOpen;
+  }
+
+  closeUserMenu() {
+    this.userMenuOpen = false;
+  }
+
   logout() {
     this.auth.logout();
   }

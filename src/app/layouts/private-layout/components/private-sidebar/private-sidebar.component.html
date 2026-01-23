@@ -4,16 +4,38 @@
     <div class="avatar-wrapper">
       <img src="/assets/icons/avatar.png" alt="Avatar" class="avatar-img" />
     </div>
-    <div class="profile-info">
+    <div class="profile-info user-menu-trigger">
       <ng-container *ngIf="auth.user$ | async as user">
-        <div class="profile-name">{{ user.lastName || 'NOM' }}</div>
-        <div class="profile-firstname">{{ user.firstName || 'Prénom' }}</div>
-        <div class="profile-email">{{ user.email || 'nom.email@gmail.com' }}</div>
+        <div class="user-row">
+          <div class="user-texts">
+            <div class="profile-name">{{ user.lastName || 'NOM' }}</div>
+            <div class="profile-firstname">{{ user.firstName || 'Prénom' }}</div>
+            <div class="profile-email">{{ user.email || 'nom.email@gmail.com' }}</div>
+          </div>
+          <button class="user-menu-arrow" (click)="toggleUserMenu()" aria-label="Ouvrir le menu utilisateur">
+            <svg [class.open]="userMenuOpen" width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M8 5L14 11L8 17" stroke="#222" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+        <div class="user-menu user-menu-popover" *ngIf="userMenuOpen" (mouseleave)="closeUserMenu()">
+          <div class="user-menu-arrow-tip"></div>
+          <div class="user-menu-item"><span class="user-menu-icon">👤</span> Mon profil</div>
+          <div class="user-menu-item"><span class="user-menu-icon">⚙️</span> Paramètres</div>
+          <div class="user-menu-item logout" (click)="logout()"><span class="user-menu-icon">🚪</span> Déconnexion</div>
+        </div>
       </ng-container>
       <ng-container *ngIf="!(auth.user$ | async)">
-        <div class="profile-name">NOM</div>
-        <div class="profile-firstname">Prénom</div>
-        <div class="profile-email">nom.email@gmail.com</div>
+        <div class="user-row">
+          <div class="user-texts">
+            <div class="profile-name">NOM</div>
+            <div class="profile-firstname">Prénom</div>
+            <div class="profile-email">nom.email@gmail.com</div>
+          </div>
+          <button class="user-menu-arrow" disabled>
+            <span>&#9654;</span>
+          </button>
+        </div>
       </ng-container>
     </div>
     <div class="profile-separator"></div>
