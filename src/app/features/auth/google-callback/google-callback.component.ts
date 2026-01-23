@@ -17,7 +17,26 @@ export class GoogleCallbackComponent implements OnInit {
     const token = url.searchParams.get('token');
     if (token) {
       this.auth.handleGoogleCallback(token);
-      this.router.navigate(['/dashboard']);
+
+      this.auth.me().subscribe({
+        next: () => {
+          this.router.navigate(
+            [
+              {
+                outlets: {
+                  primary: ['app', 'dashboard'],
+                  overlay: null
+                }
+              }
+            ]
+          );
+
+        },
+        error: () => {
+          this.router.navigate([{ outlets: { overlay: ['login'] } }]);
+        }
+      });
+
     } else {
       // Pas de token, retour à la page de login
       this.router.navigate(['/login']);

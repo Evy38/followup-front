@@ -25,6 +25,9 @@ export class AuthService {
   private tokenSubject = new BehaviorSubject<string | null>(null);
   public token$ = this.tokenSubject.asObservable();
   private isBrowser: boolean;
+  private userSubject = new BehaviorSubject<any | null>(null);
+  user$ = this.userSubject.asObservable();
+
 
   constructor(
     private http: HttpClient,
@@ -115,8 +118,21 @@ export class AuthService {
   }
 
   me() {
-    return this.http.get(`${this.apiUrl}/me`);
+    return this.http.get<any>(`${this.apiUrl}/me`).pipe(
+      tap((res) => {
+        if (res?.authenticated) {
+          this.userSubject.next(res.user);
+        } else {
+          this.userSubject.next(null);
+        }
+      })
+    );
   }
+
+  get currentUser() {
+    return this.userSubject.value;
+  }
+
 
   resendVerificationEmail(email: string) {
     return this.http.post(`${this.apiUrl}/verify-email/resend`, { email });

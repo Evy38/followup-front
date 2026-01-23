@@ -16,30 +16,26 @@ import { ToastService } from '../../../core/ui/toast.service';
   styleUrl: './login.css',
 })
 export class LoginComponent implements OnInit {
+    showSignup = false;
+    constructor(
+      private router: Router,
+      private toast: ToastService,
+      @Inject(PLATFORM_ID) public platformId: Object,
+      private cdr: ChangeDetectorRef
+    ) {}
   private auth = inject(AuthService);
 
   // --------- WELCOME ---------
   showWelcome = false;
 
   // --------- LOGIN ---------
-  email = 'c.morel3801@gmail.com';   // tu peux enlever les valeurs par défaut après tes tests
+  email = 'amalriccecile@gmail.com';   // tu peux enlever les valeurs par défaut après tes tests
   password = 'testtest123';
   loading = false;
   message = '';
   notVerifiedMessage: string | null = null;
   showResendButton = false;
   lastTriedEmail: string | null = null;
-
-  // --------- SIGNUP ---------
-  showSignup = false;
-
-  constructor(
-    private router: Router,
-    private toast: ToastService,
-    @Inject(PLATFORM_ID) private platformId: Object,
-    private cdr: ChangeDetectorRef
-  ) { }
-
   ngOnInit() {
     this.auth.authError$.subscribe((msg) => {
       this.notVerifiedMessage = msg;
@@ -94,7 +90,6 @@ export class LoginComponent implements OnInit {
 
     this.auth.login(this.email, this.password).subscribe({
       next: () => {
-        // Vérification immédiate du statut de l'utilisateur
         this.auth.me().subscribe({
           next: (user: any) => {
             this.loading = false;
@@ -105,9 +100,12 @@ export class LoginComponent implements OnInit {
               this.auth.removeToken();
               this.cdr.detectChanges();
             } else {
-              // Redirection vers le dashboard après connexion réussie
-              this.router.navigate(['/dashboard']);
               this.closeOverlay();
+              setTimeout(() => {
+                this.router.navigate(['/app/dashboard']).then(result => {
+                  console.log('NAV RESULT =', result);
+                });
+              }, 100);
             }
           },
           error: (err) => {

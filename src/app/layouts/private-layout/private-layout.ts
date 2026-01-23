@@ -10,4 +10,9 @@ import { PrivateTopbarComponent } from './components/private-topbar/private-topb
   styleUrls: ['./private-layout.css'],
   imports: [RouterOutlet, PrivateSidebarComponent, PrivateTopbarComponent],
 })
-export class PrivateLayoutComponent {}
+export class PrivateLayoutComponent {
+  constructor() {
+  console.log('PRIVATE LAYOUT CREATED');
+}
+
+}

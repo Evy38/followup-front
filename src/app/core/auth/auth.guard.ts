@@ -7,32 +7,48 @@ export const authGuard: CanActivateFn = () => {
   const auth = inject(AuthService);
   const router = inject(Router);
 
-  // 1) Pas de token local -> pas d'accès
+  console.log('AUTH GUARD EXECUTED');
+
   if (!auth.isLogged()) {
-    router.navigate([{ outlets: { overlay: ['login'] } }]);
-    return false;
+    console.log('AUTH GUARD BLOCKED (not logged)');
+    return router.createUrlTree(
+      [{ outlets: { overlay: ['login'] } }]
+    );
   }
 
-  // 2) Token présent -> on le valide côté serveur
   return auth.me().pipe(
-    map((user: any) => {
-      if (user && user.isVerified === false) {
+    map((res: any) => {
+      console.log('AUTH GUARD /me response:', res);
+      if (!res?.authenticated) {
+        console.log('AUTH GUARD BLOCKED (not authenticated)');
         auth.logout();
-        auth.setAuthError('Vous devez confirmer votre email, cliquez ici pour recevoir un nouveau mail de confirmation.');
-        router.navigate([{ outlets: { overlay: ['login'] } }]);
-        return false;
+        return router.createUrlTree(
+          [{ outlets: { overlay: ['login'] } }]
+        );
       }
+
+      if (res.verified === false) {
+        console.log('AUTH GUARD BLOCKED (not verified)');
+        auth.setAuthError(
+          'Vous devez confirmer votre email avant de continuer.'
+        );
+        auth.logout();
+        return router.createUrlTree(
+          [{ outlets: { overlay: ['login'] } }]
+        );
+      }
+
+      console.log('AUTH GUARD ALLOWED');
       return true;
     }),
     catchError((err) => {
+      console.log('AUTH GUARD BLOCKED (error)', err);
       auth.logout();
-      const message =
-        err?.error?.detail ||
-        err?.error?.message ||
-        'Compte non confirmé. Vérifiez votre email.';
-      auth.setAuthError(message);
-      router.navigate([{ outlets: { overlay: ['login'] } }]);
-      return of(false);
+      return of(
+        router.createUrlTree(
+          [{ outlets: { overlay: ['login'] } }]
+        )
+      );
     })
   );
 };

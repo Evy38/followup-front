@@ -45,12 +45,12 @@ export const routes: Routes = [
   // ZONE PRIVEE
   // ============================
   {
-    path: '',
+    path: 'app',
     component: PrivateLayoutComponent,
+    canActivate: [authGuard],
     children: [
       {
         path: 'dashboard',
-        canActivate: [authGuard],
         loadComponent: () =>
           import('./features/dashboard/pages/home/dashboard-home.component')
             .then(m => m.DashboardComponent),
@@ -58,27 +58,21 @@ export const routes: Routes = [
       },
       {
         path: 'candidatures',
-        canActivate: [authGuard],
         loadComponent: () =>
           import('./features/dashboard/pages/candidatures/candidatures.component')
             .then(m => m.CandidaturesComponent),
-        data: { topbar: 'candidatures' }
       },
       {
         path: 'annonces',
-        canActivate: [authGuard],
         loadComponent: () =>
           import('./features/dashboard/pages/annonces/annonces.component')
             .then(m => m.AnnoncesComponent),
-        data: { topbar: 'annonces' }
       },
       {
         path: 'relances',
-        canActivate: [authGuard],
         loadComponent: () =>
           import('./features/dashboard/pages/relances/relances.component')
             .then(m => m.RelancesComponent),
-        data: { topbar: 'relances' }
       },
     ],
   },

@@ -97,9 +97,10 @@
 	margin-bottom: 24px;
 }
 .logo-img {
-	width: 60px;
-	height: 60px;
-	margin-bottom: 2px;
+	width: 90px;
+	height: 90px;
+	margin-bottom: 6px;
+	object-fit: contain;
 }
 .logo-text {
 	font-size: 1.2rem;
