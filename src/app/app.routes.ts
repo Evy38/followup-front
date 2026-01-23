@@ -61,18 +61,21 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/dashboard/pages/candidatures/candidatures.component')
             .then(m => m.CandidaturesComponent),
+        data: { topbar: 'candidatures' }
       },
       {
         path: 'annonces',
         loadComponent: () =>
           import('./features/dashboard/pages/annonces/annonces.component')
             .then(m => m.AnnoncesComponent),
+        data: { topbar: 'annonces' }
       },
       {
         path: 'relances',
         loadComponent: () =>
           import('./features/dashboard/pages/relances/relances.component')
             .then(m => m.RelancesComponent),
+        data: { topbar: 'relances' }
       },
     ],
   },
