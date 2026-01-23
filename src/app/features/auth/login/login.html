@@ -26,6 +26,26 @@
       <span>ou</span>
     </div>
 
+    @if (notVerifiedMessage) {
+    <div class="verify-box">
+      <div class="verify-icon">📩</div>
+
+      <div class="verify-content">
+        <p class="verify-title">Compte non confirmé</p>
+        <p class="verify-text">
+          {{ notVerifiedMessage }}
+        </p>
+
+        @if (showResendButton) {
+        <button type="button" class="verify-btn" (click)="resendVerificationEmail()" [disabled]="loading">
+          {{ loading ? 'Envoi...' : 'Renvoyer l’email de confirmation' }}
+        </button>
+        }
+      </div>
+    </div>
+    }
+
+
     <!-- FORMULAIRE DE CONNEXION -->
     <form (ngSubmit)="login()" class="form">
       <label for="email">Adresse email (Gmail) :</label>

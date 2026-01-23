@@ -25,6 +25,9 @@ export class AuthService {
   private tokenSubject = new BehaviorSubject<string | null>(null);
   public token$ = this.tokenSubject.asObservable();
   private isBrowser: boolean;
+  private userSubject = new BehaviorSubject<any | null>(null);
+  user$ = this.userSubject.asObservable();
+
 
   constructor(
     private http: HttpClient,
@@ -50,7 +53,7 @@ export class AuthService {
     }
   }
 
-  private removeToken(): void {
+  removeToken(): void {
     if (this.isBrowser) {
       localStorage.removeItem('token');
       this.tokenSubject.next(null);
@@ -69,14 +72,7 @@ export class AuthService {
       tap((response: any) => {
         if (response?.token) {
           this.setToken(response.token);
-          this.router.navigate([
-            {
-              outlets: {
-                primary: 'dashboard',
-                overlay: null
-              }
-            }
-          ]);
+          // ❌ PAS DE REDIRECTION ICI
         }
       })
     );
@@ -120,4 +116,38 @@ export class AuthService {
   handleGoogleCallback(token: string): void {
     this.setToken(token);
   }
+
+  me() {
+    return this.http.get<any>(`${this.apiUrl}/me`).pipe(
+      tap((res) => {
+        if (res?.authenticated) {
+          this.userSubject.next(res.user);
+        } else {
+          this.userSubject.next(null);
+        }
+      })
+    );
+  }
+
+  get currentUser() {
+    return this.userSubject.value;
+  }
+
+
+  resendVerificationEmail(email: string) {
+    return this.http.post(`${this.apiUrl}/verify-email/resend`, { email });
+  }
+
+  private authErrorSubject = new BehaviorSubject<string | null>(null);
+  authError$ = this.authErrorSubject.asObservable();
+
+  setAuthError(message: string) {
+    this.authErrorSubject.next(message);
+  }
+
+  clearAuthError() {
+    this.authErrorSubject.next(null);
+  }
+
+
 }

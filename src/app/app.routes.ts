@@ -45,22 +45,40 @@ export const routes: Routes = [
   // ZONE PRIVEE
   // ============================
   {
-    path: '',
+    path: 'app',
     component: PrivateLayoutComponent,
+    canActivate: [authGuard],
     children: [
       {
         path: 'dashboard',
-        canActivate: [authGuard],
         loadComponent: () =>
-          import('./features/dashboard/dashboard.component').then(
-            m => m.DashboardComponent
-          ),
+          import('./features/dashboard/pages/home/dashboard-home.component')
+            .then(m => m.DashboardComponent),
+        data: { topbar: 'dashboard' }
+      },
+      {
+        path: 'candidatures',
+        loadComponent: () =>
+          import('./features/dashboard/pages/candidatures/candidatures.component')
+            .then(m => m.CandidaturesComponent),
+        data: { topbar: 'candidatures' }
+      },
+      {
+        path: 'annonces',
+        loadComponent: () =>
+          import('./features/dashboard/pages/annonces/annonces.component')
+            .then(m => m.AnnoncesComponent),
+        data: { topbar: 'annonces' }
+      },
+      {
+        path: 'relances',
+        loadComponent: () =>
+          import('./features/dashboard/pages/relances/relances.component')
+            .then(m => m.RelancesComponent),
+        data: { topbar: 'relances' }
       },
     ],
   },
-
-
-
 
   // ============================
   // OVERLAY AUTH (router-outlet secondaire)
@@ -76,11 +94,11 @@ export const routes: Routes = [
     loadComponent: () => import('./features/auth/forgot-password/forgot-password.component').then(m => m.ForgotPasswordComponent),
   },
   {
-  path: 'reset-password',
-  loadComponent: () =>
-    import('./features/auth/reset-password/reset-password.component')
-      .then(m => m.ResetPasswordComponent),
-},
+    path: 'reset-password',
+    loadComponent: () =>
+      import('./features/auth/reset-password/reset-password.component')
+        .then(m => m.ResetPasswordComponent),
+  },
 
 
   // Route de callback Google OAuth (pas d'outlet)

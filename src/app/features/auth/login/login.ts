@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, PLATFORM_ID, inject } from '@angular/core';
+import { Component, Inject, OnInit, PLATFORM_ID, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -6,7 +6,7 @@ import { AuthService } from '../../../core/auth/auth.service';
 import { SignupComponent } from '../signup/signup.component';
 import { WelcomeComponent } from '../welcome/welcome.component';
 import { Router } from '@angular/router';
-
+import { ToastService } from '../../../core/ui/toast.service';
 
 @Component({
   selector: 'app-login',
@@ -16,28 +16,39 @@ import { Router } from '@angular/router';
   styleUrl: './login.css',
 })
 export class LoginComponent implements OnInit {
+    showSignup = false;
+    constructor(
+      private router: Router,
+      private toast: ToastService,
+      @Inject(PLATFORM_ID) public platformId: Object,
+      private cdr: ChangeDetectorRef
+    ) {}
   private auth = inject(AuthService);
 
   // --------- WELCOME ---------
   showWelcome = false;
 
   // --------- LOGIN ---------
-  email = 'test@example.com';   // tu peux enlever les valeurs par défaut après tes tests
-  password = 'test1234';
+  email = 'amalriccecile@gmail.com';   // tu peux enlever les valeurs par défaut après tes tests
+  password = 'testtest123';
   loading = false;
   message = '';
-
-  // --------- SIGNUP ---------
-  showSignup = false;
-
-  constructor(private router: Router, @Inject(PLATFORM_ID) private platformId: Object,) { }
-
+  notVerifiedMessage: string | null = null;
+  showResendButton = false;
+  lastTriedEmail: string | null = null;
   ngOnInit() {
+    this.auth.authError$.subscribe((msg) => {
+      this.notVerifiedMessage = msg;
+      // Affiche le bouton de renvoi UNIQUEMENT si le message correspond à l'utilisateur non vérifié
+      this.showResendButton = !!msg && msg.includes('confirmer votre email');
+    });
+
     if (isPlatformBrowser(this.platformId)) {
       this.setVH();
       window.addEventListener('resize', () => this.setVH());
     }
   }
+
 
   private setVH() {
     if (isPlatformBrowser(this.platformId) && typeof window !== 'undefined') {
@@ -79,8 +90,37 @@ export class LoginComponent implements OnInit {
 
     this.auth.login(this.email, this.password).subscribe({
       next: () => {
-        this.loading = false;
-        this.router.navigate([{ outlets: { primary: 'dashboard', overlay: null } }]);
+        this.auth.me().subscribe({
+          next: (user: any) => {
+            this.loading = false;
+            if (user && user.isVerified === false) {
+              this.notVerifiedMessage = 'Vous devez confirmer votre email, cliquez ici pour recevoir un nouveau mail de confirmation.';
+              this.showResendButton = true;
+              this.lastTriedEmail = this.email;
+              this.auth.removeToken();
+              this.cdr.detectChanges();
+            } else {
+              this.closeOverlay();
+              setTimeout(() => {
+                this.router.navigate(['/app/dashboard']).then(result => {
+                  console.log('NAV RESULT =', result);
+                });
+              }, 100);
+            }
+          },
+          error: (err) => {
+            this.loading = false;
+            if (err.status === 403) {
+              this.notVerifiedMessage = 'Vous devez confirmer votre email, cliquez ici pour recevoir un nouveau mail de confirmation.';
+              this.showResendButton = true;
+              this.lastTriedEmail = this.email;
+              this.auth.removeToken();
+              this.cdr.detectChanges();
+            } else {
+              this.message = 'Erreur lors de la vérification du compte.';
+            }
+          }
+        });
       },
       error: () => {
         this.loading = false;
@@ -88,6 +128,7 @@ export class LoginComponent implements OnInit {
       }
     });
   }
+
 
 
   // --------- SIGNUP ---------
@@ -102,7 +143,35 @@ export class LoginComponent implements OnInit {
 
   // --------- FERMETURE DE LA CARD DE CONNEXION ---------
   closeOverlay() {
+    this.auth.clearAuthError(); // 🔑 nettoyage global
     this.router.navigate([{ outlets: { overlay: null } }]);
   }
 
+
+  resendVerificationEmail() {
+    const emailToResend = this.lastTriedEmail || this.email;
+    if (!emailToResend) {
+      this.message = 'Veuillez renseigner votre email.';
+      return;
+    }
+
+    this.loading = true;
+
+    this.auth.resendVerificationEmail(emailToResend).subscribe({
+      next: () => {
+        this.loading = false;
+        this.toast.show(
+          '📧 Veuillez vérifier votre boîte mail',
+          'success'
+        );
+      },
+      error: () => {
+        this.loading = false;
+        this.toast.show(
+          'Erreur lors de l’envoi de l’email',
+          'error'
+        );
+      }
+    });
+  }
 }

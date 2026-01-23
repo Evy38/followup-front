@@ -1,0 +1,36 @@
+<header class="topbar" aria-label="Barre d’actions">
+  @if (topbarContext$ | async; as ctx) {
+
+    <!-- CONTENU CONTEXTUEL -->
+    <div class="topbar__left">
+
+      @if (ctx === 'annonces') {
+        <div class="topbar__search">
+          <input
+            type="search"
+            placeholder="Rechercher une annonce…"
+            aria-label="Recherche annonce"
+          />
+          <button type="button" class="search-btn">
+            Rechercher
+          </button>
+        </div>
+      } @else {
+        <div class="topbar__tabs">
+          <button type="button" class="tab active">Emails / Relances</button>
+          <button type="button" class="tab">Favoris</button>
+          <button type="button" class="tab">Mes docs</button>
+        </div>
+      }
+
+    </div>
+
+    <!-- ACTIONS GLOBALES -->
+    <div class="topbar__right">
+      <button type="button" class="icon-btn" aria-label="Notifications">
+        🔔
+      </button>
+    </div>
+
+  }
+</header>

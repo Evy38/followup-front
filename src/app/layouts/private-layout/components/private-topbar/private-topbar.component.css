@@ -1,0 +1,143 @@
+.topbar { height: 64px; border-bottom: 1px solid #ddd; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; box-sizing: border-box; }
+.topbar__tabs { display: flex; gap: 12px; }
+.tab { padding: 8px 10px; }
+
+.topbar {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 24px;
+  background: #ffffff;
+  border-bottom: 1px solid #e6e6ef;
+}
+
+/* ---------- TABS ---------- */
+.topbar__tabs {
+  display: flex;
+  gap: 8px;
+}
+
+.tab {
+  padding: 8px 14px;
+  border-radius: 8px;
+
+  border: 1px solid transparent;
+  background: transparent;
+
+  font-size: 14px;
+  color: #555;
+  cursor: pointer;
+
+  transition: background 0.2s, color 0.2s, border 0.2s;
+}
+
+.tab:hover {
+  background: #f3f1ff;
+  color: #5b4ee5;
+}
+
+.tab.active {
+  background: #edeaff;
+  color: #5b4ee5;
+  border: 1px solid #d8d3ff;
+}
+
+/* ---------- SEARCH ---------- */
+.topbar__search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  width: 100%;
+  max-width: 520px;
+}
+
+.topbar__search input {
+  flex: 1;
+  height: 38px;
+
+  padding: 0 14px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+
+  font-size: 14px;
+  background: #fafafa;
+}
+
+.topbar__search input:focus {
+  outline: none;
+  border-color: #5b4ee5;
+  background: #ffffff;
+}
+
+.search-btn {
+  height: 38px;
+  padding: 0 16px;
+
+  border-radius: 10px;
+  border: none;
+
+  background: #edeaff;
+  color: #5b4ee5;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.search-btn:hover {
+  background: #e0dbff;
+}
+/* ---------- RIGHT ACTIONS ---------- */
+.topbar__right {
+  display: flex;
+  align-items: center;
+  margin-left: 16px;
+}
+
+.icon-btn {
+  width: 36px;
+  height: 36px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+  border: none;
+
+  background: #f3f1ff;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.icon-btn:hover {
+  background: #e6e1ff;
+}
+
+/* ---------- LEFT ACTIONS ---------- */
+.topbar__left {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.icon-btn {
+  width: 36px;
+  height: 36px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+  border: none;
+  background: #f3f1ff;
+
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.icon-btn:hover {
+  background: #e6e1ff;
+}
