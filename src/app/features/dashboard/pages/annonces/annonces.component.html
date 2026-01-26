@@ -17,22 +17,21 @@
         {{ job.salaryMin ?? '—' }} € – {{ job.salaryMax ?? '—' }} €
       </p>
 
-      <a
-        [href]="job.redirectUrl"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Voir l’annonce
-      </a>
-
-      
+      <div class="job-actions">
+        <a
+          [href]="job.redirectUrl"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Voir l’annonce
+        </a>
         <button
-    (click)="onCandidated(job)"
-    [disabled]="job._candidated"
-  >
-    {{ job._candidated ? 'Déjà candidaté' : 'J’ai candidaté' }}
-  </button>
-  
+          (click)="onCandidated(job)"
+          [disabled]="job._candidated"
+        >
+          {{ job._candidated ? 'Déjà candidaté' : 'J’ai candidaté' }}
+        </button>
+      </div>
     </li>
   </ul>
 </section>

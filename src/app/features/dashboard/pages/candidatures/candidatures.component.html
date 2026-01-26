@@ -1,0 +1,35 @@
+<ul class="candidature-list" *ngIf="candidatures?.length; else emptyState">
+  <li *ngFor="let c of candidatures" class="candidature-card">
+    <div class="card-main">
+      <div class="top-row">
+        <h3 class="company">{{ c.entreprise?.nom || 'Entreprise' }}</h3>
+        <span class="date">{{ formatDate(c.dateCandidature) }}</span>
+      </div>
+
+      <div class="meta-row">
+        <span class="badge">{{ c.statut?.libelle || 'Candidaté' }}</span>
+        <span class="timeline">J’ai candidaté le {{ formatDate(c.dateCandidature) }}</span>
+      </div>
+
+      <a
+        *ngIf="c.lienAnnonce"
+        class="link"
+        [href]="c.lienAnnonce"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Voir l’annonce
+      </a>
+    </div>
+
+    <div class="card-action">
+      <button type="button" class="delete-btn" (click)="deleteCandidature(c)">
+        🗑️ <span>supprimer</span>
+      </button>
+    </div>
+  </li>
+</ul>
+
+<ng-template #emptyState>
+  <div class="empty">Aucune candidature pour le moment.</div>
+</ng-template>

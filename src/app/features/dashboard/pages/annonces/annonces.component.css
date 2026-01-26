@@ -1,3 +1,10 @@
+.job-actions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 2rem;
+  margin-top: 1.2rem;
+}
 .annonces {
   padding: 1.5rem 2rem;
 }

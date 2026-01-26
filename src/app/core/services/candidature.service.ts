@@ -1,10 +1,14 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
+import { Candidature } from '../../features/dashboard/models/candidature.model';
 
-@Injectable({
-  providedIn: 'root',
-})
+type HydraCollection<T> = {
+  'hydra:member'?: T[];
+  member?: T[]; // selon config, mais ta réponse montre "member"
+};
+
+@Injectable({ providedIn: 'root' })
 export class CandidatureService {
   private http = inject(HttpClient);
   private apiUrl = 'http://localhost:8080/api';
@@ -16,13 +20,18 @@ export class CandidatureService {
     title?: string;
     location?: string;
   }): Observable<any> {
-    return this.http.post(
-      `${this.apiUrl}/candidatures/from-offer`,
-      payload
+    return this.http.post(`${this.apiUrl}/candidatures/from-offer`, payload);
+  }
+
+  getMyCandidatures(): Observable<Candidature[]> {
+    return this.http.get<HydraCollection<Candidature>>(`${this.apiUrl}/candidatures`).pipe(
+      map((res) => res.member ?? res['hydra:member'] ?? [])
     );
   }
 
-  getMyCandidatures(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/candidatures`);
-  }
+  deleteCandidatureByIri(candidatureIri: string) {
+  // candidatureIri ressemble à "/api/candidatures/15"
+  return this.http.delete(`http://localhost:8080${candidatureIri}`);
+}
+
 }
