@@ -9,20 +9,22 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
 
-      // 🔐 401 — non authentifié
-      if (error.status === 401) {
+      const isCandidatureRequest = req.url.includes('/api/candidatures');
+
+      // 🔐 401
+      if (error.status === 401 && !isCandidatureRequest) {
         router.navigate([{ outlets: { overlay: ['login'] } }]);
       }
 
-      // 🚫 403 — authentifié mais interdit (email non vérifié)
-      if (error.status === 403) {
+      // 🚫 403
+      if (error.status === 403 && !isCandidatureRequest) {
         router.navigate(
           [{ outlets: { overlay: ['login'] } }],
           {
             state: {
               errorMessage:
                 error.error?.message ??
-                'Votre compte n’est pas encore confirmé.'
+                'Votre compte n’est pas autorisé.'
             }
           }
         );
@@ -32,3 +34,4 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
     })
   );
 };
+

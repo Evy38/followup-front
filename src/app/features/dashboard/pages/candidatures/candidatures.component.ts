@@ -15,10 +15,15 @@ export class CandidaturesComponent implements OnInit {
   loading = true;
   error: string | null = null;
 
+  // ✅ MODALE
+  confirmOpen = false;
+  pendingDelete: Candidature | null = null;
+  deleting = false;
+
   constructor(
     private candidatureService: CandidatureService,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.load();
@@ -56,7 +61,7 @@ export class CandidaturesComponent implements OnInit {
     }).format(d);
   }
 
-    deleteCandidature(c: any) {
+  deleteCandidature(c: any) {
     const iri = c?.['@id'];
     if (!iri) return;
 
@@ -68,6 +73,48 @@ export class CandidaturesComponent implements OnInit {
       error: () => {
         // rollback si erreur
         this.candidatures = backup;
+      },
+    });
+  }
+
+  // ✅ OUVRIR MODALE
+  askDelete(c: Candidature) {
+    this.pendingDelete = c;
+    this.confirmOpen = true;
+  }
+
+  // ✅ FERMER MODALE
+  cancelDelete() {
+    if (this.deleting) return; // évite de fermer pendant suppression
+    this.confirmOpen = false;
+    this.pendingDelete = null;
+  }
+
+  // ✅ CONFIRMER SUPPRESSION (vraie suppression)
+  confirmDelete() {
+    const iri = (this.pendingDelete as any)?.['@id'];
+    if (!iri) return;
+
+    this.deleting = true;
+
+    const backup = [...this.candidatures];
+
+    // ✅ retire l’élément en UI via @id
+    this.candidatures = this.candidatures.filter((x: any) => x?.['@id'] !== iri);
+
+    this.candidatureService.deleteCandidatureByIri(iri).subscribe({
+      next: () => {
+        this.deleting = false;
+        this.cancelDelete();
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Suppression refusée', err);
+
+        this.candidatures = backup; // rollback
+        this.deleting = false;
+        this.cancelDelete();
+        this.cdr.detectChanges();
       },
     });
   }

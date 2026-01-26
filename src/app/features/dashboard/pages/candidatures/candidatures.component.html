@@ -11,19 +11,13 @@
         <span class="timeline">J’ai candidaté le {{ formatDate(c.dateCandidature) }}</span>
       </div>
 
-      <a
-        *ngIf="c.lienAnnonce"
-        class="link"
-        [href]="c.lienAnnonce"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
+      <a *ngIf="c.lienAnnonce" class="link" [href]="c.lienAnnonce" target="_blank" rel="noopener noreferrer">
         Voir l’annonce
       </a>
     </div>
 
     <div class="card-action">
-      <button type="button" class="delete-btn" (click)="deleteCandidature(c)">
+      <button type="button" class="delete-btn" (click)="askDelete(c)">
         🗑️ <span>supprimer</span>
       </button>
     </div>
@@ -33,3 +27,29 @@
 <ng-template #emptyState>
   <div class="empty">Aucune candidature pour le moment.</div>
 </ng-template>
+
+<!-- ✅ MODALE CONFIRMATION -->
+<div class="modal-overlay" *ngIf="confirmOpen" (click)="cancelDelete()">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <div class="modal-icon">🗑️</div>
+      <h3 class="modal-title">Supprimer la candidature ?</h3>
+    </div>
+
+    <p class="modal-text">
+      Tu es sur le point de supprimer la candidature pour
+      <strong>{{ pendingDelete?.entreprise?.nom || 'cette entreprise' }}</strong>.
+      Cette action est irréversible.
+    </p>
+
+    <div class="modal-actions">
+      <button type="button" class="btn-secondary" (click)="cancelDelete()" [disabled]="deleting">
+        Non
+      </button>
+
+      <button type="button" class="btn-danger" (click)="confirmDelete()" [disabled]="deleting">
+        {{ deleting ? 'Suppression…' : 'Oui, supprimer' }}
+      </button>
+    </div>
+  </div>
+</div>
