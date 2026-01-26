@@ -1,0 +1,29 @@
+<section class="annonces">
+
+
+  <p *ngIf="loading">Chargement des annonces…</p>
+
+  <p *ngIf="error">{{ error }}</p>
+
+  <ul *ngIf="!loading && !error">
+    <li *ngFor="let job of jobs" class="job-card">
+      <h3>{{ job.title }}</h3>
+      <p><strong>{{ job.company }}</strong></p>
+      <p>{{ job.location }}</p>
+      <p>Contrat : {{ job.contractType }}</p>
+
+      <p *ngIf="job.salaryMin || job.salaryMax">
+        Salaire :
+        {{ job.salaryMin ?? '—' }} € – {{ job.salaryMax ?? '—' }} €
+      </p>
+
+      <a
+        [href]="job.redirectUrl"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Voir l’annonce
+      </a>
+    </li>
+  </ul>
+</section>
