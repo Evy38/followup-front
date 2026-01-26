@@ -12,7 +12,7 @@ app-private-sidebar {
   height: 100vh;
   position: sticky;
   top: 0;
-  overflow: hidden; /* optionnel */
+  /* overflow: hidden;  supprimé pour permettre au menu de dépasser */
 }
 
 /* Colonne droite : topbar + contenu */

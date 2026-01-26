@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { JobService } from '../../services/job.service';
+import { JobService } from '../../../../core/services/job.service';
 import { Job } from '../../models/job.model';
-
+import { CandidatureService } from '../../../../core/services/candidature.service';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -16,7 +16,11 @@ export class AnnoncesComponent implements OnInit {
   loading = true;
   error: string | null = null;
 
-  constructor(private jobService: JobService, private cdr: ChangeDetectorRef) {}
+  constructor(
+    private jobService: JobService,
+    private candidatureService: CandidatureService,
+    private cdr: ChangeDetectorRef
+  ) { }
 
   ngOnInit(): void {
     this.jobService.getJobs().subscribe({
@@ -25,6 +29,7 @@ export class AnnoncesComponent implements OnInit {
         this.jobs = jobs;
         this.loading = false;
         this.cdr.detectChanges();
+        this.loadCandidatures();
       },
       error: (err) => {
         console.error('Erreur API jobs:', err);
@@ -32,5 +37,39 @@ export class AnnoncesComponent implements OnInit {
         this.loading = false;
       },
     });
-  }
+  };
+
+onCandidated(job: Job) {
+  job._candidated = true; 
+
+  this.candidatureService.createFromOffer({
+    externalId: job.externalId,
+    company: job.company,
+    redirectUrl: job.redirectUrl,
+    title: job.title,
+    location: job.location,
+  }).subscribe({
+    error: () => {
+      job._candidated = false; 
+    },
+  });
+}
+
+
+loadCandidatures() {
+  this.candidatureService.getMyCandidatures().subscribe({
+    next: (candidatures) => {
+      const ids = candidatures.map(c => c.externalOfferId);
+
+      this.jobs.forEach(job => {
+        job._candidated = ids.includes(job.externalId);
+      });
+    },
+    error: () => {},
+  });
+}
+
+
+
+
 }

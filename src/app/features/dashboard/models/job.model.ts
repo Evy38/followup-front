@@ -7,4 +7,5 @@ export interface Job {
   salaryMin?: number | null;
   salaryMax?: number | null;
   redirectUrl: string;
+  _candidated?: boolean;
 }

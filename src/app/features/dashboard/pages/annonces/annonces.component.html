@@ -24,6 +24,15 @@
       >
         Voir l’annonce
       </a>
+
+      
+        <button
+    (click)="onCandidated(job)"
+    [disabled]="job._candidated"
+  >
+    {{ job._candidated ? 'Déjà candidaté' : 'J’ai candidaté' }}
+  </button>
+  
     </li>
   </ul>
 </section>

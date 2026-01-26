@@ -54,3 +54,34 @@
 .job-card a:hover {
   text-decoration: underline;
 }
+
+.job-card button {
+  margin-top: 0.9rem;
+  padding: 0.55rem 1.1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(135deg, #6f5ef8, #8a7cfb);
+  color: #ffffff;
+  box-shadow: 0 6px 14px rgba(111, 94, 248, 0.25);
+  transition: all 0.2s ease;
+}
+
+.job-card button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(111, 94, 248, 0.35);
+}
+
+.job-card button:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 4px 10px rgba(111, 94, 248, 0.25);
+}
+
+.job-card button:disabled {
+  background: #e5e3ff;
+  color: #6b6b9d;
+  cursor: not-allowed;
+  box-shadow: none;
+}
