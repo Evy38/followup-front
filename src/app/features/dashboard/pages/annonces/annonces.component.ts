@@ -40,6 +40,7 @@ export class AnnoncesComponent implements OnInit {
   };
 
 onCandidated(job: Job) {
+   if (job._candidated) return;
   job._candidated = true; 
 
   this.candidatureService.createFromOffer({
@@ -53,6 +54,10 @@ onCandidated(job: Job) {
       job._candidated = false; 
     },
   });
+}
+
+trackByJobId(index: number, job: Job) {
+  return job.externalId;
 }
 
 

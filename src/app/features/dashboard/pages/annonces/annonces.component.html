@@ -8,6 +8,7 @@
   <ul *ngIf="!loading && !error">
     <li *ngFor="let job of jobs" class="job-card">
       <h3>{{ job.title }}</h3>
+      <div style="font-size: 0.8em; color: #888;">externalId: {{ job.externalId }}</div>
       <p><strong>{{ job.company }}</strong></p>
       <p>{{ job.location }}</p>
       <p>Contrat : {{ job.contractType }}</p>
