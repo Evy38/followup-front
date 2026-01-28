@@ -12,7 +12,7 @@ import { PrivateTopbarComponent } from './components/private-topbar/private-topb
 })
 export class PrivateLayoutComponent {
   constructor() {
-  console.log('PRIVATE LAYOUT CREATED');
+
 }
 
 }

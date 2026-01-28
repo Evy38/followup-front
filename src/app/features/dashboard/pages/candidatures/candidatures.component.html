@@ -1,13 +1,14 @@
-<ul class="candidature-list" *ngIf="candidatures?.length; else emptyState">
+<ul class="candidature-list" *ngIf="candidatures.length; else emptyState">
   <li *ngFor="let c of candidatures" class="candidature-card">
     <div class="card-main">
       <div class="top-row">
-        <h3 class="company">{{ c.entreprise?.nom || 'Entreprise' }}</h3>
-        <span class="date">{{ formatDate(c.dateCandidature) }}</span>
+        <div class="title-block">
+          <h3 class="job-title">{{ c.jobTitle }}</h3>
+          <p class="company">{{ c.entreprise.nom }}</p>
+        </div>
       </div>
 
       <div class="meta-row">
-        <span class="badge">{{ c.statut?.libelle || 'Candidaté' }}</span>
         <span class="timeline">J’ai candidaté le {{ formatDate(c.dateCandidature) }}</span>
       </div>
 

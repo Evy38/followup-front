@@ -7,10 +7,13 @@ export interface StatutApi {
 }
 
 export interface Candidature {
-  id?: number;
-  dateCandidature: string;     // ISO
-  lienAnnonce: string | null;
-  externalOfferId: string | null;
-  entreprise?: EntrepriseApi;
-  statut?: StatutApi;
+  '@id': string;                 
+  id: number;                   
+  jobTitle: string;
+  dateCandidature: string;
+  dateDerniereRelance?: string | null;
+  lienAnnonce?: string | null;
+  externalOfferId: string;
+  entreprise: EntrepriseApi;
+  statut: StatutApi;
 }

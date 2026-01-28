@@ -35,17 +35,16 @@ export class ForgotPasswordComponent {
 
     const email = this.email.trim().toLowerCase();
     this.loading = true;
-    console.log('🚀 Envoi de la requête forgot password pour:', email);
-
+  
     this.auth.forgotPassword(email).subscribe({
       next: (response) => {
-        console.log('✅ Réponse reçue:', response);
+      
         this.loading = false;
         this.message = response?.message || 'Si un compte existe pour cet email, un lien de réinitialisation a été envoyé.';
         this.cdr.markForCheck();
       },
       error: (err) => {
-        console.error('❌ Erreur reçue:', err);
+        
         this.loading = false;
         this.error = err?.error?.error ?? "Impossible d'envoyer l'email de réinitialisation pour le moment.";
         this.cdr.markForCheck();

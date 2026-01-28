@@ -67,7 +67,9 @@ export class CandidaturesComponent implements OnInit {
 
     // Optimiste : on retire direct de l’UI
     const backup = [...this.candidatures];
-    this.candidatures = this.candidatures.filter(x => x['id'] !== iri);
+    this.candidatures = this.candidatures.filter(
+      (x: any) => x['@id'] !== iri
+    );
 
     this.candidatureService.deleteCandidatureByIri(iri).subscribe({
       error: () => {

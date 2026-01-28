@@ -25,7 +25,6 @@ export class AnnoncesComponent implements OnInit {
   ngOnInit(): void {
     this.jobService.getJobs().subscribe({
       next: (jobs) => {
-        console.log('Réponse API jobs:', jobs);
         this.jobs = jobs;
         this.loading = false;
         this.cdr.detectChanges();
@@ -39,40 +38,39 @@ export class AnnoncesComponent implements OnInit {
     });
   };
 
-onCandidated(job: Job) {
-   if (job._candidated) return;
-  job._candidated = true; 
+  onCandidated(job: Job) {
+    if (job._candidated) return;
 
-  this.candidatureService.createFromOffer({
-    externalId: job.externalId,
-    company: job.company,
-    redirectUrl: job.redirectUrl,
-    title: job.title,
-    location: job.location,
-  }).subscribe({
-    error: () => {
-      job._candidated = false; 
-    },
-  });
-}
-
-trackByJobId(index: number, job: Job) {
-  return job.externalId;
-}
+    this.candidatureService.createFromOffer({
+      externalId: job.externalId,
+      company: job.company,
+      redirectUrl: job.redirectUrl,
+      title: job.title,
+      location: job.location,
+    }).subscribe({
+      next: () => this.loadCandidatures(),
+      error: () => { }
+    });
+  }
 
 
-loadCandidatures() {
-  this.candidatureService.getMyCandidatures().subscribe({
-    next: (candidatures) => {
-      const ids = candidatures.map(c => c.externalOfferId);
+  trackByJobId(index: number, job: Job) {
+    return job.externalId;
+  }
 
-      this.jobs.forEach(job => {
-        job._candidated = ids.includes(job.externalId);
-      });
-    },
-    error: () => {},
-  });
-}
+
+  loadCandidatures() {
+    this.candidatureService.getMyCandidatures().subscribe({
+      next: (candidatures) => {
+        const ids = candidatures.map(c => c.externalOfferId);
+
+        this.jobs.forEach(job => {
+          job._candidated = ids.includes(job.externalId);
+        });
+      },
+      error: () => { },
+    });
+  }
 
 
 
