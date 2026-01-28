@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, map } from 'rxjs';
+import { Observable, Subject, map } from 'rxjs';
 import { Candidature } from '../../features/dashboard/models/candidature.model';
 
 type HydraCollection<T> = {
@@ -12,6 +12,9 @@ type HydraCollection<T> = {
 export class CandidatureService {
   private http = inject(HttpClient);
   private apiUrl = 'http://localhost:8080/api';
+
+  private refresh$ = new Subject<void>();
+  refreshNeeded$ = this.refresh$.asObservable();
 
   createFromOffer(payload: {
     externalId: string;
@@ -30,8 +33,12 @@ export class CandidatureService {
   }
 
   deleteCandidatureByIri(candidatureIri: string) {
-  // candidatureIri ressemble à "/api/candidatures/15"
-  return this.http.delete(`http://localhost:8080${candidatureIri}`);
-}
+    // candidatureIri ressemble à "/api/candidatures/15"
+    return this.http.delete(`http://localhost:8080${candidatureIri}`);
+  }
+
+  notifyRefresh() {
+    this.refresh$.next();
+  }
 
 }

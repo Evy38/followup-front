@@ -30,12 +30,16 @@ export class AnnoncesComponent implements OnInit {
         this.cdr.detectChanges();
         this.loadCandidatures();
       },
+
       error: (err) => {
         console.error('Erreur API jobs:', err);
         this.error = 'Impossible de charger les annonces';
         this.loading = false;
       },
     });
+
+    this.candidatureService.refreshNeeded$
+      .subscribe(() => this.loadCandidatures());
   };
 
   onCandidated(job: Job) {
@@ -49,9 +53,9 @@ export class AnnoncesComponent implements OnInit {
       location: job.location,
     }).subscribe({
       next: () => this.loadCandidatures(),
-      error: () => { }
     });
   }
+
 
 
   trackByJobId(index: number, job: Job) {
@@ -62,17 +66,18 @@ export class AnnoncesComponent implements OnInit {
   loadCandidatures() {
     this.candidatureService.getMyCandidatures().subscribe({
       next: (candidatures) => {
-        const ids = candidatures.map(c => c.externalOfferId);
+        const candidatedIds = new Set(
+          candidatures.map(c => c.externalOfferId)
+        );
 
-        this.jobs.forEach(job => {
-          job._candidated = ids.includes(job.externalId);
-        });
+        this.jobs = this.jobs.map(job => ({
+          ...job,
+          _candidated: candidatedIds.has(job.externalId),
+        }));
+
+        this.cdr.detectChanges();
       },
-      error: () => { },
     });
   }
-
-
-
 
 }

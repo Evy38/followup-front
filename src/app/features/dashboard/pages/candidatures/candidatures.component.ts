@@ -108,6 +108,7 @@ export class CandidaturesComponent implements OnInit {
       next: () => {
         this.deleting = false;
         this.cancelDelete();
+        this.candidatureService.notifyRefresh();
         this.cdr.detectChanges();
       },
       error: (err) => {
