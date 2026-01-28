@@ -27,10 +27,11 @@ export class CandidatureService {
   }
 
   getMyCandidatures(): Observable<Candidature[]> {
-    return this.http.get<HydraCollection<Candidature>>(`${this.apiUrl}/candidatures`).pipe(
-      map((res) => res.member ?? res['hydra:member'] ?? [])
+    return this.http.get<Candidature[]>(
+      'http://localhost:8080/api/my-candidatures'
     );
   }
+
 
   deleteCandidatureByIri(candidatureIri: string) {
     // candidatureIri ressemble à "/api/candidatures/15"
