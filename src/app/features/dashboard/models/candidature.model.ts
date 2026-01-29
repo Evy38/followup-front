@@ -9,8 +9,8 @@ export interface StatutApi {
 }
 
 export interface Candidature {
-  '@id': string;                 
-  id: number;                   
+  '@id': string;
+  id: number;
   jobTitle: string;
   dateCandidature: string;
   dateDerniereRelance?: string | null;
@@ -19,4 +19,7 @@ export interface Candidature {
   entreprise: EntrepriseApi;
   statut: StatutApi;
   relances: Relance[];
+  statutReponse?: 'attente' | 'negative' | 'echanges' | 'entretien';
+  dateEntretien?: string;
+  heureEntretien?: string;
 }

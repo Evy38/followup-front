@@ -42,4 +42,24 @@ export class CandidatureService {
     this.refresh$.next();
   }
 
+  updateStatutReponse(candidatureId: number, statut: string): Observable<any> {
+    return this.http.patch<any>(
+      `${this.apiUrl}/candidatures/${candidatureId}/statut-reponse`,
+      { statutReponse: statut }
+    );
+  }
+
+  updateEntretien(
+    candidatureId: number,
+    date: string | null,
+    heure: string | null
+  ): Observable<any> {
+    return this.http.patch<any>(
+      `${this.apiUrl}/candidatures/${candidatureId}/entretien`,
+      {
+        dateEntretien: date,
+        heureEntretien: heure
+      }
+    );
+  }
 }

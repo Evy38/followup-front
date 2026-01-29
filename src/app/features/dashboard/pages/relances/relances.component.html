@@ -1,6 +1,6 @@
-<!-- relances.component.html - VERSION CORRIGÉE -->
+<!-- relances.component.html -->
 <div class="relances-container">
-  <!-- Header avec filtres et stats -->
+  <!-- Header avec stats -->
   <div class="relances-header">
     <h1>Mes relances</h1>
     <div class="stats-bar">
@@ -20,21 +20,16 @@
     <button 
       [class.active]="filterStatus === 'all'"
       (click)="filterStatus = 'all'">
-      Toutes
+      Mes relances
     </button>
     <button 
       [class.active]="filterStatus === 'pending'"
       (click)="filterStatus = 'pending'">
       Réponses recruteurs
     </button>
-    <button 
-      [class.active]="filterStatus === 'done'"
-      (click)="filterStatus = 'done'">
-      Terminées
-    </button>
   </div>
 
-  <!-- Liste des candidatures - Design optimisé pour grandes listes -->
+  <!-- Liste des candidatures -->
   <div class="candidatures-list">
     <div *ngFor="let c of filteredCandidatures" class="candidature-timeline-card">
       
@@ -55,13 +50,13 @@
           <h3 class="job-title">{{ c.jobTitle }}</h3>
           <p class="company-name">{{ c.entreprise.nom || 'Entreprise inconnue' }}</p>
           <p class="candidature-meta">
-            Il y a {{ getDaysSince(c.dateCandidature) }} jours
+            Candidature envoyée il y a {{ getDaysSince(c.dateCandidature) }} jours
             <span class="date-badge">{{ c.dateCandidature | date:'dd/MM/yyyy' }}</span>
           </p>
         </div>
       </div>
 
-      <!-- Timeline des relances - Version compacte -->
+      <!-- Timeline des relances - Version compacte horizontale -->
       <div class="relances-timeline">
         <ng-container *ngFor="let rang of [1, 2, 3]">
           <ng-container *ngIf="getRelanceByRang(c, rang) as r">
@@ -70,7 +65,7 @@
               [class.overdue]="isRelanceOverdue(r) && !r.faite"
               [class.upcoming]="!r.faite && !isRelanceOverdue(r)"
               [class.clickable]="!r.faite"
-              (click)="!r.faite ? markAsDone(r) : null">
+              (click)="!r.faite ? markAsDone(c, r) : null">
               
               <div class="timeline-point" 
                 [class.done]="r.faite"
@@ -81,7 +76,7 @@
               <div class="timeline-content">
                 <div class="timeline-header">
                   <span class="relance-number">Relance {{ rang }}</span>
-                  <span class="relance-timing">+{{ rang }} semaine(s)</span>
+                  <span class="relance-timing">+{{ rang }} semaine{{ rang > 1 ? 's' : '' }}</span>
                 </div>
                 
                 <div class="relance-date">
@@ -95,16 +90,16 @@
                   <button *ngIf="!r.faite" 
                     class="btn-mark-done"
                     [class.btn-urgent]="isRelanceOverdue(r)"
-                    (click)="$event.stopPropagation(); markAsDone(r)"
+                    (click)="$event.stopPropagation(); markAsDone(c, r)"
                     title="Marquer comme faite">
-                    ✓
+                    ✓ Marquer comme faite
                   </button>
                   <div *ngIf="r.faite" class="status-done">
                     <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
                       <circle cx="8" cy="8" r="7" fill="#22c55e"/>
                       <path d="M5 8L7 10L11 6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
-                    <button (click)="$event.stopPropagation(); markAsUndone(r)" class="btn-mark-done btn-urgent" title="Annuler">
+                    <button (click)="$event.stopPropagation(); markAsUndone(c, r)" class="btn-mark-done btn-urgent" title="Annuler">
                       ✕
                     </button>
                   </div>
