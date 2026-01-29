@@ -23,6 +23,8 @@ app-private-sidebar {
   min-width: 0; /* important pour éviter débordements */
   height: 100vh;
   overflow: hidden; /* interdit le scroll ici */
+  background: url('/assets/icons/fondAccueil.png') no-repeat center center fixed;
+  background-size: cover;
 }
 
 /* Topbar : reste visible */
@@ -40,5 +42,5 @@ app-private-topbar {
   overflow-y: auto;
   padding: 16px;
   box-sizing: border-box;
-  background: #fafafe;
+  background: transparent;
 }

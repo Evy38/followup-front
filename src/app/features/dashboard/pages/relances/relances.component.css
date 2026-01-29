@@ -1,0 +1,442 @@
+/* relances.component.css */
+.relances-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px 16px;
+
+  min-height: 100vh;
+}
+
+/* Header */
+.relances-header {
+  margin-bottom: 24px;
+}
+
+.relances-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 16px 0;
+}
+
+.stats-bar {
+  display: flex;
+  gap: 16px;
+}
+
+.stat-item {
+  background: white;
+  border-radius: 12px;
+  padding: 12px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  min-width: 100px;
+}
+
+.stat-item.urgent {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+}
+
+.stat-number {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #6d5dfc;
+}
+
+.stat-item.urgent .stat-number {
+  color: #d97706;
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  color: #666;
+  margin-top: 4px;
+}
+
+/* Filtres */
+.quick-filters {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  background: white;
+  padding: 8px;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.quick-filters button {
+  flex: 1;
+  padding: 10px 16px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  font-weight: 500;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.quick-filters button.active {
+  background: #6d5dfc;
+  color: white;
+  box-shadow: 0 2px 8px rgba(109, 93, 252, 0.3);
+}
+
+/* Carte candidature */
+.candidature-timeline-card {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid #f0f0f0;
+  transition: box-shadow 0.2s;
+}
+
+.candidature-timeline-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+/* En-tête carte */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  gap: 16px;
+}
+
+.card-info {
+  flex: 1;
+}
+
+.job-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 6px 0;
+}
+
+.company-name {
+  font-size: 1rem;
+  color: #666;
+  margin: 0 0 8px 0;
+}
+
+.candidature-meta {
+  font-size: 0.875rem;
+  color: #999;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.date-badge {
+  background: #f0edff;
+  color: #6d5dfc;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+/* Cercle de progression */
+.progress-circle {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  flex-shrink: 0;
+}
+
+.progress-circle svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.circle-bg {
+  fill: none;
+  stroke: #f0f0f0;
+  stroke-width: 3;
+}
+
+.circle-progress {
+  fill: none;
+  stroke: #6d5dfc;
+  stroke-width: 3;
+  stroke-linecap: round;
+  transition: stroke-dasharray 0.3s;
+}
+
+.progress-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #6d5dfc;
+}
+
+/* Timeline */
+
+/* Timeline horizontal */
+.relances-timeline {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  position: relative;
+  padding-left: 0;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.timeline-line {
+  display: none;
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 0;
+  flex: 1 1 0;
+  min-width: 180px;
+  max-width: 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.timeline-item:last-child {
+  margin-bottom: 0;
+}
+
+.timeline-point {
+  position: static;
+  margin-bottom: 8px;
+  left: auto;
+  top: auto;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 3px solid #ddd;
+  background: white;
+  z-index: 2;
+  transition: all 0.3s;
+}
+
+.timeline-point.done {
+  border-color: #22c55e;
+  background: #22c55e;
+  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.1);
+}
+
+.timeline-point.overdue {
+  border-color: #ef4444;
+  background: #ef4444;
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
+  animation: pulse 2s infinite;
+}
+
+.timeline-point.upcoming {
+  border-color: #6d5dfc;
+  background: white;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(239, 68, 68, 0.2);
+  }
+}
+
+/* Contenu timeline horizontal */
+.timeline-content {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 16px;
+  border-left: none;
+  border-top: 3px solid #ddd;
+  transition: all 0.2s;
+  min-width: 140px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.timeline-content.done {
+  background: #f0fdf4;
+  border-top-color: #22c55e;
+}
+
+.timeline-content.overdue {
+  background: #fef2f2;
+  border-top-color: #ef4444;
+}
+
+.timeline-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.relance-number {
+  font-weight: 700;
+  font-size: 1rem;
+  color: #1a1a1a;
+}
+
+.relance-timing {
+  font-size: 0.875rem;
+  color: #666;
+  background: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.relance-date {
+  font-size: 0.9375rem;
+  color: #6d5dfc;
+  font-weight: 500;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.overdue-badge {
+  background: #fee2e2;
+  color: #dc2626;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* Boutons */
+.relance-actions {
+  margin-top: 12px;
+}
+
+.btn-mark-done {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  background: #6d5dfc;
+  color: white;
+  font-weight: 500;
+  font-size: 0.9375rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 2px 4px rgba(109, 93, 252, 0.2);
+}
+
+.btn-mark-done:hover {
+  background: #5746d6;
+  box-shadow: 0 4px 8px rgba(109, 93, 252, 0.3);
+  transform: translateY(-1px);
+}
+
+.btn-mark-done.btn-urgent {
+  background: #ef4444;
+  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.2);
+}
+
+.btn-mark-done.btn-urgent:hover {
+  background: #dc2626;
+}
+
+.status-done {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #22c55e;
+  font-weight: 500;
+  font-size: 0.9375rem;
+}
+
+/* État vide */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: #9ca3af;
+}
+
+.empty-state p {
+  margin-top: 16px;
+  font-size: 1.125rem;
+}
+
+/* Responsive */
+
+@media (max-width: 900px) {
+  .relances-timeline {
+    gap: 10px;
+  }
+  .timeline-item {
+    min-width: 120px;
+    max-width: 160px;
+  }
+  .timeline-content {
+    padding: 10px;
+    min-width: 90px;
+  }
+}
+
+@media (max-width: 640px) {
+  .relances-container {
+    padding: 16px 12px;
+  }
+
+  .relances-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .card-header {
+    flex-direction: column;
+  }
+
+  .progress-circle {
+    align-self: flex-start;
+  }
+
+  .candidature-timeline-card {
+    padding: 16px;
+  }
+
+  .relances-timeline {
+    flex-direction: column;
+    gap: 0;
+    padding-left: 0;
+  }
+  .timeline-item {
+    flex-direction: row;
+    align-items: flex-start;
+    min-width: 0;
+    max-width: none;
+    margin-bottom: 12px;
+  }
+  .timeline-point {
+    margin-bottom: 0;
+    margin-right: 8px;
+  }
+  .timeline-content {
+    border-top: none;
+    border-left: 3px solid #ddd;
+    min-width: 0;
+    padding: 12px;
+  }
+  .timeline-content.done {
+    border-left-color: #22c55e;
+  }
+  .timeline-content.overdue {
+    border-left-color: #ef4444;
+  }
+}

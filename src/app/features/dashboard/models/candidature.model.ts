@@ -1,3 +1,5 @@
+import { Relance } from './relance.model';
+
 export interface EntrepriseApi {
   nom: string;
 }
@@ -16,4 +18,5 @@ export interface Candidature {
   externalOfferId: string;
   entreprise: EntrepriseApi;
   statut: StatutApi;
+  relances: Relance[];
 }
