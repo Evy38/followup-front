@@ -1,9 +1,8 @@
 /* relances.component.css */
 .relances-container {
-  max-width: 900px;
+  max-width: 1400px; /* Plus large pour afficher plus de contenu */
   margin: 0 auto;
   padding: 24px 16px;
-
   min-height: 100vh;
 }
 
@@ -84,71 +83,83 @@
   box-shadow: 0 2px 8px rgba(109, 93, 252, 0.3);
 }
 
-/* Carte candidature */
+/* Carte candidature - Version compacte en ligne */
 .candidature-timeline-card {
   background: white;
-  border-radius: 16px;
-  padding: 24px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  padding: 16px 20px; /* Padding réduit */
+  margin-bottom: 8px; /* Espacement réduit entre les cartes */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   border: 1px solid #f0f0f0;
-  transition: box-shadow 0.2s;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 
 .candidature-timeline-card:hover {
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-color: #6d5dfc;
 }
 
-/* En-tête carte */
+/* En-tête carte - Version compacte */
 .card-header {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  justify-content: flex-start;
   align-items: flex-start;
-  margin-bottom: 24px;
-  gap: 16px;
+  margin-bottom: 0;
+  gap: 4px;
+  flex: 2;
+  min-width: 250px;
 }
 
 .card-info {
   flex: 1;
+  width: 100%;
 }
 
 .job-title {
-  font-size: 1.25rem;
-  font-weight: 700;
+  font-size: 1rem; /* Taille réduite */
+  font-weight: 600;
   color: #1a1a1a;
-  margin: 0 0 6px 0;
+  margin: 0 0 2px 0;
+  line-height: 1.3;
 }
 
 .company-name {
-  font-size: 1rem;
+  font-size: 0.875rem; /* Taille réduite */
   color: #666;
-  margin: 0 0 8px 0;
+  margin: 0 0 4px 0;
+  line-height: 1.2;
 }
 
 .candidature-meta {
-  font-size: 0.875rem;
+  font-size: 0.75rem; /* Plus petit */
   color: #999;
   margin: 0;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   flex-wrap: wrap;
 }
 
 .date-badge {
   background: #f0edff;
   color: #6d5dfc;
-  padding: 2px 8px;
+  padding: 2px 6px;
   border-radius: 4px;
   font-weight: 500;
+  font-size: 0.75rem;
 }
 
-/* Cercle de progression */
+/* Cercle de progression - Version compacte */
 .progress-circle {
   position: relative;
-  width: 60px;
-  height: 60px;
+  width: 36px; /* Plus petit */
+  height: 36px;
   flex-shrink: 0;
+  margin-right: 16px;
 }
 
 .progress-circle svg {
@@ -160,13 +171,13 @@
 .circle-bg {
   fill: none;
   stroke: #f0f0f0;
-  stroke-width: 3;
+  stroke-width: 2.5; /* Légèrement plus fin */
 }
 
 .circle-progress {
   fill: none;
   stroke: #6d5dfc;
-  stroke-width: 3;
+  stroke-width: 2.5;
   stroke-linecap: round;
   transition: stroke-dasharray 0.3s;
 }
@@ -176,22 +187,23 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 0.875rem;
-  font-weight: 700;
+  font-size: 0.75rem; /* Plus petit */
+  font-weight: 600;
   color: #6d5dfc;
 }
 
 /* Timeline */
 
-/* Timeline horizontal */
+/* Timeline - Version ultra compacte en ligne */
 .relances-timeline {
   display: flex;
   flex-direction: row;
-  gap: 20px;
+  gap: 12px;
   position: relative;
   padding-left: 0;
   justify-content: flex-start;
-  align-items: flex-start;
+  align-items: center;
+  flex: 3;
 }
 
 .timeline-line {
@@ -202,11 +214,16 @@
   position: relative;
   margin-bottom: 0;
   flex: 1 1 0;
-  min-width: 180px;
-  max-width: 220px;
+  min-width: 120px;
+  max-width: 150px;
   display: flex;
-  flex-direction: column;
+  flex-direction: row; /* Changé en row pour affichage horizontal compact */
   align-items: center;
+  gap: 8px;
+  padding: 8px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
 }
 
 .timeline-item:last-child {
@@ -215,29 +232,30 @@
 
 .timeline-point {
   position: static;
-  margin-bottom: 8px;
+  margin-bottom: 0;
   left: auto;
   top: auto;
-  width: 16px;
-  height: 16px;
+  width: 12px; /* Plus petit */
+  height: 12px;
   border-radius: 50%;
-  border: 3px solid #ddd;
+  border: 2px solid #ddd;
   background: white;
   z-index: 2;
   transition: all 0.3s;
+  flex-shrink: 0;
 }
 
 .timeline-point.done {
   border-color: #22c55e;
   background: #22c55e;
-  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.1);
+  box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.1);
 }
 
 .timeline-point.overdue {
   border-color: #ef4444;
   background: #ef4444;
-  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
-  animation: pulse 2s infinite;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.1);
+  animation: pulse-small 2s infinite;
 }
 
 .timeline-point.upcoming {
@@ -245,121 +263,214 @@
   background: white;
 }
 
-@keyframes pulse {
+@keyframes pulse-small {
   0%, 100% {
-    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.1);
   }
   50% {
-    box-shadow: 0 0 0 8px rgba(239, 68, 68, 0.2);
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.2);
   }
 }
 
-/* Contenu timeline horizontal */
+/* Contenu timeline - Version ultra compacte */
 .timeline-content {
-  background: #f8f9fa;
-  border-radius: 12px;
-  padding: 16px;
+  background: transparent; /* Plus de background séparé */
+  border-radius: 0;
+  padding: 0;
   border-left: none;
-  border-top: 3px solid #ddd;
+  border-top: none;
   transition: all 0.2s;
-  min-width: 140px;
+  min-width: 0;
   width: 100%;
   box-sizing: border-box;
+  flex: 1;
 }
 
 .timeline-content.done {
-  background: #f0fdf4;
-  border-top-color: #22c55e;
+  background: transparent;
+  border-top-color: transparent;
 }
 
 .timeline-content.overdue {
-  background: #fef2f2;
-  border-top-color: #ef4444;
+  background: transparent;
+  border-top-color: transparent;
 }
 
 .timeline-header {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  margin-bottom: 0;
+  gap: 2px;
 }
 
 .relance-number {
-  font-weight: 700;
-  font-size: 1rem;
+  font-weight: 600;
+  font-size: 0.75rem; /* Plus petit */
   color: #1a1a1a;
+  line-height: 1.2;
 }
 
 .relance-timing {
-  font-size: 0.875rem;
+  font-size: 0.65rem; /* Plus petit */
   color: #666;
   background: white;
-  padding: 2px 8px;
-  border-radius: 4px;
+  padding: 1px 4px;
+  border-radius: 3px;
+  line-height: 1.2;
 }
 
 .relance-date {
-  font-size: 0.9375rem;
+  font-size: 0.7rem; /* Plus petit */
   color: #6d5dfc;
   font-weight: 500;
-  margin-bottom: 12px;
+  margin: 2px 0 0 0;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
+  line-height: 1.2;
 }
 
 .overdue-badge {
   background: #fee2e2;
   color: #dc2626;
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 0.75rem;
+  padding: 1px 4px;
+  border-radius: 3px;
+  font-size: 0.6rem;
   font-weight: 600;
 }
 
-/* Boutons */
+/* Styles spéciaux pour les états des timeline items */
+.timeline-item.done {
+  background: #f0fdf4;
+  border-color: #22c55e;
+}
+
+.timeline-item.overdue {
+  background: #fef2f2;
+  border-color: #ef4444;
+}
+
+.timeline-item.upcoming {
+  background: #faf7ff;
+  border-color: #6d5dfc;
+}
+
+/* Boutons - Version compacte */
 .relance-actions {
-  margin-top: 12px;
+  margin-top: 0;
+  display: flex;
+  justify-content: center;
 }
 
 .btn-mark-done {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 10px 16px;
-  border-radius: 8px;
+  gap: 3px;
+  padding: 4px 8px; /* Plus petit */
+  border-radius: 6px;
   border: none;
   background: #6d5dfc;
   color: white;
   font-weight: 500;
-  font-size: 0.9375rem;
+  font-size: 0.7rem; /* Plus petit */
   cursor: pointer;
   transition: all 0.2s;
-  box-shadow: 0 2px 4px rgba(109, 93, 252, 0.2);
+  box-shadow: 0 1px 2px rgba(109, 93, 252, 0.2);
+  white-space: nowrap;
 }
 
 .btn-mark-done:hover {
   background: #5746d6;
-  box-shadow: 0 4px 8px rgba(109, 93, 252, 0.3);
+  box-shadow: 0 2px 4px rgba(109, 93, 252, 0.3);
   transform: translateY(-1px);
 }
 
 .btn-mark-done.btn-urgent {
   background: #ef4444;
-  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.2);
+  box-shadow: 0 1px 2px rgba(239, 68, 68, 0.2);
 }
 
 .btn-mark-done.btn-urgent:hover {
   background: #dc2626;
 }
 
+.btn-mark-done svg {
+  width: 12px; /* Plus petit */
+  height: 12px;
+}
+
 .status-done {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   color: #22c55e;
   font-weight: 500;
-  font-size: 0.9375rem;
+  font-size: 0.7rem; /* Plus petit */
+  white-space: nowrap;
+}
+
+.status-done svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* Bouton d'annulation toujours visible */
+.status-done .btn-mark-done {
+  background: #fff;
+  color: #ef4444;
+  border: 1px solid #ef4444;
+  box-shadow: none;
+  margin-left: 4px;
+  padding: 2px 4px;
+  font-size: 0.6rem;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.status-done .btn-mark-done:hover {
+  background: #ef4444;
+  color: white;
+  opacity: 1;
+}
+
+/* Actions sur les cartes - boutons inline */
+.timeline-item .relance-actions {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.timeline-item:hover .relance-actions {
+  opacity: 1;
+}
+
+.timeline-item .btn-mark-done {
+  padding: 2px 4px;
+  font-size: 0.6rem;
+  min-width: auto;
+}
+
+.timeline-item .btn-mark-done svg {
+  width: 10px;
+  height: 10px;
+}
+
+.timeline-item .status-done {
+  font-size: 0.6rem;
+  position: relative;
+}
+
+/* Action rapide : clic sur toute la timeline-item pour marquer comme fait */
+.timeline-item.clickable {
+  cursor: pointer;
+}
+
+.timeline-item.clickable:hover {
+  transform: scale(1.02);
 }
 
 /* État vide */
@@ -374,69 +485,172 @@
   font-size: 1.125rem;
 }
 
-/* Responsive */
+/* Responsive - Version optimisée pour le design compact */
 
-@media (max-width: 900px) {
+@media (max-width: 1200px) {
+  .relances-container {
+    max-width: 100%;
+    padding: 16px 12px;
+  }
   .relances-timeline {
-    gap: 10px;
+    gap: 8px;
   }
   .timeline-item {
-    min-width: 120px;
-    max-width: 160px;
+    min-width: 100px;
+    max-width: 130px;
+    padding: 6px;
   }
-  .timeline-content {
-    padding: 10px;
-    min-width: 90px;
+}
+
+@media (max-width: 900px) {
+  .candidature-timeline-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 16px;
+  }
+  
+  .card-header {
+    flex: none;
+    width: 100%;
+    min-width: auto;
+  }
+  
+  .progress-circle {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    margin-right: 0;
+  }
+  
+  .relances-timeline {
+    flex: none;
+    width: 100%;
+    gap: 6px;
+  }
+  
+  .timeline-item {
+    min-width: 80px;
+    max-width: 110px;
+    padding: 4px;
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .timeline-point {
+    width: 10px;
+    height: 10px;
+    border-width: 1px;
+  }
+  
+  .relance-number {
+    font-size: 0.65rem;
+  }
+  
+  .relance-timing,
+  .relance-date {
+    font-size: 0.6rem;
+  }
+  
+  .timeline-item .relance-actions {
+    position: static;
+    opacity: 1;
+    margin-top: 2px;
   }
 }
 
 @media (max-width: 640px) {
   .relances-container {
-    padding: 16px 12px;
+    padding: 12px 8px;
   }
 
   .relances-header h1 {
     font-size: 1.5rem;
   }
 
-  .card-header {
-    flex-direction: column;
-  }
-
-  .progress-circle {
-    align-self: flex-start;
-  }
-
   .candidature-timeline-card {
-    padding: 16px;
+    padding: 8px 12px;
+    margin-bottom: 6px;
+  }
+
+  .card-header {
+    margin-bottom: 8px;
+  }
+  
+  .progress-circle {
+    width: 28px;
+    height: 28px;
+    top: 8px;
+    right: 12px;
+  }
+
+  .job-title {
+    font-size: 0.9rem;
+  }
+  
+  .company-name {
+    font-size: 0.8rem;
+  }
+  
+  .candidature-meta {
+    font-size: 0.7rem;
   }
 
   .relances-timeline {
-    flex-direction: column;
-    gap: 0;
-    padding-left: 0;
+    gap: 4px;
   }
+  
   .timeline-item {
-    flex-direction: row;
-    align-items: flex-start;
-    min-width: 0;
-    max-width: none;
-    margin-bottom: 12px;
+    min-width: 70px;
+    max-width: 90px;
+    padding: 3px;
   }
+  
   .timeline-point {
-    margin-bottom: 0;
-    margin-right: 8px;
+    width: 8px;
+    height: 8px;
   }
-  .timeline-content {
-    border-top: none;
-    border-left: 3px solid #ddd;
-    min-width: 0;
-    padding: 12px;
+  
+  .relance-number {
+    font-size: 0.6rem;
   }
-  .timeline-content.done {
-    border-left-color: #22c55e;
+  
+  .relance-timing,
+  .relance-date {
+    font-size: 0.55rem;
   }
-  .timeline-content.overdue {
-    border-left-color: #ef4444;
+  
+  .btn-mark-done {
+    padding: 2px 4px;
+    font-size: 0.6rem;
+  }
+  
+  .btn-mark-done svg {
+    width: 8px;
+    height: 8px;
+  }
+}
+
+/* Amélioration de la densité d'information */
+@media (min-width: 1400px) {
+  .candidature-timeline-card {
+    padding: 12px 16px;
+    margin-bottom: 6px;
+  }
+  
+  .timeline-item {
+    min-width: 140px;
+    max-width: 170px;
+  }
+  
+  /* Affichage en grille pour très grands écrans */
+  .candidatures-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .candidature-timeline-card:nth-child(even) {
+    background: #fafbfc;
   }
 }

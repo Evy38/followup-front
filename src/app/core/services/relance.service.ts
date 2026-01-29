@@ -25,4 +25,19 @@ export class RelanceService {
         );
     }
 
+    markAsUndone(relanceId: number) {
+        return this.http.patch(
+            `${this.apiUrl}/${relanceId}`,
+            {
+                faite: false,
+                dateRealisation: null,
+            },
+            {
+                headers: {
+                    'Content-Type': 'application/merge-patch+json'
+                }
+            }
+        );
+    }
+
 }

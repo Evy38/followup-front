@@ -52,25 +52,47 @@ export class RelancesComponent implements OnInit {
     });
   }
 
-markAsDone(relance: any) {
-  this.relanceService.markAsDone(relance.id).subscribe({
-    next: (updatedRelance: any) => {
-      relance.faite = true;
-      relance.dateRealisation = updatedRelance.dateRealisation;
+  markAsDone(relance: any) {
+    this.relanceService.markAsDone(relance.id).subscribe({
+      next: (updatedRelance: any) => {
+        relance.faite = true;
+        relance.dateRealisation = updatedRelance.dateRealisation;
 
-      // Trouver la candidature parente et mettre à jour dateDerniereRelance
-      const parentCandidature = this.candidatures.find(c => c.relances?.some((r: any) => r.id === relance.id));
-      if (parentCandidature) {
-        parentCandidature.dateDerniereRelance = updatedRelance.dateRealisation;
+        // Trouver la candidature parente et mettre à jour dateDerniereRelance
+        const parentCandidature = this.candidatures.find(c => c.relances?.some((r: any) => r.id === relance.id));
+        if (parentCandidature) {
+          parentCandidature.dateDerniereRelance = updatedRelance.dateRealisation;
+        }
+
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Erreur lors de la relance', err);
       }
+    });
+  }
 
-      this.cdr.detectChanges();
-    },
-    error: (err) => {
-      console.error('Erreur lors de la relance', err);
-    }
-  });
-}
+  markAsUndone(relance: any) {
+    this.relanceService.markAsUndone(relance.id).subscribe({
+      next: (updatedRelance: any) => {
+        relance.faite = false;
+        relance.dateRealisation = null;
+
+        // Mettre à jour la candidature parente si besoin
+        const parentCandidature = this.candidatures.find(c => c.relances?.some((r: any) => r.id === relance.id));
+        if (parentCandidature) {
+          // recalculer la dateDerniereRelance (prendre la dernière relance faite ou null)
+          const lastDone = parentCandidature.relances?.filter((r: any) => r.faite).sort((a: any, b: any) => new Date(b.dateRealisation).getTime() - new Date(a.dateRealisation).getTime())[0];
+          parentCandidature.dateDerniereRelance = lastDone ? lastDone.dateRealisation : null;
+        }
+
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Erreur lors de l\'annulation de la relance', err);
+      }
+    });
+  }
 
 
 
