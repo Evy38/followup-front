@@ -6,7 +6,7 @@ import { RelanceService } from '../../../../core/services/relance.service';
 import { Candidature } from '../../models/candidature.model';
 import { Relance } from '../../models/relance.model';
 
-type FilterStatus = 'all' | 'pending' | 'done';
+type FilterStatus = 'relances' | 'reponses';
 
 @Component({
   selector: 'app-relances',
@@ -17,7 +17,7 @@ type FilterStatus = 'all' | 'pending' | 'done';
 })
 export class RelancesComponent implements OnInit {
   candidatures: Candidature[] = [];
-  filterStatus: FilterStatus = 'all';
+  filterStatus: FilterStatus = 'relances';
   loading = false;
 
   constructor(
@@ -73,18 +73,7 @@ export class RelancesComponent implements OnInit {
   // =====================
 
   get filteredCandidatures(): Candidature[] {
-    if (this.filterStatus === 'pending') {
-      return this.candidatures.filter((c) =>
-        c.relances?.some((r) => !r.faite && this.isRelanceOverdue(r))
-      );
-    }
-
-    if (this.filterStatus === 'done') {
-      return this.candidatures.filter(
-        (c) => c.relances?.length && c.relances.every((r) => r.faite)
-      );
-    }
-
+    // Désormais, les deux onglets affichent toutes les candidatures
     return this.candidatures;
   }
 
@@ -94,6 +83,35 @@ export class RelancesComponent implements OnInit {
 
   getRelanceByRang(candidature: Candidature, rang: number): Relance | undefined {
     return candidature.relances?.find((r) => r.rang === rang);
+  }
+
+  getEtatCandidature(c: Candidature): string {
+    if (c.statutReponse === 'entretien') {
+      if (c.dateEntretien) {
+        return `Entretien prévu le ${this.formatDate(c.dateEntretien)}${c.heureEntretien ? ' à ' + c.heureEntretien : ''}`;
+      }
+      return 'Entretien à planifier';
+    }
+    if (c.statutReponse === 'echanges') {
+      return 'Échanges en cours';
+    }
+    if (c.statutReponse === 'negative') {
+      return 'Refusé';
+    }
+    if (c.statutReponse === 'attente' || !c.statutReponse) {
+      return 'En attente de retour';
+    }
+    return c.statutReponse;
+  }
+
+  formatDate(iso: string): string {
+    if (!iso) return '—';
+    const d = new Date(iso);
+    return new Intl.DateTimeFormat('fr-FR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    }).format(d);
   }
 
   markAsDone(_: Candidature, relance: Relance): void {
