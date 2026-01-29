@@ -94,31 +94,26 @@ export class CandidaturesComponent implements OnInit {
 
   // ✅ CONFIRMER SUPPRESSION (vraie suppression)
   confirmDelete() {
-    const iri = (this.pendingDelete as any)?.['@id'];
-    if (!iri) return;
+    // Utilise l'IRI si présent, sinon construit à partir de l'id
+    const iri = (this.pendingDelete as any)?.['@id'] || (this.pendingDelete?.id ? `/api/candidatures/${this.pendingDelete.id}` : undefined);
+    if (!iri) {
+      return;
+    }
 
     this.deleting = true;
-
-    const backup = [...this.candidatures];
-
-    // ✅ retire l’élément en UI via @id
-    this.candidatures = this.candidatures.filter((x: any) => x?.['@id'] !== iri);
-
     this.candidatureService.deleteCandidatureByIri(iri).subscribe({
       next: () => {
         this.deleting = false;
         this.cancelDelete();
+        this.load();
         this.candidatureService.notifyRefresh();
-        this.cdr.detectChanges();
       },
-      error: (err) => {
-        console.error('Suppression refusée', err);
-
-        this.candidatures = backup; // rollback
+      error: () => {
         this.deleting = false;
         this.cancelDelete();
-        this.cdr.detectChanges();
-      },
+      }
     });
   }
+
+
 }

@@ -102,9 +102,7 @@ export class LoginComponent implements OnInit {
             } else {
               this.closeOverlay();
               setTimeout(() => {
-                this.router.navigate(['/app/dashboard']).then(result => {
-                  console.log('NAV RESULT =', result);
-                });
+                this.router.navigate(['/app/dashboard'])
               }, 100);
             }
           },

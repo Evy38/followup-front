@@ -44,11 +44,11 @@
     </p>
 
     <div class="modal-actions">
-      <button type="button" class="btn-secondary" (click)="cancelDelete()" [disabled]="deleting">
+      <button class="btn-secondary" (click)="cancelDelete()" [disabled]="deleting">
         Non
       </button>
 
-      <button type="button" class="btn-danger" (click)="confirmDelete()" [disabled]="deleting">
+      <button type="button" class="btn-danger" (click)="confirmDelete()" [disabled]="deleting" tabindex="0">
         {{ deleting ? 'Suppression…' : 'Oui, supprimer' }}
       </button>
     </div>
