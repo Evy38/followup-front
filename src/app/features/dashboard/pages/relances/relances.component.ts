@@ -18,6 +18,39 @@ type FilterStatus = 'relances' | 'reponses';
   styleUrls: ['./relances.component.css'],
 })
 export class RelancesComponent implements OnInit {
+    showEntretienModal: boolean = false;
+    modalCandidature: Candidature | null = null;
+
+    openEntretienModal(c: Candidature): void {
+      this.modalCandidature = c;
+      this.entretienForm = { date: '', heure: '' };
+      this.showEntretienModal = true;
+      this.cdr.detectChanges();
+    }
+
+    closeEntretienModal(): void {
+      this.showEntretienModal = false;
+      this.modalCandidature = null;
+      this.entretienForm = { date: '', heure: '' };
+      this.cdr.detectChanges();
+    }
+
+    createEntretienFromModal(): void {
+      if (!this.modalCandidature) return;
+      const c = this.modalCandidature;
+      const iri = c['@id'] || `/api/candidatures/${c.id}`;
+      if (!iri || !this.entretienForm.date || !this.entretienForm.heure) return;
+      this.entretienService.createEntretien(iri, this.entretienForm.date, this.entretienForm.heure).subscribe({
+        next: (entretien) => {
+          c.entretiens = c.entretiens ? [...c.entretiens, entretien] : [entretien];
+          // Synchronise la date/heure du prochain entretien prévu dans la table candidature
+          this.candidatureService.updateEntretien(c.id, this.entretienForm.date, this.entretienForm.heure).subscribe();
+          this.closeEntretienModal();
+          this.cdr.detectChanges();
+        },
+        error: (err) => console.error('❌ Erreur création entretien', err),
+      });
+    }
   // ...existing code...
   entretienForm = {
     date: '',
@@ -254,37 +287,24 @@ export class RelancesComponent implements OnInit {
    * Démarre l'édition d'un entretien (affiche le mini-formulaire inline)
    */
   startEditEntretien(candidatureIri: string): void {
-    this.editingEntretienFor = candidatureIri;
+    // Désactivé : on utilise la modale désormais
+    return;
   }
 
   /**
    * Annule l'édition
    */
   cancelEditEntretien(): void {
-    this.editingEntretienFor = null;
+    // Désactivé : on utilise la modale désormais
+    return;
   }
 
   /**
    * Crée un nouvel entretien
    */
   createEntretien(c: Candidature): void {
-    if (!c['@id']) return;
-
-    console.log('🔄 Création entretien pour', c['@id']);
-
-    this.entretienService
-      .createEntretien(c['@id'], this.today(), '09:00')
-      .subscribe({
-        next: (e) => {
-          console.log('✅ Entretien créé', e);
-          c.entretiens = [...(c.entretiens ?? []), e];
-          this.cancelEditEntretien(); // Ferme automatiquement le formulaire
-          this.cdr.detectChanges();
-        },
-        error: (err) => {
-          console.error('❌ Erreur création entretien', err);
-        }
-      });
+    // Désactivé : on utilise la modale désormais
+    return;
   }
 
   /**
@@ -330,15 +350,20 @@ export class RelancesComponent implements OnInit {
    */
   deleteEntretien(c: Candidature, entretien: any, event: Event): void {
     event.stopPropagation();
-    
     if (!confirm('Supprimer cet entretien ?')) return;
-
     console.log('🔄 Suppression entretien', entretien['@id']);
-
     this.entretienService.deleteEntretien(entretien['@id']).subscribe({
       next: () => {
         console.log('✅ Entretien supprimé');
         c.entretiens = (c.entretiens ?? []).filter(e => e['@id'] !== entretien['@id']);
+        // Si plus aucun entretien prévu, efface la date/heure dans la table candidature
+        const prochain = (c.entretiens ?? []).find(e => e.statut === 'prevu');
+        if (!prochain) {
+          this.candidatureService.updateEntretien(c.id, null, null).subscribe();
+        } else {
+          // Sinon, synchronise avec le prochain entretien prévu
+          this.candidatureService.updateEntretien(c.id, prochain.dateEntretien, prochain.heureEntretien).subscribe();
+        }
         this.cdr.detectChanges();
       },
       error: (err) => {
@@ -374,5 +399,20 @@ export class RelancesComponent implements OnInit {
 
   private today(): string {
     return new Date().toISOString().split('T')[0];
+  }
+
+  /**
+   * Formate une heure (string) au format hh:mm
+   */
+  formatHeure(heure: string): string {
+    if (!heure) return '';
+    // Si déjà au format hh:mm
+    if (/^\d{2}:\d{2}$/.test(heure)) return heure;
+    // Si format ISO ou avec T
+    const match = heure.match(/T(\d{2}):(\d{2})/);
+    if (match) return `${match[1]}:${match[2]}`;
+    // Si format complet genre 12:30:00
+    if (/^\d{2}:\d{2}:\d{2}/.test(heure)) return heure.slice(0,5);
+    return heure;
   }
 }

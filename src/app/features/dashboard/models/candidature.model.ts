@@ -15,6 +15,7 @@ export interface EntretienApi {
   heureEntretien: string;
   statut: 'prevu' | 'passe' | 'annule';
   resultat?: 'positive' | 'negative' | null;
+  _hover?: boolean;
 }
 
 export interface Candidature {
