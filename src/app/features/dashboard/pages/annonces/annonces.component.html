@@ -1,0 +1,37 @@
+<section class="annonces">
+
+
+  <p *ngIf="loading">Chargement des annonces…</p>
+
+  <p *ngIf="error">{{ error }}</p>
+
+  <ul *ngIf="!loading && !error">
+    <li *ngFor="let job of jobs; trackBy: trackByJobId" class="job-card">
+      <h3>{{ job.title }}</h3>
+      <p><strong>{{ job.company }}</strong></p>
+      <p>{{ job.location }}</p>
+      <p>Contrat : {{ job.contractType }}</p>
+
+      <p *ngIf="job.salaryMin || job.salaryMax">
+        Salaire :
+        {{ job.salaryMin ?? '—' }} € – {{ job.salaryMax ?? '—' }} €
+      </p>
+
+      <div class="job-actions">
+        <a
+          [href]="job.redirectUrl"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Voir l’annonce
+        </a>
+        <button
+          (click)="onCandidated(job)"
+          [disabled]="job._candidated"
+        >
+          {{ job._candidated ? 'Déjà candidaté' : 'J’ai candidaté' }}
+        </button>
+      </div>
+    </li>
+  </ul>
+</section>

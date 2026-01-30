@@ -1,0 +1,1382 @@
+.pill-hover-delete {
+  position: relative;
+}
+.pill-delete-btn {
+  position: absolute;
+  right: -0.7em;
+  top: -0.7em;
+  background: #fff;
+  border: 1px solid #ffd580;
+  color: #b26a00;
+  border-radius: 50%;
+  width: 1.5em;
+  height: 1.5em;
+  font-size: 1em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 1px 4px #ffd58044;
+  z-index: 2;
+  opacity: 0.85;
+  transition: opacity 0.15s;
+}
+.pill-hover-delete:hover .pill-delete-btn {
+  opacity: 1;
+}
+.modal-overlay {
+  /* Empêche stacking d'overlays accidentels */
+  pointer-events: all;
+}
+
+body > .modal-overlay + .modal-overlay {
+  display: none !important;
+}
+
+/* === MODALE ENTRETIEN (style cohérent suppression) === */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  padding: 1.2rem;
+  background: rgba(10, 10, 20, 0.05);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.modal-card {
+  width: min(520px, 100%);
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid rgba(120, 100, 255, 0.25);
+  box-shadow: 0 18px 50px rgba(15, 10, 40, 0.22);
+  padding: 1.2rem 1.2rem 1rem;
+  animation: popIn 0.18s ease-out;
+}
+
+@keyframes popIn {
+  from { transform: translateY(8px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 0.6rem;
+}
+
+.modal-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: rgba(111, 94, 248, 0.12);
+  color: #6f5ef8;
+  font-size: 1.05rem;
+}
+
+.modal-title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #1f1f1f;
+}
+
+.modal-text {
+  margin: 0.4rem 0 1rem;
+  color: #555;
+  font-size: 0.92rem;
+  line-height: 1.35rem;
+}
+
+.modal-fields {
+  display: flex;
+  gap: 1.2rem;
+  margin-bottom: 1.1rem;
+}
+.modal-fields label {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.98rem;
+  color: #444;
+  font-weight: 600;
+}
+.modal-fields input[type="date"],
+.modal-fields input[type="time"] {
+  margin-top: 0.3rem;
+  padding: 0.45rem 0.7rem;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  font-size: 1rem;
+  background: #f8f8ff;
+  color: #222;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+}
+
+.btn-secondary {
+  padding: 0.55rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid rgba(120, 100, 255, 0.28);
+  background: #fff;
+  color: #6f5ef8;
+  font-weight: 800;
+  cursor: pointer;
+}
+.btn-secondary:hover {
+  background: rgba(111, 94, 248, 0.06);
+}
+.btn-create-entretien {
+  padding: 0.55rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid rgba(111, 94, 248, 0.28);
+  background: rgba(111, 94, 248, 0.08);
+  color: #6f5ef8;
+  font-weight: 900;
+  cursor: pointer;
+}
+.btn-create-entretien:hover {
+  background: rgba(111, 94, 248, 0.14);
+}
+.btn-secondary:disabled,
+.btn-create-entretien:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ===========================
+   BASE CONTAINER (INCHANGÉ)
+=========================== */
+.relances-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 24px 16px;
+  min-height: 100vh;
+}
+
+/* ===========================
+   HEADER (INCHANGÉ)
+=========================== */
+.relances-header {
+  margin-bottom: 24px;
+}
+
+.relances-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 16px 0;
+}
+
+.stats-bar {
+  display: flex;
+  gap: 16px;
+}
+
+.stat-item {
+  background: white;
+  border-radius: 12px;
+  padding: 12px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  min-width: 100px;
+}
+
+.stat-item.urgent {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+}
+
+.stat-number {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #6d5dfc;
+}
+
+.stat-item.urgent .stat-number {
+  color: #d97706;
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  color: #666;
+  margin-top: 4px;
+}
+
+/* ===========================
+   FILTRES (INCHANGÉ)
+=========================== */
+.quick-filters {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  background: white;
+  padding: 8px;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.quick-filters button {
+  flex: 1;
+  padding: 10px 16px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  font-weight: 500;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.quick-filters button.active {
+  background: #6d5dfc;
+  color: white;
+  box-shadow: 0 2px 8px rgba(109, 93, 252, 0.3);
+}
+
+/* ===========================
+   CARTE CANDIDATURE (INCHANGÉ)
+=========================== */
+.candidature-timeline-card {
+  background: white;
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  border: 1px solid #f0f0f0;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.candidature-timeline-card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-color: #6d5dfc;
+}
+
+/* ===========================
+   EN-TÊTE CARTE (INCHANGÉ)
+=========================== */
+.card-header {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  margin-bottom: 0;
+  gap: 4px;
+  flex: 2;
+  min-width: 250px;
+}
+
+.card-info {
+  flex: 1;
+  width: 100%;
+}
+
+.job-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 2px 0;
+  line-height: 1.3;
+}
+
+.company-name {
+  font-size: 0.875rem;
+  color: #666;
+  margin: 0 0 4px 0;
+  line-height: 1.2;
+}
+
+.candidature-meta {
+  font-size: 0.75rem;
+  color: #999;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.date-badge {
+  background: #f0edff;
+  color: #6d5dfc;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 500;
+  font-size: 0.75rem;
+}
+
+/* ===========================
+   CERCLE PROGRESSION (INCHANGÉ)
+=========================== */
+.progress-circle {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  margin-right: 16px;
+}
+
+.progress-circle svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.circle-bg {
+  fill: none;
+  stroke: #f0f0f0;
+  stroke-width: 2.5;
+}
+
+.circle-progress {
+  fill: none;
+  stroke: #6d5dfc;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  transition: stroke-dasharray 0.3s;
+}
+
+.progress-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #6d5dfc;
+}
+
+/* ===========================
+   TIMELINE RELANCES (INCHANGÉ)
+=========================== */
+.relances-timeline {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  position: relative;
+  padding-left: 0;
+  justify-content: flex-start;
+  align-items: center;
+  flex: 3;
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 0;
+  flex: 1 1 0;
+  min-width: 120px;
+  max-width: 150px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.timeline-item:last-child {
+  margin-bottom: 0;
+}
+
+.timeline-point {
+  position: static;
+  margin-bottom: 0;
+  left: auto;
+  top: auto;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid #ddd;
+  background: white;
+  z-index: 2;
+  transition: all 0.3s;
+  flex-shrink: 0;
+}
+
+.timeline-point.done {
+  border-color: #22c55e;
+  background: #22c55e;
+  box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.1);
+}
+
+.timeline-point.overdue {
+  border-color: #ef4444;
+  background: #ef4444;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.1);
+  animation: pulse-small 2s infinite;
+}
+
+.timeline-point.upcoming {
+  border-color: #6d5dfc;
+  background: white;
+}
+
+@keyframes pulse-small {
+  0%, 100% {
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.2);
+  }
+}
+
+.timeline-content {
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+  border-left: none;
+  border-top: none;
+  transition: all 0.2s;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+  flex: 1;
+}
+
+.timeline-header {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  margin-bottom: 0;
+  gap: 2px;
+}
+
+.relance-number {
+  font-weight: 600;
+  font-size: 0.75rem;
+  color: #1a1a1a;
+  line-height: 1.2;
+}
+
+.relance-timing {
+  font-size: 0.65rem;
+  color: #666;
+  background: white;
+  padding: 1px 4px;
+  border-radius: 3px;
+  line-height: 1.2;
+}
+
+.relance-date {
+  font-size: 0.7rem;
+  color: #6d5dfc;
+  font-weight: 500;
+  margin: 2px 0 0 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  line-height: 1.2;
+}
+
+.overdue-badge {
+  background: #fee2e2;
+  color: #dc2626;
+  padding: 1px 4px;
+  border-radius: 3px;
+  font-size: 0.6rem;
+  font-weight: 600;
+}
+
+.timeline-item.done {
+  background: #f0fdf4;
+  border-color: #22c55e;
+}
+
+.timeline-item.overdue {
+  background: #fef2f2;
+  border-color: #ef4444;
+}
+
+.timeline-item.upcoming {
+  background: #faf7ff;
+  border-color: #6d5dfc;
+}
+
+.relance-actions {
+  margin-top: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.btn-mark-done {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: none;
+  background: #6d5dfc;
+  color: white;
+  font-weight: 500;
+  font-size: 0.7rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 1px 2px rgba(109, 93, 252, 0.2);
+  white-space: nowrap;
+}
+
+.btn-mark-done:hover {
+  background: #5746d6;
+  box-shadow: 0 2px 4px rgba(109, 93, 252, 0.3);
+  transform: translateY(-1px);
+}
+
+.btn-mark-done.btn-urgent {
+  background: #ef4444;
+  box-shadow: 0 1px 2px rgba(239, 68, 68, 0.2);
+}
+
+.btn-mark-done.btn-urgent:hover {
+  background: #dc2626;
+}
+
+.btn-mark-done svg {
+  width: 12px;
+  height: 12px;
+}
+
+.status-done {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #22c55e;
+  font-weight: 500;
+  font-size: 0.7rem;
+  white-space: nowrap;
+}
+
+.status-done svg {
+  width: 12px;
+  height: 12px;
+}
+
+.status-done .btn-mark-done {
+  background: #fff;
+  color: #ef4444;
+  border: 1px solid #ef4444;
+  box-shadow: none;
+  margin-left: 4px;
+  padding: 2px 4px;
+  font-size: 0.6rem;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.status-done .btn-mark-done:hover {
+  background: #ef4444;
+  color: white;
+  opacity: 1;
+}
+
+.timeline-item .relance-actions {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.timeline-item:hover .relance-actions {
+  opacity: 1;
+}
+
+.timeline-item .btn-mark-done {
+  padding: 2px 4px;
+  font-size: 0.6rem;
+  min-width: auto;
+}
+
+.timeline-item .btn-mark-done svg {
+  width: 10px;
+  height: 10px;
+}
+
+.timeline-item .status-done {
+  font-size: 0.6rem;
+  position: relative;
+}
+
+.timeline-item.clickable {
+  cursor: pointer;
+}
+
+.timeline-item.clickable:hover {
+  transform: scale(1.02);
+}
+
+/* ===========================
+   ÉTAT VIDE (INCHANGÉ)
+=========================== */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: #9ca3af;
+}
+
+.empty-state p {
+  margin-top: 16px;
+  font-size: 1.125rem;
+}
+
+/* ========================================
+   🔥 WRAPPER POUR DISPOSITION VERTICALE
+======================================== */
+
+.reponses-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  flex: 3;
+}
+
+/* ===========================
+   RÉPONSES EMPLOYEURS (Timeline horizontale)
+=========================== */
+
+.reponses-timeline {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  position: relative;
+  padding-left: 0;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+/* Cadre d'état (similaire aux timeline-item) */
+.reponse-item {
+  position: relative;
+  margin-bottom: 0;
+  flex: 1 1 0;
+  min-width: 100px;
+  max-width: 150px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.reponse-item:hover {
+  transform: scale(1.02);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* États des cadres */
+.reponse-item.active {
+  border-width: 2px;
+  font-weight: 600;
+}
+
+.reponse-item.inactive {
+  opacity: 0.5;
+}
+
+.reponse-item.inactive:hover {
+  opacity: 0.75;
+}
+
+/* Cadre attente (gris/bleu) */
+.reponse-item.active:has(.reponse-point--neutral.active) {
+  background: #f0f4f8;
+  border-color: #64748b;
+}
+
+/* Cadre échanges (jaune/orange) */
+.reponse-item.active:has(.reponse-point--info.active) {
+  background: #fef9e7;
+  border-color: #f59e0b;
+}
+
+/* Cadre refus (rouge) */
+.reponse-item.active:has(.reponse-point--danger.active) {
+  background: #fef2f2;
+  border-color: #ef4444;
+}
+
+/* Cadre entretien prévu (vert clair) */
+.reponse-item.scheduled {
+  background: #f0fdf4;
+  border-color: #22c55e;
+}
+
+/* Cadre entretien réussi (vert foncé) */
+.reponse-item.success {
+  background: #dcfce7;
+  border-color: #16a34a;
+}
+
+/* Point de statut (similaire aux timeline-point) */
+.reponse-point {
+  position: static;
+  margin-bottom: 0;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid #ddd;
+  background: white;
+  z-index: 2;
+  transition: all 0.3s;
+  flex-shrink: 0;
+}
+
+.reponse-point.active {
+  transform: scale(1.2);
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+}
+
+.reponse-point--neutral {
+  border-color: #64748b;
+}
+
+.reponse-point--neutral.active {
+  background: #64748b;
+  box-shadow: 0 0 0 3px rgba(100, 116, 139, 0.2);
+}
+
+.reponse-point--info {
+  border-color: #f59e0b;
+}
+
+.reponse-point--info.active {
+  background: #f59e0b;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+}
+
+.reponse-point--danger {
+  border-color: #ef4444;
+}
+
+.reponse-point--danger.active {
+  background: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+}
+
+.reponse-point--success {
+  border-color: #22c55e;
+}
+
+.reponse-point--success.active {
+  background: #22c55e;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+}
+
+/* Cadre entretien raté (rouge foncé) */
+.reponse-item.failed {
+  background: #fee2e2;
+  border-color: #dc2626;
+}
+
+/* Contenu du cadre */
+.reponse-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.reponse-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #1a1a1a;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.reponse-icon {
+  font-size: 0.85rem;
+  line-height: 1;
+}
+
+/* ===== 🔥 ENTRETIENS SOUS STATUTS ===== */
+
+.entretiens-preview-row {
+  display: flex;
+  gap: 0.8rem;
+  margin: 0;
+  padding: 0;
+  flex-wrap: wrap;
+}
+
+.entretien-preview-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #fff7e6;
+  border: 1px solid #ffd580;
+  color: #b26a00;
+  border-radius: 999px;
+  padding: 0.3em 0.9em;
+  font-weight: 600;
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+.entretien-icon {
+  font-size: 0.9rem;
+}
+
+/* Entretiens inline (formulaire qui s'ouvre en dessous) */
+.entretiens-inline {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  margin-top: 8px;
+  background: #fafbfc;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  flex: 1 1 100%;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.entretien-form {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.btn-cancel-entretien {
+  background: transparent;
+  color: #dc2626;
+  border: 1px solid #dc2626;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-cancel-entretien:hover {
+  background: rgba(239, 68, 68, 0.08);
+}
+
+.entretien-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.entretien-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.entretien-numero {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.btn-delete-entretien {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 4px;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.btn-delete-entretien:hover {
+  opacity: 1;
+}
+
+.entretien-fields {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.entretien-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding-top: 4px;
+}
+
+.entretien-result {
+  padding-top: 4px;
+}
+
+.entretien-field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.field-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #475569;
+}
+
+.field-input {
+  padding: 4px 8px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  background: white;
+  cursor: pointer;
+}
+
+.field-input:focus {
+  outline: none;
+  border-color: #6d5dfc;
+  box-shadow: 0 0 0 2px rgba(109, 93, 252, 0.1);
+}
+
+.btn-entretien-result {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-entretien-result--success {
+  background: #dcfce7;
+  color: #16a34a;
+  border: 1px solid #22c55e;
+}
+
+.btn-entretien-result--success:hover {
+  background: #bbf7d0;
+}
+
+.btn-entretien-result--danger {
+  background: #fee2e2;
+  color: #dc2626;
+  border: 1px solid #ef4444;
+}
+
+.btn-entretien-result--danger:hover {
+  background: #fecaca;
+}
+
+.entretien-badge {
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.entretien-badge--success {
+  background: #dcfce7;
+  color: #16a34a;
+  border: 1px solid #22c55e;
+}
+
+.entretien-badge--danger {
+  background: #fee2e2;
+  color: #dc2626;
+  border: 1px solid #ef4444;
+}
+
+.btn-close-entretien {
+  background: transparent;
+  color: #64748b;
+  border: 1px solid #cbd5e1;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 4px;
+  align-self: flex-start;
+}
+
+.btn-close-entretien:hover {
+  background: #f8fafc;
+}
+
+.btn-add-another-entretien {
+  background: white;
+  color: #6d5dfc;
+  border: 1px dashed #6d5dfc;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  align-self: flex-start;
+}
+
+.btn-add-another-entretien:hover {
+  background: #f0edff;
+  border-style: solid;
+}
+
+/* ===========================
+   RESPONSIVE RÉPONSES EMPLOYEURS
+=========================== */
+
+@media (max-width: 1200px) {
+  .reponses-timeline {
+    gap: 8px;
+  }
+
+  .reponse-item {
+    min-width: 90px;
+    max-width: 130px;
+    padding: 6px;
+  }
+}
+
+@media (max-width: 900px) {
+  .reponses-wrapper {
+    flex: none;
+    width: 100%;
+  }
+
+  .reponses-timeline {
+    gap: 6px;
+  }
+
+  .reponse-item {
+    min-width: 70px;
+    max-width: 100px;
+    padding: 4px;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .reponse-point {
+    width: 10px;
+    height: 10px;
+    border-width: 1px;
+  }
+
+  .reponse-label {
+    font-size: 0.65rem;
+  }
+
+  .reponse-icon {
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .reponses-timeline {
+    gap: 4px;
+  }
+
+  .reponse-item {
+    min-width: 60px;
+    max-width: 80px;
+    padding: 3px;
+  }
+
+  .reponse-point {
+    width: 8px;
+    height: 8px;
+  }
+
+  .reponse-label {
+    font-size: 0.6rem;
+  }
+
+  .reponse-icon {
+    font-size: 0.7rem;
+  }
+
+  .entretiens-inline {
+    padding: 8px;
+  }
+
+  .btn-create-entretien,
+  .btn-cancel-entretien,
+  .btn-entretien-result {
+    font-size: 0.7rem;
+    padding: 4px 8px;
+  }
+
+  .entretiens-preview-row {
+    gap: 0.5rem;
+  }
+
+  .entretien-preview-pill {
+    font-size: 0.7rem;
+    padding: 0.25em 0.7em;
+  }
+}
+
+@media (min-width: 1400px) {
+  .reponse-item {
+    min-width: 120px;
+    max-width: 160px;
+  }
+}
+
+/* ===========================
+   RESPONSIVE (INCHANGÉ + AJOUTS)
+=========================== */
+
+@media (max-width: 1200px) {
+  .relances-container {
+    max-width: 100%;
+    padding: 16px 12px;
+  }
+
+  .relances-timeline {
+    gap: 8px;
+  }
+
+  .timeline-item {
+    min-width: 100px;
+    max-width: 130px;
+    padding: 6px;
+  }
+}
+
+@media (max-width: 900px) {
+  .candidature-timeline-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 16px;
+  }
+
+  .card-header {
+    flex: none;
+    width: 100%;
+    min-width: auto;
+  }
+
+  .progress-circle {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    margin-right: 0;
+  }
+
+  .relances-timeline {
+    flex: none;
+    width: 100%;
+    gap: 6px;
+  }
+
+  .timeline-item {
+    min-width: 80px;
+    max-width: 110px;
+    padding: 4px;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .timeline-point {
+    width: 10px;
+    height: 10px;
+    border-width: 1px;
+  }
+
+  .relance-number {
+    font-size: 0.65rem;
+  }
+
+  .relance-timing,
+  .relance-date {
+    font-size: 0.6rem;
+  }
+
+  .timeline-item .relance-actions {
+    position: static;
+    opacity: 1;
+    margin-top: 2px;
+  }
+
+  .reponses-wrapper {
+    flex: none;
+    width: 100%;
+  }
+
+  .reponses-timeline {
+    gap: 6px;
+  }
+
+  .reponse-item {
+    min-width: 70px;
+    max-width: 100px;
+    padding: 4px;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .reponse-point {
+    width: 10px;
+    height: 10px;
+    border-width: 1px;
+  }
+
+  .reponse-label {
+    font-size: 0.65rem;
+  }
+
+  .reponse-icon {
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .relances-container {
+    padding: 12px 8px;
+  }
+
+  .relances-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .candidature-timeline-card {
+    padding: 8px 12px;
+    margin-bottom: 6px;
+  }
+
+  .card-header {
+    margin-bottom: 8px;
+  }
+
+  .progress-circle {
+    width: 28px;
+    height: 28px;
+    top: 8px;
+    right: 12px;
+  }
+
+  .job-title {
+    font-size: 0.9rem;
+  }
+
+  .company-name {
+    font-size: 0.8rem;
+  }
+
+  .candidature-meta {
+    font-size: 0.7rem;
+  }
+
+  .relances-timeline {
+    gap: 4px;
+  }
+
+  .timeline-item {
+    min-width: 70px;
+    max-width: 90px;
+    padding: 3px;
+  }
+
+  .timeline-point {
+    width: 8px;
+    height: 8px;
+  }
+
+  .relance-number {
+    font-size: 0.6rem;
+  }
+
+  .relance-timing,
+  .relance-date {
+    font-size: 0.55rem;
+  }
+
+  .btn-mark-done {
+    padding: 2px 4px;
+    font-size: 0.6rem;
+  }
+
+  .btn-mark-done svg {
+    width: 8px;
+    height: 8px;
+  }
+
+  .reponses-timeline {
+    gap: 4px;
+  }
+
+  .reponse-item {
+    min-width: 60px;
+    max-width: 80px;
+    padding: 3px;
+  }
+
+  .reponse-point {
+    width: 8px;
+    height: 8px;
+  }
+
+  .reponse-label {
+    font-size: 0.6rem;
+  }
+
+  .reponse-icon {
+    font-size: 0.7rem;
+  }
+
+  .entretiens-inline {
+    padding: 8px;
+  }
+
+  .btn-create-entretien,
+  .btn-cancel-entretien,
+  .btn-entretien-result {
+    font-size: 0.7rem;
+    padding: 4px 8px;
+  }
+}
+
+@media (min-width: 1400px) {
+  .candidature-timeline-card {
+    padding: 12px 16px;
+    margin-bottom: 6px;
+  }
+
+  .timeline-item {
+    min-width: 140px;
+    max-width: 170px;
+  }
+
+  .candidatures-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .candidature-timeline-card:nth-child(even) {
+    background: #fafbfc;
+  }
+}

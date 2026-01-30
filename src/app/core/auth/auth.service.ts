@@ -84,7 +84,6 @@ export class AuthService {
   }
 
   forgotPassword(email: string): Observable<any> {
-    console.log('📧 AuthService: envoi requête forgot password', email);
     return this.http.post(`${this.apiUrl}/password/request`, { email }).pipe(
       tap({
         next: (response) => console.log('📧 AuthService: réponse reçue', response),

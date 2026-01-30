@@ -1,3 +1,46 @@
-.private-shell { display: flex; min-height: 100vh; }
-.private-main { flex: 1; display: flex; flex-direction: column; }
-.private-content { flex: 1; padding: 16px; box-sizing: border-box; }
+/* Shell global : aucune barre de scroll sur la page */
+.private-shell {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Sidebar : fixe */
+app-private-sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  /* overflow: hidden;  supprimé pour permettre au menu de dépasser */
+}
+
+/* Colonne droite : topbar + contenu */
+.private-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0; /* important pour éviter débordements */
+  height: 100vh;
+  overflow: hidden; /* interdit le scroll ici */
+  background: url('/assets/icons/fondAccueil.png') no-repeat center center fixed;
+  background-size: cover;
+}
+
+/* Topbar : reste visible */
+app-private-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: #fff; /* pour ne pas être transparente */
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+/* Seul le contenu scrolle */
+.private-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  box-sizing: border-box;
+  background: transparent;
+}
