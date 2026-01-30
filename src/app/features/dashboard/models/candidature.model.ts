@@ -8,6 +8,15 @@ export interface StatutApi {
   libelle: string;
 }
 
+export interface EntretienApi {
+  '@id': string;
+  id: number;
+  dateEntretien: string;
+  heureEntretien: string;
+  statut: 'prevu' | 'passe' | 'annule';
+  resultat?: 'positive' | 'negative' | null;
+}
+
 export interface Candidature {
   '@id': string;
   id: number;
@@ -19,7 +28,25 @@ export interface Candidature {
   entreprise: EntrepriseApi;
   statut: StatutApi;
   relances: Relance[];
-  statutReponse?: 'attente' | 'negative' | 'echanges' | 'entretien';
+  statutReponse?:
+  | 'attente'
+  | 'negative'
+  | 'echanges'
+  | 'entretien'
+  | 'positive'
+  | 'annule';
+
+  /**
+ * @deprecated Utiliser `entretiens[]`
+ */
   dateEntretien?: string;
+  /**
+   * @deprecated Utiliser `entretiens[]`
+   */
   heureEntretien?: string;
+  entretiens?: EntretienApi[];
+
 }
+
+
+

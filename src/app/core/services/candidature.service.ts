@@ -1,12 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, Subject, map } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { Candidature } from '../../features/dashboard/models/candidature.model';
-
-type HydraCollection<T> = {
-  'hydra:member'?: T[];
-  member?: T[]; // selon config, mais ta réponse montre "member"
-};
 
 @Injectable({ providedIn: 'root' })
 export class CandidatureService {
@@ -32,9 +27,7 @@ export class CandidatureService {
     );
   }
 
-
   deleteCandidatureByIri(candidatureIri: string) {
-    // candidatureIri ressemble à "/api/candidatures/15"
     return this.http.delete(`http://localhost:8080${candidatureIri}`);
   }
 
@@ -42,13 +35,38 @@ export class CandidatureService {
     this.refresh$.next();
   }
 
-  updateStatutReponse(candidatureId: number, statut: string): Observable<any> {
+  /**
+   * Met à jour le statutReponse d'une candidature
+   * 
+   * @param candidatureIri IRI de la candidature (ex: "/api/candidatures/123")
+   * @param statut Nouveau statut (attente | echanges | negative)
+   */
+  updateStatutReponse(
+    candidatureIri: string,
+    statut: 'attente' | 'echanges' | 'negative'
+  ): Observable<any> {
+    // Extraction de l'ID depuis l'IRI
+    const id = candidatureIri.split('/').pop();
+    
+    console.log('📡 API Call:', {
+      url: `${this.apiUrl}/candidatures/${id}/statut-reponse`,
+      body: { statutReponse: statut }
+    });
+
     return this.http.patch<any>(
-      `${this.apiUrl}/candidatures/${candidatureId}/statut-reponse`,
-      { statutReponse: statut }
+      `${this.apiUrl}/candidatures/${id}/statut-reponse`,
+      { statutReponse: statut },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
     );
   }
 
+  /**
+   * @deprecated Utiliser EntretienService.createEntretien()
+   */
   updateEntretien(
     candidatureId: number,
     date: string | null,

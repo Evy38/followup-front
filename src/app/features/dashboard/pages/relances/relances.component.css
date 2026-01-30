@@ -1,12 +1,18 @@
 /* relances.component.css */
+
+/* ===========================
+   BASE CONTAINER (INCHANGÉ)
+=========================== */
 .relances-container {
-  max-width: 1400px; /* Plus large pour afficher plus de contenu */
+  max-width: 1400px;
   margin: 0 auto;
   padding: 24px 16px;
   min-height: 100vh;
 }
 
-/* Header */
+/* ===========================
+   HEADER (INCHANGÉ)
+=========================== */
 .relances-header {
   margin-bottom: 24px;
 }
@@ -54,7 +60,9 @@
   margin-top: 4px;
 }
 
-/* Filtres */
+/* ===========================
+   FILTRES (INCHANGÉ)
+=========================== */
 .quick-filters {
   display: flex;
   gap: 8px;
@@ -83,12 +91,14 @@
   box-shadow: 0 2px 8px rgba(109, 93, 252, 0.3);
 }
 
-/* Carte candidature - Version compacte en ligne */
+/* ===========================
+   CARTE CANDIDATURE (INCHANGÉ)
+=========================== */
 .candidature-timeline-card {
   background: white;
   border-radius: 12px;
-  padding: 16px 20px; /* Padding réduit */
-  margin-bottom: 8px; /* Espacement réduit entre les cartes */
+  padding: 16px 20px;
+  margin-bottom: 8px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   border: 1px solid #f0f0f0;
   transition: all 0.2s;
@@ -102,7 +112,9 @@
   border-color: #6d5dfc;
 }
 
-/* En-tête carte - Version compacte */
+/* ===========================
+   EN-TÊTE CARTE (INCHANGÉ)
+=========================== */
 .card-header {
   display: flex;
   flex-direction: column;
@@ -120,7 +132,7 @@
 }
 
 .job-title {
-  font-size: 1rem; /* Taille réduite */
+  font-size: 1rem;
   font-weight: 600;
   color: #1a1a1a;
   margin: 0 0 2px 0;
@@ -128,14 +140,14 @@
 }
 
 .company-name {
-  font-size: 0.875rem; /* Taille réduite */
+  font-size: 0.875rem;
   color: #666;
   margin: 0 0 4px 0;
   line-height: 1.2;
 }
 
 .candidature-meta {
-  font-size: 0.75rem; /* Plus petit */
+  font-size: 0.75rem;
   color: #999;
   margin: 0;
   display: flex;
@@ -153,10 +165,12 @@
   font-size: 0.75rem;
 }
 
-/* Cercle de progression - Version compacte */
+/* ===========================
+   CERCLE PROGRESSION (INCHANGÉ)
+=========================== */
 .progress-circle {
   position: relative;
-  width: 36px; /* Plus petit */
+  width: 36px;
   height: 36px;
   flex-shrink: 0;
   margin-right: 16px;
@@ -171,7 +185,7 @@
 .circle-bg {
   fill: none;
   stroke: #f0f0f0;
-  stroke-width: 2.5; /* Légèrement plus fin */
+  stroke-width: 2.5;
 }
 
 .circle-progress {
@@ -187,14 +201,14 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 0.75rem; /* Plus petit */
+  font-size: 0.75rem;
   font-weight: 600;
   color: #6d5dfc;
 }
 
-/* Timeline */
-
-/* Timeline - Version ultra compacte en ligne */
+/* ===========================
+   TIMELINE RELANCES (INCHANGÉ)
+=========================== */
 .relances-timeline {
   display: flex;
   flex-direction: row;
@@ -206,10 +220,6 @@
   flex: 3;
 }
 
-.timeline-line {
-  display: none;
-}
-
 .timeline-item {
   position: relative;
   margin-bottom: 0;
@@ -217,7 +227,7 @@
   min-width: 120px;
   max-width: 150px;
   display: flex;
-  flex-direction: row; /* Changé en row pour affichage horizontal compact */
+  flex-direction: row;
   align-items: center;
   gap: 8px;
   padding: 8px;
@@ -235,7 +245,7 @@
   margin-bottom: 0;
   left: auto;
   top: auto;
-  width: 12px; /* Plus petit */
+  width: 12px;
   height: 12px;
   border-radius: 50%;
   border: 2px solid #ddd;
@@ -272,9 +282,8 @@
   }
 }
 
-/* Contenu timeline - Version ultra compacte */
 .timeline-content {
-  background: transparent; /* Plus de background séparé */
+  background: transparent;
   border-radius: 0;
   padding: 0;
   border-left: none;
@@ -284,16 +293,6 @@
   width: 100%;
   box-sizing: border-box;
   flex: 1;
-}
-
-.timeline-content.done {
-  background: transparent;
-  border-top-color: transparent;
-}
-
-.timeline-content.overdue {
-  background: transparent;
-  border-top-color: transparent;
 }
 
 .timeline-header {
@@ -307,13 +306,13 @@
 
 .relance-number {
   font-weight: 600;
-  font-size: 0.75rem; /* Plus petit */
+  font-size: 0.75rem;
   color: #1a1a1a;
   line-height: 1.2;
 }
 
 .relance-timing {
-  font-size: 0.65rem; /* Plus petit */
+  font-size: 0.65rem;
   color: #666;
   background: white;
   padding: 1px 4px;
@@ -322,7 +321,7 @@
 }
 
 .relance-date {
-  font-size: 0.7rem; /* Plus petit */
+  font-size: 0.7rem;
   color: #6d5dfc;
   font-weight: 500;
   margin: 2px 0 0 0;
@@ -341,7 +340,6 @@
   font-weight: 600;
 }
 
-/* Styles spéciaux pour les états des timeline items */
 .timeline-item.done {
   background: #f0fdf4;
   border-color: #22c55e;
@@ -357,7 +355,6 @@
   border-color: #6d5dfc;
 }
 
-/* Boutons - Version compacte */
 .relance-actions {
   margin-top: 0;
   display: flex;
@@ -368,13 +365,13 @@
   display: inline-flex;
   align-items: center;
   gap: 3px;
-  padding: 4px 8px; /* Plus petit */
+  padding: 4px 8px;
   border-radius: 6px;
   border: none;
   background: #6d5dfc;
   color: white;
   font-weight: 500;
-  font-size: 0.7rem; /* Plus petit */
+  font-size: 0.7rem;
   cursor: pointer;
   transition: all 0.2s;
   box-shadow: 0 1px 2px rgba(109, 93, 252, 0.2);
@@ -397,7 +394,7 @@
 }
 
 .btn-mark-done svg {
-  width: 12px; /* Plus petit */
+  width: 12px;
   height: 12px;
 }
 
@@ -407,7 +404,7 @@
   gap: 4px;
   color: #22c55e;
   font-weight: 500;
-  font-size: 0.7rem; /* Plus petit */
+  font-size: 0.7rem;
   white-space: nowrap;
 }
 
@@ -416,7 +413,6 @@
   height: 12px;
 }
 
-/* Bouton d'annulation toujours visible */
 .status-done .btn-mark-done {
   background: #fff;
   color: #ef4444;
@@ -435,7 +431,6 @@
   opacity: 1;
 }
 
-/* Actions sur les cartes - boutons inline */
 .timeline-item .relance-actions {
   position: absolute;
   top: 2px;
@@ -464,7 +459,6 @@
   position: relative;
 }
 
-/* Action rapide : clic sur toute la timeline-item pour marquer comme fait */
 .timeline-item.clickable {
   cursor: pointer;
 }
@@ -473,7 +467,9 @@
   transform: scale(1.02);
 }
 
-/* État vide */
+/* ===========================
+   ÉTAT VIDE (INCHANGÉ)
+=========================== */
 .empty-state {
   text-align: center;
   padding: 60px 20px;
@@ -485,16 +481,535 @@
   font-size: 1.125rem;
 }
 
-/* Responsive - Version optimisée pour le design compact */
+/* ===========================
+   RÉPONSES EMPLOYEURS (OPTIMISÉ)
+   Design : Timeline horizontale comme Relances
+=========================== */
+
+.reponses-timeline {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  position: relative;
+  padding-left: 0;
+  justify-content: flex-start;
+  align-items: center;
+  flex: 3;
+}
+
+/* Cadre d'état (similaire aux timeline-item) */
+.reponse-item {
+  position: relative;
+  margin-bottom: 0;
+  flex: 1 1 0;
+  min-width: 100px;
+  max-width: 150px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.reponse-item:hover {
+  transform: scale(1.02);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* États des cadres */
+.reponse-item.active {
+  border-width: 2px;
+  font-weight: 600;
+}
+
+.reponse-item.inactive {
+  opacity: 0.5;
+}
+
+.reponse-item.inactive:hover {
+  opacity: 0.75;
+}
+
+/* Cadre attente (gris/bleu) */
+.reponse-item.active:has(.reponse-point--neutral.active) {
+  background: #f0f4f8;
+  border-color: #64748b;
+}
+
+/* Cadre échanges (jaune/orange) */
+.reponse-item.active:has(.reponse-point--info.active) {
+  background: #fef9e7;
+  border-color: #f59e0b;
+}
+
+/* Cadre refus (rouge) */
+.reponse-item.active:has(.reponse-point--danger.active) {
+  background: #fef2f2;
+  border-color: #ef4444;
+}
+
+/* Cadre entretien prévu (vert clair) */
+.reponse-item.scheduled {
+  background: #f0fdf4;
+  border-color: #22c55e;
+}
+
+/* Cadre entretien réussi (vert foncé) */
+.reponse-item.success {
+  background: #dcfce7;
+  border-color: #16a34a;
+}
+
+/* Point de statut (similaire aux timeline-point) */
+.reponse-point {
+  position: static;
+  margin-bottom: 0;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid #ddd;
+  background: white;
+  z-index: 2;
+  transition: all 0.3s;
+  flex-shrink: 0;
+}
+
+.reponse-point.active {
+  transform: scale(1.2);
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+}
+
+.reponse-point--neutral {
+  border-color: #64748b;
+}
+
+.reponse-point--neutral.active {
+  background: #64748b;
+  box-shadow: 0 0 0 3px rgba(100, 116, 139, 0.2);
+}
+
+.reponse-point--info {
+  border-color: #f59e0b;
+}
+
+.reponse-point--info.active {
+  background: #f59e0b;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+}
+
+.reponse-point--danger {
+  border-color: #ef4444;
+}
+
+.reponse-point--danger.active {
+  background: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+}
+
+.reponse-point--success {
+  border-color: #22c55e;
+}
+
+.reponse-point--success.active {
+  background: #22c55e;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+}
+
+/* Cadre entretien raté (rouge foncé) */
+.reponse-item.failed {
+  background: #fee2e2;
+  border-color: #dc2626;
+}
+
+/* Preview des entretiens dans le cadre */
+.entretien-preview {
+  display: flex;
+  gap: 4px;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+
+.entretien-preview-item {
+  display: inline-block;
+}
+
+.preview-badge {
+  display: inline-block;
+  padding: 2px 5px;
+  border-radius: 4px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.preview-badge--scheduled {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.preview-badge--success {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.preview-badge--failed {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+/* Contenu du cadre */
+.reponse-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.reponse-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #1a1a1a;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.reponse-icon {
+  font-size: 0.85rem;
+  line-height: 1;
+}
+
+/* Entretiens inline (formulaire qui s'ouvre en dessous) */
+.entretiens-inline {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  margin-top: 8px;
+  background: #fafbfc;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  flex: 1 1 100%;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.entretien-form {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.btn-create-entretien {
+  background: #6d5dfc;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-create-entretien:hover {
+  background: #5746d6;
+  transform: translateY(-1px);
+}
+
+.btn-cancel-entretien {
+  background: transparent;
+  color: #dc2626;
+  border: 1px solid #dc2626;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-cancel-entretien:hover {
+  background: rgba(239, 68, 68, 0.08);
+}
+
+.entretien-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.entretien-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.entretien-numero {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.btn-delete-entretien {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 4px;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.btn-delete-entretien:hover {
+  opacity: 1;
+}
+
+.entretien-fields {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.entretien-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding-top: 4px;
+}
+
+.entretien-result {
+  padding-top: 4px;
+}
+
+.entretien-field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.field-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #475569;
+}
+
+.field-input {
+  padding: 4px 8px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  background: white;
+  cursor: pointer;
+}
+
+.field-input:focus {
+  outline: none;
+  border-color: #6d5dfc;
+  box-shadow: 0 0 0 2px rgba(109, 93, 252, 0.1);
+}
+
+.btn-entretien-result {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-entretien-result--success {
+  background: #dcfce7;
+  color: #16a34a;
+  border: 1px solid #22c55e;
+}
+
+.btn-entretien-result--success:hover {
+  background: #bbf7d0;
+}
+
+.btn-entretien-result--danger {
+  background: #fee2e2;
+  color: #dc2626;
+  border: 1px solid #ef4444;
+}
+
+.btn-entretien-result--danger:hover {
+  background: #fecaca;
+}
+
+.entretien-badge {
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.entretien-badge--success {
+  background: #dcfce7;
+  color: #16a34a;
+  border: 1px solid #22c55e;
+}
+
+.entretien-badge--danger {
+  background: #fee2e2;
+  color: #dc2626;
+  border: 1px solid #ef4444;
+}
+
+.btn-close-entretien {
+  background: transparent;
+  color: #64748b;
+  border: 1px solid #cbd5e1;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 4px;
+  align-self: flex-start;
+}
+
+.btn-close-entretien:hover {
+  background: #f8fafc;
+}
+
+.btn-add-another-entretien {
+  background: white;
+  color: #6d5dfc;
+  border: 1px dashed #6d5dfc;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  align-self: flex-start;
+}
+
+.btn-add-another-entretien:hover {
+  background: #f0edff;
+  border-style: solid;
+}
+
+/* ===========================
+   RESPONSIVE RÉPONSES EMPLOYEURS
+=========================== */
+
+@media (max-width: 1200px) {
+  .reponses-timeline {
+    gap: 8px;
+  }
+
+  .reponse-item {
+    min-width: 90px;
+    max-width: 130px;
+    padding: 6px;
+  }
+}
+
+@media (max-width: 900px) {
+  .reponses-timeline {
+    flex: none;
+    width: 100%;
+    gap: 6px;
+  }
+
+  .reponse-item {
+    min-width: 70px;
+    max-width: 100px;
+    padding: 4px;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .reponse-point {
+    width: 10px;
+    height: 10px;
+    border-width: 1px;
+  }
+
+  .reponse-label {
+    font-size: 0.65rem;
+  }
+
+  .reponse-icon {
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .reponses-timeline {
+    gap: 4px;
+  }
+
+  .reponse-item {
+    min-width: 60px;
+    max-width: 80px;
+    padding: 3px;
+  }
+
+  .reponse-point {
+    width: 8px;
+    height: 8px;
+  }
+
+  .reponse-label {
+    font-size: 0.6rem;
+  }
+
+  .reponse-icon {
+    font-size: 0.7rem;
+  }
+
+  .entretiens-inline {
+    padding: 8px;
+  }
+
+  .btn-create-entretien,
+  .btn-cancel-entretien,
+  .btn-entretien-result {
+    font-size: 0.7rem;
+    padding: 4px 8px;
+  }
+}
+
+@media (min-width: 1400px) {
+  .reponse-item {
+    min-width: 120px;
+    max-width: 160px;
+  }
+}
+
+/* ===========================
+   RESPONSIVE (INCHANGÉ + AJOUTS)
+=========================== */
 
 @media (max-width: 1200px) {
   .relances-container {
     max-width: 100%;
     padding: 16px 12px;
   }
+
   .relances-timeline {
     gap: 8px;
   }
+
   .timeline-item {
     min-width: 100px;
     max-width: 130px;
@@ -509,26 +1024,26 @@
     gap: 12px;
     padding: 12px 16px;
   }
-  
+
   .card-header {
     flex: none;
     width: 100%;
     min-width: auto;
   }
-  
+
   .progress-circle {
     position: absolute;
     top: 12px;
     right: 16px;
     margin-right: 0;
   }
-  
+
   .relances-timeline {
     flex: none;
     width: 100%;
     gap: 6px;
   }
-  
+
   .timeline-item {
     min-width: 80px;
     max-width: 110px;
@@ -536,26 +1051,54 @@
     flex-direction: column;
     gap: 4px;
   }
-  
+
   .timeline-point {
     width: 10px;
     height: 10px;
     border-width: 1px;
   }
-  
+
   .relance-number {
     font-size: 0.65rem;
   }
-  
+
   .relance-timing,
   .relance-date {
     font-size: 0.6rem;
   }
-  
+
   .timeline-item .relance-actions {
     position: static;
     opacity: 1;
     margin-top: 2px;
+  }
+
+  .reponses-timeline {
+    flex: none;
+    width: 100%;
+    gap: 6px;
+  }
+
+  .reponse-item {
+    min-width: 70px;
+    max-width: 100px;
+    padding: 4px;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .reponse-point {
+    width: 10px;
+    height: 10px;
+    border-width: 1px;
+  }
+
+  .reponse-label {
+    font-size: 0.65rem;
+  }
+
+  .reponse-icon {
+    font-size: 0.75rem;
   }
 }
 
@@ -576,7 +1119,7 @@
   .card-header {
     margin-bottom: 8px;
   }
-  
+
   .progress-circle {
     width: 28px;
     height: 28px;
@@ -587,11 +1130,11 @@
   .job-title {
     font-size: 0.9rem;
   }
-  
+
   .company-name {
     font-size: 0.8rem;
   }
-  
+
   .candidature-meta {
     font-size: 0.7rem;
   }
@@ -599,57 +1142,89 @@
   .relances-timeline {
     gap: 4px;
   }
-  
+
   .timeline-item {
     min-width: 70px;
     max-width: 90px;
     padding: 3px;
   }
-  
+
   .timeline-point {
     width: 8px;
     height: 8px;
   }
-  
+
   .relance-number {
     font-size: 0.6rem;
   }
-  
+
   .relance-timing,
   .relance-date {
     font-size: 0.55rem;
   }
-  
+
   .btn-mark-done {
     padding: 2px 4px;
     font-size: 0.6rem;
   }
-  
+
   .btn-mark-done svg {
     width: 8px;
     height: 8px;
   }
+
+  .reponses-timeline {
+    gap: 4px;
+  }
+
+  .reponse-item {
+    min-width: 60px;
+    max-width: 80px;
+    padding: 3px;
+  }
+
+  .reponse-point {
+    width: 8px;
+    height: 8px;
+  }
+
+  .reponse-label {
+    font-size: 0.6rem;
+  }
+
+  .reponse-icon {
+    font-size: 0.7rem;
+  }
+
+  .entretiens-inline {
+    padding: 8px;
+  }
+
+  .btn-create-entretien,
+  .btn-cancel-entretien,
+  .btn-entretien-result {
+    font-size: 0.7rem;
+    padding: 4px 8px;
+  }
 }
 
-/* Amélioration de la densité d'information */
 @media (min-width: 1400px) {
   .candidature-timeline-card {
     padding: 12px 16px;
     margin-bottom: 6px;
   }
-  
+
   .timeline-item {
     min-width: 140px;
     max-width: 170px;
   }
-  
-  /* Affichage en grille pour très grands écrans */
+
   .candidatures-list {
     display: flex;
     flex-direction: column;
     gap: 4px;
   }
-  
+
   .candidature-timeline-card:nth-child(even) {
     background: #fafbfc;
   }
