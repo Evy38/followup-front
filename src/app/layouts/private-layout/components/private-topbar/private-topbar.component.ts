@@ -1,4 +1,5 @@
 import { Component, inject } from '@angular/core';
+import { Output, EventEmitter } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { filter, map, startWith } from 'rxjs';
@@ -16,6 +17,9 @@ export class PrivateTopbarComponent {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
 
+  searchValue = '';
+  @Output() searchChange = new EventEmitter<string>();
+
   // Observable du contexte topbar en fonction de la route active
   topbarContext$ = this.router.events.pipe(
     filter((e) => e instanceof NavigationEnd),
@@ -29,4 +33,11 @@ export class PrivateTopbarComponent {
     while (current.firstChild) current = current.firstChild;
     return current;
   }
+
+    onSearchInput(event: Event) {
+      const value = (event.target as HTMLInputElement).value;
+      this.searchValue = value;
+      this.searchChange.emit(value);
+    
+}
 }

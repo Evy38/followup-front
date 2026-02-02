@@ -43,8 +43,6 @@ export class RelancesComponent implements OnInit {
       this.entretienService.createEntretien(iri, this.entretienForm.date, this.entretienForm.heure).subscribe({
         next: (entretien) => {
           c.entretiens = c.entretiens ? [...c.entretiens, entretien] : [entretien];
-          // Synchronise la date/heure du prochain entretien prévu dans la table candidature
-          this.candidatureService.updateEntretien(c.id, this.entretienForm.date, this.entretienForm.heure).subscribe();
           this.closeEntretienModal();
           this.cdr.detectChanges();
         },
@@ -351,19 +349,27 @@ export class RelancesComponent implements OnInit {
   deleteEntretien(c: Candidature, entretien: any, event: Event): void {
     event.stopPropagation();
     if (!confirm('Supprimer cet entretien ?')) return;
-    console.log('🔄 Suppression entretien', entretien['@id']);
-    this.entretienService.deleteEntretien(entretien['@id']).subscribe({
+    let entretienIdentifier = entretien['@id'] || entretien.id;
+    if (!entretienIdentifier) {
+      console.error('❌ Impossible de supprimer : ni "@id" ni "id" n’est présent sur l’entretien', entretien);
+      alert('Erreur : impossible de supprimer cet entretien (aucun identifiant trouvé).');
+      return;
+    }
+    console.log('🔄 Suppression entretien', entretienIdentifier);
+    this.entretienService.deleteEntretien(entretienIdentifier).subscribe({
       next: () => {
         console.log('✅ Entretien supprimé');
-        c.entretiens = (c.entretiens ?? []).filter(e => e['@id'] !== entretien['@id']);
-        // Si plus aucun entretien prévu, efface la date/heure dans la table candidature
-        const prochain = (c.entretiens ?? []).find(e => e.statut === 'prevu');
-        if (!prochain) {
-          this.candidatureService.updateEntretien(c.id, null, null).subscribe();
-        } else {
-          // Sinon, synchronise avec le prochain entretien prévu
-          this.candidatureService.updateEntretien(c.id, prochain.dateEntretien, prochain.heureEntretien).subscribe();
-        }
+        const idToDelete = entretien['@id'] || entretien.id;
+        c.entretiens = (c.entretiens ?? []).filter(e => {
+          if (e['@id'] && entretien['@id']) {
+            return e['@id'] !== entretien['@id'];
+          } else if (!e['@id'] && !entretien['@id']) {
+            return e.id !== entretien.id;
+          }
+          // Si l'un a un @id et l'autre non, on ne supprime pas
+          return true;
+        });
+        // Plus d'appel API sur la candidature : on ne fait que mettre à jour le tableau local
         this.cdr.detectChanges();
       },
       error: (err) => {
