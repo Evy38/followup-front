@@ -176,6 +176,9 @@ export class RelancesComponent implements OnInit {
           return 'Refusé';
         case 'echanges':
           return 'Échanges en cours';
+        case 'engage':
+        case 'positive':
+          return 'Engagé';
         case 'attente':
         default:
           return 'En attente de retour';
@@ -214,7 +217,7 @@ export class RelancesComponent implements OnInit {
    */
   updateStatutReponse(
     candidature: Candidature,
-    statut: 'attente' | 'echanges' | 'negative',
+    statut: 'attente' | 'echanges' | 'negative' | 'engage',
     event?: Event
   ): void {
     if (event) event.stopPropagation();
@@ -229,23 +232,25 @@ export class RelancesComponent implements OnInit {
       return;
     }
 
+    // Mappe 'engage' <-> 'positive' pour l'API
+    const apiStatut = statut === 'engage' ? 'positive' : statut;
     // Si on clique sur le bouton déjà actif, on reset à "attente"
-    const newStatut = (candidature.statutReponse === statut) ? 'attente' : statut;
-    console.log('🔄 Mise à jour statut:', { iri, statut: newStatut });
+    const isActive = (candidature.statutReponse === apiStatut) || (candidature.statutReponse === 'positive' && statut === 'engage');
+    const newStatut = isActive ? 'attente' : statut;
+    const apiNewStatut = newStatut === 'engage' ? 'positive' : newStatut;
+    console.log('🔄 Mise à jour statut:', { iri, statut: apiNewStatut });
 
     // Optimistic UI
     const previous = candidature.statutReponse;
-    candidature.statutReponse = newStatut;
+    candidature.statutReponse = newStatut === 'engage' ? 'positive' : newStatut;
     this.cdr.detectChanges();
 
-    // Utilise le bon endpoint backend
-    this.candidatureService.updateStatutReponse(iri, newStatut).subscribe({
+    this.candidatureService.updateStatutReponse(iri, apiNewStatut as any).subscribe({
       next: () => {
         console.log('✅ Statut mis à jour avec succès');
       },
       error: (err) => {
         console.error('❌ Erreur mise à jour statut', err);
-        // Rollback si erreur backend
         candidature.statutReponse = previous;
         this.cdr.detectChanges();
       },

@@ -166,6 +166,19 @@
               </div>
             </div>
 
+            <!-- Cadre 5 : Engagé -->
+            <div class="reponse-item reponse-item--engage" [class.active]="c.statutReponse === 'engage' || c.statutReponse === 'positive'"
+              [class.inactive]="c.statutReponse !== 'engage' && c.statutReponse !== 'positive'" (click)="updateStatutReponse(c, 'engage', $event)">
+              <div class="reponse-point reponse-point--engage" [class.active]="c.statutReponse === 'engage' || c.statutReponse === 'positive'">
+              </div>
+              <div class="reponse-content">
+                <div class="reponse-label">Engagé</div>
+                <div class="reponse-icon">🎉</div>
+              </div>
+              <button *ngIf="c.statutReponse === 'engage' || c.statutReponse === 'positive'" class="btn-reset-reponse"
+                title="Annuler et repasser en attente" (click)="updateStatutReponse(c, 'engage', $event)">✕</button>
+            </div>
+
           </div>
 
           <!-- ✅ ENTRETIENS AFFICHÉS SOUS LES STATUTS -->

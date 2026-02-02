@@ -35,7 +35,8 @@ export interface Candidature {
   | 'echanges'
   | 'entretien'
   | 'positive'
-  | 'annule';
+  | 'annule'
+  | 'engage';
 
   /**
  * @deprecated Utiliser `entretiens[]`

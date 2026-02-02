@@ -43,7 +43,7 @@ export class CandidatureService {
    */
   updateStatutReponse(
     candidatureIri: string,
-    statut: 'attente' | 'echanges' | 'negative'
+    statut: 'attente' | 'echanges' | 'negative' | 'engage'
   ): Observable<any> {
     // Extraction de l'ID depuis l'IRI
     const id = candidatureIri.split('/').pop();
