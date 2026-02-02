@@ -18,6 +18,12 @@ type FilterStatus = 'relances' | 'reponses';
   styleUrls: ['./relances.component.css'],
 })
 export class RelancesComponent implements OnInit {
+      /**
+       * Retourne le nombre total de relances effectuées (toutes candidatures confondues)
+       */
+      getDoneRelancesCount(): number {
+        return this.candidatures.reduce((acc, c) => acc + (c.relances?.filter(r => r.faite).length ?? 0), 0);
+      }
     showEntretienModal: boolean = false;
     modalCandidature: Candidature | null = null;
 
