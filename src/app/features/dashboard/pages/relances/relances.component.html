@@ -171,15 +171,15 @@
             </div>
 
             <!-- Cadre 5 : Engagé -->
-            <div class="reponse-item reponse-item--engage" [class.active]="c.statutReponse === 'engage' || c.statutReponse === 'positive'"
-              [class.inactive]="c.statutReponse !== 'engage' && c.statutReponse !== 'positive'" (click)="updateStatutReponse(c, 'engage', $event)">
-              <div class="reponse-point reponse-point--engage" [class.active]="c.statutReponse === 'engage' || c.statutReponse === 'positive'">
+            <div class="reponse-item reponse-item--engage" [class.active]="c.statutReponse === 'engage'"
+              [class.inactive]="c.statutReponse !== 'engage'" (click)="updateStatutReponse(c, 'engage', $event)">
+              <div class="reponse-point reponse-point--engage" [class.active]="c.statutReponse === 'engage'">
               </div>
               <div class="reponse-content">
                 <div class="reponse-label">Engagé</div>
                 <div class="reponse-icon">🎉</div>
               </div>
-              <button *ngIf="c.statutReponse === 'engage' || c.statutReponse === 'positive'" class="btn-reset-reponse"
+              <button *ngIf="c.statutReponse === 'engage'" class="btn-reset-reponse"
                 title="Annuler et repasser en attente" (click)="updateStatutReponse(c, 'engage', $event)">✕</button>
             </div>
 
@@ -274,7 +274,7 @@
 
               <div class="entretien-actions">
                 <button type="button" class="btn-entretien-result btn-entretien-result--success"
-                  (click)="markEntretienAsPassed(e, 'positive'); $event.stopPropagation()">
+                  (click)="markEntretienAsPassed(e, 'engage'); $event.stopPropagation()">
                   ✔ Réussi
                 </button>
 
@@ -288,7 +288,7 @@
             <!-- Entretien passé (affichage uniquement) -->
             <ng-container *ngIf="e.statut === 'passe'">
               <div class="entretien-result">
-                <span class="entretien-badge entretien-badge--success" *ngIf="e.resultat === 'positive'">
+                <span class="entretien-badge entretien-badge--success" *ngIf="e.resultat === 'engage'">
                   ✔ Réussi le {{ formatDate(e.dateEntretien) }} à {{ e.heureEntretien }}
                 </span>
 

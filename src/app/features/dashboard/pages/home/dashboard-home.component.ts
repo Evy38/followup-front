@@ -56,7 +56,7 @@ export class DashboardHomeComponent implements OnInit {
 
   get retoursPositifs(): number {
     return this.candidatures.filter((c) =>
-      (c.entretiens ?? []).some(e => e.statut === 'passe' && e.resultat === 'positive') || c.statutReponse === 'positive' || c.statutReponse === 'engage'
+      (c.entretiens ?? []).some(e => e.statut === 'passe' && e.resultat === 'engage')
     ).length;
   }
 

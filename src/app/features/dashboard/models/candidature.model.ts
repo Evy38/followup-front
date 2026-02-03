@@ -13,9 +13,9 @@ export interface EntretienApi {
   id: number;
   dateEntretien: string;
   heureEntretien: string;
-  statut: 'prevu' | 'passe' | 'annule';
-  resultat?: 'positive' | 'negative' | null;
-  _hover?: boolean;
+  statut: 'prevu' | 'passe';
+  resultat?: 'engage' | 'negative' | null;
+  _hover?: boolean; 
 }
 
 export interface Candidature {
@@ -34,18 +34,8 @@ export interface Candidature {
   | 'negative'
   | 'echanges'
   | 'entretien'
-  | 'positive'
   | 'annule'
   | 'engage';
-
-  /**
- * @deprecated Utiliser `entretiens[]`
- */
-  dateEntretien?: string;
-  /**
-   * @deprecated Utiliser `entretiens[]`
-   */
-  heureEntretien?: string;
   entretiens?: EntretienApi[];
 
 }

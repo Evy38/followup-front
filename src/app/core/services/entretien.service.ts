@@ -9,7 +9,7 @@ export interface EntretienApi {
   dateEntretien: string;
   heureEntretien: string;
   statut: 'prevu' | 'passe' | 'annule';
-  resultat?: 'positive' | 'negative' | null;
+  resultat?: 'engage' | 'negative' | null;
 }
 
 /**
@@ -61,7 +61,7 @@ export class EntretienService {
    *
    * Cas d’usage :
    * - entretien passé
-   * - résultat connu (positive / negative)
+   * - résultat connu (engage / negative)
    *
    * @param entretienIri IRI de l’entretien (/api/entretiens/4)
    * @param statut Nouveau statut
@@ -70,7 +70,7 @@ export class EntretienService {
   updateEntretien(
     entretienIri: string,
     statut: 'prevu' | 'passe' | 'annule',
-    resultat?: 'positive' | 'negative' | null
+    resultat?: 'engage' | 'negative' | null
   ): Observable<EntretienApi> {
     return this.http.patch<EntretienApi>(
       `${this.API_URL}${entretienIri}`,
