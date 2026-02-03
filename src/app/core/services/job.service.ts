@@ -12,7 +12,11 @@ export class JobService {
 
   constructor(private http: HttpClient) { }
 
-  getJobs(): Observable<Job[]> {
-    return this.http.get<Job[]>(this.API_URL, { params: { ville: 'france' } });
+  getJobs(filtre?: { ville?: string; poste?: string; contrat?: string }): Observable<Job[]> {
+    const params: any = {};
+    if (filtre?.ville) params.ville = filtre.ville;
+    if (filtre?.poste) params.poste = filtre.poste;
+    if (filtre?.contrat) params.contrat = filtre.contrat;
+    return this.http.get<Job[]>(this.API_URL, { params });
   }
 }

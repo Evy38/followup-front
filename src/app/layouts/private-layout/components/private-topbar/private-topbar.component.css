@@ -1,3 +1,59 @@
+/* ----------- ENHANCED TOPBAR ----------- */
+.enhanced-topbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(90, 80, 180, 0.07);
+  padding: 12px 24px;
+  margin: 0 0 8px 0;
+}
+
+.topbar-input {
+  border: 1px solid #e6e6ef;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 15px;
+  background: #f7f7fb;
+  outline: none;
+  min-width: 180px;
+  transition: border 0.2s;
+}
+.topbar-input:focus {
+  border-color: #5b4ee5;
+}
+
+.topbar-select {
+  border: 1px solid #e6e6ef;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 15px;
+  background: #f7f7fb;
+  min-width: 160px;
+  outline: none;
+  transition: border 0.2s;
+}
+.topbar-select:focus {
+  border-color: #5b4ee5;
+}
+
+.enhanced-btn {
+  background: #5b4ee5;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 24px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(90, 80, 180, 0.09);
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.enhanced-btn:hover {
+  background: #4737c7;
+  box-shadow: 0 4px 16px rgba(90, 80, 180, 0.13);
+}
 .topbar { height: 64px; border-bottom: 1px solid #ddd; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; box-sizing: border-box; }
 .topbar__tabs { display: flex; gap: 12px; }
 .tab { padding: 8px 10px; }
@@ -7,10 +63,10 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-
   padding: 0 24px;
   background: #ffffff;
   border-bottom: 1px solid #e6e6ef;
+  margin-left: 0;
 }
 
 /* ---------- TABS ---------- */
@@ -45,25 +101,38 @@
 }
 
 /* ---------- SEARCH ---------- */
+/* Style inspiré de la maquette fournie */
 .topbar__search {
   display: flex;
   align-items: center;
-  gap: 8px;
-
+  gap: 24px;
   width: 100%;
-  max-width: 520px;
+  max-width: 900px;
+  border-radius: 24px;
+  padding: 16px 24px;
+  margin: 24px auto 32px auto;
 }
 
-.topbar__search input {
+/* Input et select arrondis, doux */
+.topbar__search input,
+.topbar__search select {
   flex: 1;
-  height: 38px;
-
-  padding: 0 14px;
-  border-radius: 10px;
-  border: 1px solid #ddd;
-
-  font-size: 14px;
-  background: #fafafa;
+  height: 44px;
+  min-width: 180px;
+  padding: 0 18px;
+  border-radius: 16px;
+  border: none;
+  font-size: 16px;
+  background: #faf7f7;
+  box-shadow: 0 1px 4px rgba(90, 80, 180, 0.10);
+  margin-right: 0;
+  outline: none;
+  transition: box-shadow 0.2s, border 0.2s;
+}
+.topbar__search input:focus,
+.topbar__search select:focus {
+  box-shadow: 0 2px 8px rgba(90, 80, 180, 0.13);
+  border: 1.5px solid #5b4ee5;
 }
 
 .topbar__search input:focus {
@@ -73,20 +142,22 @@
 }
 
 .search-btn {
-  height: 38px;
-  padding: 0 16px;
-
-  border-radius: 10px;
+  height: 44px;
+  padding: 0 32px;
+  border-radius: 22px;
   border: none;
-
-  background: #edeaff;
-  color: #5b4ee5;
-  font-size: 14px;
+  background: #6c4ee5;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 600;
   cursor: pointer;
+  margin-left: 8px;
+  box-shadow: 0 2px 8px rgba(90, 80, 180, 0.09);
+  transition: background 0.2s, box-shadow 0.2s;
 }
-
 .search-btn:hover {
-  background: #e0dbff;
+  background: #4737c7;
+  box-shadow: 0 4px 16px rgba(90, 80, 180, 0.13);
 }
 /* ---------- RIGHT ACTIONS ---------- */
 .topbar__right {

@@ -5,16 +5,24 @@
     <div class="topbar__left">
 
       @if (ctx === 'annonces') {
-        <div class="topbar__search">
+        <form class="topbar__search" (ngSubmit)="onFiltreChange()" autocomplete="off">
           <input
-            type="search"
-            placeholder="Rechercher une annonce…"
-            aria-label="Recherche annonce"
+            type="text"
+            [(ngModel)]="filtre.poste"
+            name="poste"
+            placeholder="Type de poste recherché"
+            aria-label="Type de poste recherché"
           />
-          <button type="button" class="search-btn">
-            Rechercher
-          </button>
-        </div>
+          <select [(ngModel)]="filtre.ville" name="ville" aria-label="Ville">
+            <option value="">Ville</option>
+            <option *ngFor="let ville of villes" [value]="ville">{{ ville }}</option>
+          </select>
+          <select [(ngModel)]="filtre.contrat" name="contrat" aria-label="Type de contrat">
+            <option value="">Type de contrat</option>
+            <option *ngFor="let contrat of contrats" [value]="contrat">{{ contrat }}</option>
+          </select>
+          <button type="submit" class="search-btn">Rechercher</button>
+        </form>
       } @else {
         <div class="topbar__tabs">
           <button type="button" class="tab active">Emails / Relances</button>
