@@ -2,11 +2,13 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
 import { Candidature } from '../../features/dashboard/models/candidature.model';
+import { environment } from '../../../environnements/environment';
 
 @Injectable({ providedIn: 'root' })
 export class CandidatureService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:8080/api';
+    private apiUrl = environment.apiUrl;
+  private baseUrl = environment.baseUrl;
 
   private refresh$ = new Subject<void>();
   refreshNeeded$ = this.refresh$.asObservable();
@@ -22,13 +24,11 @@ export class CandidatureService {
   }
 
   getMyCandidatures(): Observable<Candidature[]> {
-    return this.http.get<Candidature[]>(
-      'http://localhost:8080/api/my-candidatures'
-    );
+    return this.http.get<Candidature[]>(`${this.baseUrl}/api/my-candidatures`);
   }
 
   deleteCandidatureByIri(candidatureIri: string) {
-    return this.http.delete(`http://localhost:8080${candidatureIri}`);
+    return this.http.delete(`${this.baseUrl}${candidatureIri}`);
   }
 
   notifyRefresh() {
@@ -48,11 +48,6 @@ export class CandidatureService {
     // Extraction de l'ID depuis l'IRI
     const id = candidatureIri.split('/').pop();
     
-    console.log('📡 API Call:', {
-      url: `${this.apiUrl}/candidatures/${id}/statut-reponse`,
-      body: { statutReponse: statut }
-    });
-
     return this.http.patch<any>(
       `${this.apiUrl}/candidatures/${id}/statut-reponse`,
       { statutReponse: statut },
@@ -64,20 +59,5 @@ export class CandidatureService {
     );
   }
 
-  /**
-   * @deprecated Utiliser EntretienService.createEntretien()
-   */
-  updateEntretien(
-    candidatureId: number,
-    date: string | null,
-    heure: string | null
-  ): Observable<any> {
-    return this.http.patch<any>(
-      `${this.apiUrl}/candidatures/${candidatureId}/entretien`,
-      {
-        dateEntretien: date,
-        heureEntretien: heure
-      }
-    );
-  }
+
 }

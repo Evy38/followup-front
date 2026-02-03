@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
+import { environment } from '../../../environnements/environment';
 
 // Interface pour l'inscription
 export interface RegisterPayload {
@@ -17,10 +18,9 @@ export interface RegisterPayload {
   providedIn: 'root'
 })
 export class AuthService {
-  // Base API (endpoints REST /api/...)
-  private apiUrl = 'http://localhost:8080/api';
-  // Base pour OAuth (tes routes /auth/google)
-  private oauthBase = 'http://localhost:8080';
+
+  private apiUrl = environment.apiUrl;
+  private oauthBase = environment.oauthBase;
 
   private tokenSubject = new BehaviorSubject<string | null>(null);
   public token$ = this.tokenSubject.asObservable();
@@ -72,7 +72,6 @@ export class AuthService {
       tap((response: any) => {
         if (response?.token) {
           this.setToken(response.token);
-          // ❌ PAS DE REDIRECTION ICI
         }
       })
     );

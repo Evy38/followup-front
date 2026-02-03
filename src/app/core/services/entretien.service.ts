@@ -1,12 +1,13 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environnements/environment';
 
 export interface EntretienApi {
-  '@id': string; 
+  '@id': string;
   id: number;
-  dateEntretien: string;   
-  heureEntretien: string;  
+  dateEntretien: string;
+  heureEntretien: string;
   statut: 'prevu' | 'passe' | 'annule';
   resultat?: 'positive' | 'negative' | null;
 }
@@ -25,8 +26,7 @@ export interface EntretienApi {
 export class EntretienService {
   private http = inject(HttpClient);
 
-  // Base URL backend (en dur volontairement pour l’instant)
-  private readonly API_URL = 'http://localhost:8080';
+  private readonly API_URL = environment.baseUrl;
 
   /**
    * Création d’un entretien pour une candidature.
