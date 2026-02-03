@@ -53,7 +53,7 @@ export const routes: Routes = [
         path: 'dashboard',
         loadComponent: () =>
           import('./features/dashboard/pages/home/dashboard-home.component')
-            .then(m => m.DashboardComponent),
+            .then(m => m.DashboardHomeComponent),
         data: { topbar: 'dashboard' }
       },
       {
@@ -95,6 +95,7 @@ export const routes: Routes = [
   },
   {
     path: 'reset-password',
+    outlet: 'overlay',
     loadComponent: () =>
       import('./features/auth/reset-password/reset-password.component')
         .then(m => m.ResetPasswordComponent),
