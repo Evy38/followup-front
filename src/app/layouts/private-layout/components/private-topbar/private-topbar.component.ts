@@ -18,8 +18,6 @@ export class PrivateTopbarComponent {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
 
-
-  // Champs de filtre
   @Input() villes: string[] = [];
   @Input() postes: string[] = [];
   @Input() contrats: string[] = [];
@@ -31,6 +29,28 @@ export class PrivateTopbarComponent {
   };
 
   @Output() filtreChange = new EventEmitter<{ ville: string; poste: string; contrat: string }>();
+
+  // Pour l'autocomplétion ville
+  villeInput: string = '';
+  showVilleList: boolean = false;
+  get filteredVilles(): string[] {
+    if (!this.villeInput) return this.villes;
+    return this.villes.filter(v => v.toLowerCase().includes(this.villeInput.toLowerCase()));
+  }
+
+  onVilleInputChange(value: string) {
+    this.villeInput = value;
+    this.filtre.ville = value;
+    this.showVilleList = !!this.filteredVilles.length && !!value;
+  }
+  onVilleSelect(ville: string) {
+    this.filtre.ville = ville;
+    this.villeInput = ville;
+    this.showVilleList = false;
+  }
+  onVilleBlur() {
+    setTimeout(() => this.showVilleList = false, 200);
+  }
 
   // Observable du contexte topbar en fonction de la route active
   topbarContext$ = this.router.events.pipe(
