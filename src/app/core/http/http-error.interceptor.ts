@@ -3,28 +3,27 @@ import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, throwError } from 'rxjs';
 
+// Version recommandée
 export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);
 
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
 
-      const isCandidatureRequest = req.url.includes('/api/candidatures');
-
-      // 🔐 401
-      if (error.status === 401 && !isCandidatureRequest) {
+      // 🔐 401 - Token invalide ou expiré
+      if (error.status === 401) {
+        // Déconnecter l'utilisateur et rediriger
+        localStorage.removeItem('token');
         router.navigate([{ outlets: { overlay: ['login'] } }]);
       }
 
-      // 🚫 403
-      if (error.status === 403 && !isCandidatureRequest) {
+      // 🚫 403 - Accès refusé (permissions insuffisantes)
+      if (error.status === 403) {
         router.navigate(
           [{ outlets: { overlay: ['login'] } }],
           {
             state: {
-              errorMessage:
-                error.error?.message ??
-                'Votre compte n’est pas autorisé.'
+              errorMessage: error.error?.message ?? 'Accès refusé.'
             }
           }
         );
@@ -34,4 +33,3 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
     })
   );
 };
-

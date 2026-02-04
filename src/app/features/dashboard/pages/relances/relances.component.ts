@@ -18,40 +18,51 @@ type FilterStatus = 'relances' | 'reponses';
   styleUrls: ['./relances.component.css'],
 })
 export class RelancesComponent implements OnInit {
-    showEntretienModal: boolean = false;
-    modalCandidature: Candidature | null = null;
+  /**
+   * Retourne le nombre total de relances effectuées (toutes candidatures confondues)
+   */
+  getDoneRelancesCount(): number {
+    return this.candidatures.reduce((acc, c) => acc + (c.relances?.filter(r => r.faite).length ?? 0), 0);
+  }
 
-    openEntretienModal(c: Candidature): void {
-      this.modalCandidature = c;
-      this.entretienForm = { date: '', heure: '' };
-      this.showEntretienModal = true;
-      this.cdr.detectChanges();
-    }
+  showEntretienModal: boolean = false;
+  modalCandidature: Candidature | null = null;
 
-    closeEntretienModal(): void {
-      this.showEntretienModal = false;
-      this.modalCandidature = null;
-      this.entretienForm = { date: '', heure: '' };
-      this.cdr.detectChanges();
-    }
+  openEntretienModal(c: Candidature): void {
+    this.modalCandidature = c;
+    this.entretienForm = { date: '', heure: '' };
+    this.showEntretienModal = true;
+    this.cdr.detectChanges();
+  }
 
-    createEntretienFromModal(): void {
-      if (!this.modalCandidature) return;
-      const c = this.modalCandidature;
-      const iri = c['@id'] || `/api/candidatures/${c.id}`;
-      if (!iri || !this.entretienForm.date || !this.entretienForm.heure) return;
-      this.entretienService.createEntretien(iri, this.entretienForm.date, this.entretienForm.heure).subscribe({
-        next: (entretien) => {
-          c.entretiens = c.entretiens ? [...c.entretiens, entretien] : [entretien];
-          // Synchronise la date/heure du prochain entretien prévu dans la table candidature
-          this.candidatureService.updateEntretien(c.id, this.entretienForm.date, this.entretienForm.heure).subscribe();
-          this.closeEntretienModal();
-          this.cdr.detectChanges();
-        },
-        error: (err) => console.error('❌ Erreur création entretien', err),
-      });
-    }
-  // ...existing code...
+  closeEntretienModal(): void {
+    this.showEntretienModal = false;
+    this.modalCandidature = null;
+    this.entretienForm = { date: '', heure: '' };
+    this.cdr.detectChanges();
+  }
+
+  createEntretienFromModal(): void {
+    if (!this.modalCandidature) return;
+    const c = this.modalCandidature;
+    const iri = c['@id'] || `/api/candidatures/${c.id}`;
+    if (!iri || !this.entretienForm.date || !this.entretienForm.heure) return;
+    this.entretienService.createEntretien(iri, this.entretienForm.date, this.entretienForm.heure).subscribe({
+      next: (entretien) => {
+        // On filtre les entretiens pour ne garder que ceux avec un statut accepté par le modèle
+        const entretienValide = Array.isArray(entretien)
+          ? entretien.filter((e: any) => e.statut === 'prevu' || e.statut === 'passe')
+          : (entretien.statut === 'prevu' || entretien.statut === 'passe' ? [entretien] : []);
+        c.entretiens = c.entretiens
+          ? [...c.entretiens, ...entretienValide]
+          : [...entretienValide];
+        this.closeEntretienModal();
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error('❌ Erreur création entretien', err),
+    });
+  }
+
   entretienForm = {
     date: '',
     heure: '',
@@ -60,8 +71,6 @@ export class RelancesComponent implements OnInit {
   getNbEntretiensPrevus(c: Candidature): number {
     return c.entretiens?.filter(e => e.statut === 'prevu').length ?? 0;
   }
-
-
 
   candidatures: Candidature[] = [];
   filterStatus: FilterStatus = 'relances';
@@ -178,6 +187,8 @@ export class RelancesComponent implements OnInit {
           return 'Refusé';
         case 'echanges':
           return 'Échanges en cours';
+        case 'engage':  // ✅ Corrigé : une seule ligne
+          return 'Engagé';
         case 'attente':
         default:
           return 'En attente de retour';
@@ -200,7 +211,8 @@ export class RelancesComponent implements OnInit {
 
     const passes = entretiens.filter(e => e.statut === 'passe');
 
-    if (passes.some(e => e.resultat === 'positive')) {
+    // Corrigé : 'engage' au lieu de 'engage'
+    if (passes.some(e => e.resultat === 'engage')) {
       return 'Entretien réussi';
     }
 
@@ -212,11 +224,12 @@ export class RelancesComponent implements OnInit {
   }
 
   /**
-   * Met à jour le statutReponse (attente / échanges / negative)
+   * Met à jour le statutReponse (attente / échanges / negative / engage)
+   * ✅ VERSION CORRIGÉE : Suppression du mapping engage ↔ engage
    */
   updateStatutReponse(
     candidature: Candidature,
-    statut: 'attente' | 'echanges' | 'negative',
+    statut: 'attente' | 'echanges' | 'negative' | 'engage',
     event?: Event
   ): void {
     if (event) event.stopPropagation();
@@ -231,8 +244,10 @@ export class RelancesComponent implements OnInit {
       return;
     }
 
-    // Si on clique sur le bouton déjà actif, on reset à "attente"
-    const newStatut = (candidature.statutReponse === statut) ? 'attente' : statut;
+    // ✅ Logique de toggle simplifiée (sans mapping)
+    const isActive = candidature.statutReponse === statut;
+    const newStatut = isActive ? 'attente' : statut;
+
     console.log('🔄 Mise à jour statut:', { iri, statut: newStatut });
 
     // Optimistic UI
@@ -240,14 +255,13 @@ export class RelancesComponent implements OnInit {
     candidature.statutReponse = newStatut;
     this.cdr.detectChanges();
 
-    // Utilise le bon endpoint backend
+    // ✅ Envoi direct au backend sans mapping
     this.candidatureService.updateStatutReponse(iri, newStatut).subscribe({
       next: () => {
         console.log('✅ Statut mis à jour avec succès');
       },
       error: (err) => {
         console.error('❌ Erreur mise à jour statut', err);
-        // Rollback si erreur backend
         candidature.statutReponse = previous;
         this.cdr.detectChanges();
       },
@@ -269,11 +283,8 @@ export class RelancesComponent implements OnInit {
     return (c.entretiens ?? []).some(e => e.statut === 'prevu');
   }
 
-  /**
-   * Vérifie si une candidature a au moins un entretien passé avec succès
-   */
   hasEntretienReussi(c: Candidature): boolean {
-    return (c.entretiens ?? []).some(e => e.statut === 'passe' && e.resultat === 'positive');
+    return (c.entretiens ?? []).some(e => e.statut === 'passe' && e.resultat === 'engage');
   }
 
   /**
@@ -327,10 +338,10 @@ export class RelancesComponent implements OnInit {
    */
   markEntretienAsPassed(
     e: any,
-    resultat: 'positive' | 'negative'
+    resultat: 'engage' | 'negative'  // ✅ Corrigé : 'engage' au lieu de 'engage'
   ): void {
     console.log('🔄 Marquage entretien comme passé', { e, resultat });
-    
+
     this.entretienService
       .updateEntretien(e['@id'], 'passe', resultat)
       .subscribe({
@@ -351,19 +362,27 @@ export class RelancesComponent implements OnInit {
   deleteEntretien(c: Candidature, entretien: any, event: Event): void {
     event.stopPropagation();
     if (!confirm('Supprimer cet entretien ?')) return;
-    console.log('🔄 Suppression entretien', entretien['@id']);
-    this.entretienService.deleteEntretien(entretien['@id']).subscribe({
+    let entretienIdentifier = entretien['@id'] || entretien.id;
+    if (!entretienIdentifier) {
+      console.error('❌ Impossible de supprimer : ni "@id" ni "id" n\'est présent sur l\'entretien', entretien);
+      alert('Erreur : impossible de supprimer cet entretien (aucun identifiant trouvé).');
+      return;
+    }
+    console.log('🔄 Suppression entretien', entretienIdentifier);
+    this.entretienService.deleteEntretien(entretienIdentifier).subscribe({
       next: () => {
         console.log('✅ Entretien supprimé');
-        c.entretiens = (c.entretiens ?? []).filter(e => e['@id'] !== entretien['@id']);
-        // Si plus aucun entretien prévu, efface la date/heure dans la table candidature
-        const prochain = (c.entretiens ?? []).find(e => e.statut === 'prevu');
-        if (!prochain) {
-          this.candidatureService.updateEntretien(c.id, null, null).subscribe();
-        } else {
-          // Sinon, synchronise avec le prochain entretien prévu
-          this.candidatureService.updateEntretien(c.id, prochain.dateEntretien, prochain.heureEntretien).subscribe();
-        }
+        const idToDelete = entretien['@id'] || entretien.id;
+        c.entretiens = (c.entretiens ?? []).filter(e => {
+          if (e['@id'] && entretien['@id']) {
+            return e['@id'] !== entretien['@id'];
+          } else if (!e['@id'] && !entretien['@id']) {
+            return e.id !== entretien.id;
+          }
+          // Si l'un a un @id et l'autre non, on ne supprime pas
+          return true;
+        });
+        // Plus d'appel API sur la candidature : on ne fait que mettre à jour le tableau local
         this.cdr.detectChanges();
       },
       error: (err) => {
@@ -412,7 +431,7 @@ export class RelancesComponent implements OnInit {
     const match = heure.match(/T(\d{2}):(\d{2})/);
     if (match) return `${match[1]}:${match[2]}`;
     // Si format complet genre 12:30:00
-    if (/^\d{2}:\d{2}:\d{2}/.test(heure)) return heure.slice(0,5);
+    if (/^\d{2}:\d{2}:\d{2}/.test(heure)) return heure.slice(0, 5);
     return heure;
   }
 }

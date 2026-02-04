@@ -1,14 +1,15 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export interface EntretienApi {
-  '@id': string; 
+  '@id': string;
   id: number;
-  dateEntretien: string;   
-  heureEntretien: string;  
+  dateEntretien: string;
+  heureEntretien: string;
   statut: 'prevu' | 'passe' | 'annule';
-  resultat?: 'positive' | 'negative' | null;
+  resultat?: 'engage' | 'negative' | null;
 }
 
 /**
@@ -25,8 +26,7 @@ export interface EntretienApi {
 export class EntretienService {
   private http = inject(HttpClient);
 
-  // Base URL backend (en dur volontairement pour l’instant)
-  private readonly API_URL = 'http://localhost:8080';
+  private readonly API_URL = environment.baseUrl;
 
   /**
    * Création d’un entretien pour une candidature.
@@ -61,7 +61,7 @@ export class EntretienService {
    *
    * Cas d’usage :
    * - entretien passé
-   * - résultat connu (positive / negative)
+   * - résultat connu (engage / negative)
    *
    * @param entretienIri IRI de l’entretien (/api/entretiens/4)
    * @param statut Nouveau statut
@@ -70,7 +70,7 @@ export class EntretienService {
   updateEntretien(
     entretienIri: string,
     statut: 'prevu' | 'passe' | 'annule',
-    resultat?: 'positive' | 'negative' | null
+    resultat?: 'engage' | 'negative' | null
   ): Observable<EntretienApi> {
     return this.http.patch<EntretienApi>(
       `${this.API_URL}${entretienIri}`,
@@ -92,11 +92,24 @@ export class EntretienService {
    * ⚠️ Le backend recalculera automatiquement
    * le statut global de la candidature si nécessaire.
    *
-   * @param entretienIri IRI de l’entretien
+   * @param entretienIriOrId IRI de l’entretien (ex: /api/entretiens/42) ou ID numérique (ex: 42)
    */
-  deleteEntretien(entretienIri: string): Observable<void> {
+  deleteEntretien(entretienIriOrId: string | number): Observable<void> {
+    // Si c’est un nombre, on construit l’IRI attendu par l’API
+    let iri: string;
+    if (typeof entretienIriOrId === 'number') {
+      iri = `/api/entretiens/${entretienIriOrId}`;
+    } else if (/^\/api\/entretiens\//.test(entretienIriOrId)) {
+      iri = entretienIriOrId;
+    } else if (/^\/api\/candidatures\//.test(entretienIriOrId)) {
+      // Cas d'une mauvaise IRI, on tente d'extraire l'id numérique à la fin
+      const match = entretienIriOrId.match(/([0-9]+)$/);
+      iri = match ? `/api/entretiens/${match[1]}` : entretienIriOrId;
+    } else {
+      iri = entretienIriOrId;
+    }
     return this.http.delete<void>(
-      `${this.API_URL}${entretienIri}`
+      `${this.API_URL}${iri}`
     );
   }
 }

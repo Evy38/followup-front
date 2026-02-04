@@ -3,11 +3,13 @@ import { HttpInterceptorFn } from '@angular/common/http';
 export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
   // Routes publiques qui ne nécessitent pas de token
   const publicRoutes = [
-    '/api/login',
-    '/api/register',
-    '/api/password/request',
-    '/api/password/reset',
-    '/api/verify-email'
+'/api/login_check', 
+  '/api/register',
+  '/api/password/request',
+  '/api/password/reset',
+  '/api/verify-email',
+  '/auth/google',   
+  '/auth/google/callback'
   ];
 
   // Vérifier si la requête est vers une route publique

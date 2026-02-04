@@ -2,16 +2,21 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Job } from '../../features/dashboard/models/job.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class JobService {
-  private readonly API_URL = 'http://localhost:8080/api/jobs';
+  private readonly API_URL = `${environment.apiUrl}/jobs`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
-  getJobs(): Observable<Job[]> {
-    return this.http.get<Job[]>(this.API_URL, { params: { ville: 'france' } });
+  getJobs(filtre?: { ville?: string; poste?: string; contrat?: string }): Observable<Job[]> {
+    const params: any = {};
+    if (filtre?.ville) params.ville = filtre.ville;
+    if (filtre?.poste) params.poste = filtre.poste;
+    if (filtre?.contrat) params.contrat = filtre.contrat;
+    return this.http.get<Job[]>(this.API_URL, { params });
   }
 }
