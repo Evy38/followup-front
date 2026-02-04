@@ -1,0 +1,129 @@
+name: CD - Continuous Deployment
+
+# Déclenchement manuel uniquement (pour la démo)
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        type: choice
+        options:
+          - sit
+          - uat
+          - prod
+
+jobs:
+  # Job 1 : Build
+  build:
+    name: Build for ${{ github.event.inputs.environment }}
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Build for ${{ github.event.inputs.environment }}
+        run: npm run build -- --configuration=production
+      
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ github.event.inputs.environment }}-${{ github.run_number }}
+          path: dist/followup-front/browser
+          retention-days: 30
+  
+  # Job 2 : Déploiement SIT (automatique)
+  deploy-sit:
+    name: Deploy to SIT
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event.inputs.environment == 'sit'
+    environment:
+      name: sit
+      url: https://sit.followup.com
+    
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-${{ github.event.inputs.environment }}-${{ github.run_number }}
+      
+      - name: Simulate deployment to SIT
+        run: |
+          echo "🚀 Déploiement vers SIT"
+          echo "📦 Artefacts téléchargés"
+          ls -lh
+          echo "✅ Déploiement SIT simulé avec succès"
+  
+  # Job 3 : Déploiement UAT (nécessite validation)
+  deploy-uat:
+    name: Deploy to UAT
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event.inputs.environment == 'uat'
+    environment:
+      name: uat
+      url: https://uat.followup.com
+    
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-${{ github.event.inputs.environment }}-${{ github.run_number }}
+      
+      - name: Simulate deployment to UAT
+        run: |
+          echo "🚀 Déploiement vers UAT"
+          echo "📦 Artefacts téléchargés"
+          ls -lh
+          echo "✅ Déploiement UAT simulé avec succès"
+  
+  # Job 4 : Déploiement PROD (nécessite double validation)
+  deploy-prod:
+    name: Deploy to Production
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event.inputs.environment == 'prod'
+    environment:
+      name: prod
+      url: https://followup.com
+    
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-${{ github.event.inputs.environment }}-${{ github.run_number }}
+      
+      - name: Create backup (simulated)
+        run: |
+          echo "💾 Création d'un backup de production"
+          echo "✅ Backup créé"
+      
+      - name: Simulate deployment to Production
+        run: |
+          echo "🚀 Déploiement vers PRODUCTION"
+          echo "📦 Artefacts téléchargés"
+          ls -lh
+          echo "✅ Déploiement PRODUCTION simulé avec succès"
+      
+      - name: Post-deployment tests (simulated)
+        run: |
+          echo "🧪 Exécution des tests post-déploiement"
+          echo "  ✅ Site accessible"
+          echo "  ✅ Page d'accueil OK"
+          echo "  ✅ API backend répond"
+      
+      - name: Notify deployment
+        run: |
+          echo "📧 Notification de déploiement"
+          echo "Déploiement en production réussi - Build ${{ github.run_number }}"
