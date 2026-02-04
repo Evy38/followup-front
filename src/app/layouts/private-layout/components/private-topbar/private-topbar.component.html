@@ -34,7 +34,7 @@
           </div>
           <select [(ngModel)]="filtre.contrat" name="contrat" aria-label="Type de contrat">
             <option value="">Type de contrat</option>
-            <option *ngFor="let contrat of contrats" [value]="contrat">{{ contrat }}</option>
+            <option *ngFor="let contrat of contrats" [value]="contrat.value">{{ contrat.label }}</option>
           </select>
           <button type="submit" class="search-btn">Rechercher</button>
         </form>

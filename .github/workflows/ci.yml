@@ -1,0 +1,48 @@
+# Nom de votre pipeline CI
+name: CI Angular
+
+# Quand lancer ce pipeline ?
+on:
+  push:
+    branches: [ main, develop ]  # À chaque push sur main ou develop
+  pull_request:
+    branches: [ main, develop ]  # À chaque PR vers main ou develop
+
+# Les différentes tâches à exécuter
+jobs:
+  # Job 1 : Installation + Build
+  build:
+    name: Build Application
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [20.x]
+    
+    steps:
+      # Étape 1 : Récupérer le code du dépôt
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      # Étape 2 : Installer Node.js
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+      
+      # Étape 3 : Installer les dépendances
+      - name: Install dependencies
+        run: npm ci
+      
+      # Étape 4 : Build de production
+      - name: Build production
+        run: npm run build -- --configuration production
+      
+      # Étape 5 : Sauvegarder les artefacts du build
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: dist/followup-front/browser
+          retention-days: 7

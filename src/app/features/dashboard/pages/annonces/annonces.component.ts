@@ -1,5 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { JobService } from '../../../../core/services/job.service';
+import { ContractTypeService, ContractType } from '../../../../core/services/contract-type.service';
 import { Job } from '../../models/job.model';
 import { CandidatureService } from '../../../../core/services/candidature.service';
 import { CommonModule } from '@angular/common';
@@ -17,20 +18,34 @@ export class AnnoncesComponent implements OnInit {
   filteredJobs: Job[] = [];
   villes: string[] = [];
   postes: string[] = [];
-  contrats: string[] = [];
+  contrats: ContractType[] = [];
   loading = true;
   error: string | null = null;
 
   constructor(
     private jobService: JobService,
     private candidatureService: CandidatureService,
+    private contractTypeService: ContractTypeService,
     private cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
+    this.loadContractTypes();
     this.loadJobs();
     this.candidatureService.refreshNeeded$
       .subscribe(() => this.loadCandidatures());
+  }
+
+  loadContractTypes() {
+    this.contractTypeService.getContractTypes().subscribe({
+      next: (types) => {
+        this.contrats = types;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Erreur chargement types de contrats:', err);
+      }
+    });
   }
 
   loadJobs(filtre?: { ville?: string; poste?: string; contrat?: string }) {
@@ -41,7 +56,7 @@ export class AnnoncesComponent implements OnInit {
         this.filteredJobs = jobs;
         this.villes = Array.from(new Set(jobs.map(j => j.location).filter(Boolean)));
         this.postes = Array.from(new Set(jobs.map(j => j.title).filter(Boolean)));
-        this.contrats = Array.from(new Set(jobs.map(j => j.contractType).filter(Boolean)));
+        // On ne touche plus à this.contrats ici, elle vient de l'API
         this.loading = false;
         this.cdr.detectChanges();
         this.loadCandidatures();

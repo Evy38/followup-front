@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { Output, EventEmitter, Input } from '@angular/core';
-import { AsyncPipe } from '@angular/common';
+import { ContractType } from '../../../../core/services/contract-type.service';
+import { AsyncPipe, CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { filter, map, startWith } from 'rxjs';
@@ -10,7 +11,7 @@ type TopbarContext = 'dashboard' | 'annonces' | 'candidatures' | 'relances' | 'p
 @Component({
   selector: 'app-private-topbar',
   standalone: true,
-  imports: [AsyncPipe, FormsModule],
+  imports: [AsyncPipe, CommonModule, FormsModule],
   templateUrl: './private-topbar.component.html',
   styleUrls: ['./private-topbar.component.css'],
 })
@@ -20,7 +21,7 @@ export class PrivateTopbarComponent {
 
   @Input() villes: string[] = [];
   @Input() postes: string[] = [];
-  @Input() contrats: string[] = [];
+  @Input() contrats: ContractType[] = [];
 
   filtre = {
     ville: '',
