@@ -1,36 +1,47 @@
-<app-private-topbar [villes]="villes" [postes]="postes" [contrats]="contrats" (filtreChange)="onFiltreChange($event)">
+<app-private-topbar [villes]="villes" [postes]="postes" (filtreChange)="onFiltreChange($event)">
 </app-private-topbar>
 
 <section class="annonces">
   <p *ngIf="loading">Chargement des annonces…</p>
   <p *ngIf="error">{{ error }}</p>
 
-  <!-- ✅ NOUVEAU : Message quand aucun résultat -->
   <div *ngIf="!loading && !error && filteredJobs.length === 0" class="no-results">
     <p>Aucune annonce ne correspond à vos critères de recherche.</p>
     <p class="hint">Essayez de modifier vos filtres ou d'élargir votre recherche.</p>
   </div>
 
-<p *ngIf="!loading && !error && filteredJobs.length > 0" class="results-count">
-  {{ filteredJobs.length }} annonce(s) trouvée(s)
-</p>
+  <p *ngIf="!loading && !error && filteredJobs.length > 0" class="results-count">
+    {{ filteredJobs.length }} annonce(s) trouvée(s)
+  </p>
 
   <ul *ngIf="!loading && !error">
     <li *ngFor="let job of filteredJobs; trackBy: trackByJobId" class="job-card">
-      <h3>{{ job.title }}</h3>
+      <div class="job-header">
+        <h3>{{ job.title }}</h3>
+        <!-- ✅ Badge à droite du titre si disponible -->
+        <span *ngIf="job.contractType && job.contractType !== 'Non spécifié'" 
+              class="contract-badge"
+              [class.badge-cdi]="job.contractType === 'CDI'"
+              [class.badge-cdd]="job.contractType === 'CDD'"
+              [class.badge-interim]="job.contractType === 'Intérim'">
+          {{ job.contractType }}
+        </span>
+      </div>
+      
       <p><strong>{{ job.company }}</strong></p>
       <p>{{ job.location }}</p>
-      <p>Contrat : {{ job.contractType }}</p>
+      
       <p *ngIf="job.salaryMin || job.salaryMax">
-        Salaire :
+        💰 Salaire :
         {{ job.salaryMin ?? '—' }} € – {{ job.salaryMax ?? '—' }} €
       </p>
+      
       <div class="job-actions">
         <a [href]="job.redirectUrl" target="_blank" rel="noopener noreferrer">
-          Voir l’annonce
+          Voir l'annonce
         </a>
         <button (click)="onCandidated(job)" [disabled]="job._candidated">
-          {{ job._candidated ? 'Déjà candidaté' : 'J’ai candidaté' }}
+          {{ job._candidated ? 'Déjà candidaté' : 'J\'ai candidaté' }}
         </button>
       </div>
     </li>

@@ -165,6 +165,7 @@
 	border-radius: 8px;
 	transition: background 0.15s;
 	font-weight: 500;
+	margin-right: 14px;
 }
 .sidebar-item.active, .sidebar-item:hover {
 	background: #f3eaff;
