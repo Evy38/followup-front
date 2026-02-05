@@ -1,14 +1,20 @@
-
-<app-private-topbar
-  [villes]="villes"
-  [postes]="postes"
-  [contrats]="contrats"
-  (filtreChange)="onFiltreChange($event)">
+<app-private-topbar [villes]="villes" [postes]="postes" [contrats]="contrats" (filtreChange)="onFiltreChange($event)">
 </app-private-topbar>
 
 <section class="annonces">
   <p *ngIf="loading">Chargement des annonces…</p>
   <p *ngIf="error">{{ error }}</p>
+
+  <!-- ✅ NOUVEAU : Message quand aucun résultat -->
+  <div *ngIf="!loading && !error && filteredJobs.length === 0" class="no-results">
+    <p>Aucune annonce ne correspond à vos critères de recherche.</p>
+    <p class="hint">Essayez de modifier vos filtres ou d'élargir votre recherche.</p>
+  </div>
+
+<p *ngIf="!loading && !error && filteredJobs.length > 0" class="results-count">
+  {{ filteredJobs.length }} annonce(s) trouvée(s)
+</p>
+
   <ul *ngIf="!loading && !error">
     <li *ngFor="let job of filteredJobs; trackBy: trackByJobId" class="job-card">
       <h3>{{ job.title }}</h3>
@@ -20,17 +26,10 @@
         {{ job.salaryMin ?? '—' }} € – {{ job.salaryMax ?? '—' }} €
       </p>
       <div class="job-actions">
-        <a
-          [href]="job.redirectUrl"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <a [href]="job.redirectUrl" target="_blank" rel="noopener noreferrer">
           Voir l’annonce
         </a>
-        <button
-          (click)="onCandidated(job)"
-          [disabled]="job._candidated"
-        >
+        <button (click)="onCandidated(job)" [disabled]="job._candidated">
           {{ job._candidated ? 'Déjà candidaté' : 'J’ai candidaté' }}
         </button>
       </div>

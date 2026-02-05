@@ -92,3 +92,27 @@
   cursor: not-allowed;
   box-shadow: none;
 }
+
+.no-results {
+  text-align: center;
+  padding: 60px 20px;
+  color: #666;
+}
+
+.no-results p {
+  margin: 10px 0;
+  font-size: 16px;
+}
+
+.no-results .hint {
+  font-size: 14px;
+  color: #999;
+  font-style: italic;
+}
+
+.results-count {
+  padding: 15px 20px;
+  color: #5A50B4;
+  font-weight: 500;
+  font-size: 14px;
+}
