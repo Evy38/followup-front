@@ -42,13 +42,18 @@ export const routes: Routes = [
   },
 
   // ============================
-  // ZONE PRIVEE
+  // ZONE PRIVÉE (protégée par authGuard)
   // ============================
   {
     path: 'app',
     component: PrivateLayoutComponent,
     canActivate: [authGuard],
     children: [
+      {
+        path: '',
+        redirectTo: 'dashboard',
+        pathMatch: 'full'
+      },
       {
         path: 'dashboard',
         loadComponent: () =>
@@ -81,17 +86,20 @@ export const routes: Routes = [
   },
 
   // ============================
-  // OVERLAY AUTH (router-outlet secondaire)
+  // AUTHENTIFICATION (router-outlet secondaire "overlay")
   // ============================
   {
     path: 'login',
     outlet: 'overlay',
-    loadComponent: () => import('./features/auth/login/login').then(m => m.LoginComponent),
+    loadComponent: () => 
+      import('./features/auth/login/login').then(m => m.LoginComponent),
   },
   {
     path: 'forgot-password',
     outlet: 'overlay',
-    loadComponent: () => import('./features/auth/forgot-password/forgot-password.component').then(m => m.ForgotPasswordComponent),
+    loadComponent: () => 
+      import('./features/auth/forgot-password/forgot-password.component')
+        .then(m => m.ForgotPasswordComponent),
   },
   {
     path: 'reset-password',
@@ -101,13 +109,20 @@ export const routes: Routes = [
         .then(m => m.ResetPasswordComponent),
   },
 
-
-  // Route de callback Google OAuth (pas d'outlet)
+  // ============================
+  // CALLBACK OAUTH GOOGLE (route principale, pas d'overlay)
+  // ============================
   {
     path: 'google-callback',
     component: GoogleCallbackComponent,
   },
 
-  // fallback
-  { path: '**', redirectTo: '' },
+  // ============================
+  // FALLBACK (404)
+  // ============================
+  { 
+    path: '**', 
+    redirectTo: '', // ✅ Redirige vers la home publique
+    pathMatch: 'full'
+  },
 ];

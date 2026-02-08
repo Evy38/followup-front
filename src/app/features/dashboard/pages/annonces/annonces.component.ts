@@ -3,13 +3,12 @@ import { JobService } from '../../../../core/services/job.service';
 import { Job } from '../../models/job.model';
 import { CandidatureService } from '../../../../core/services/candidature.service';
 import { CommonModule } from '@angular/common';
-import { PrivateTopbarComponent } from '../../../../layouts/private-layout/components/private-topbar/private-topbar.component';
-import { AnnonceFilterService, AnnonceFilter } from '../../../../core/services/annonce-filter.service';
+import { AnnonceFilterService } from '../../../../core/services/annonce-filter.service';
 
 @Component({
   selector: 'app-annonces',
   standalone: true,
-  imports: [CommonModule, PrivateTopbarComponent],
+  imports: [CommonModule],
   templateUrl: './annonces.component.html',
   styleUrls: ['./annonces.component.css'],
 })

@@ -2,13 +2,36 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8">
-  <title>FollowUp</title>
+  <title>FollowUp - Suivez vos candidatures en toute sérénité</title>
   <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <!--  Viewport pour mobile-first -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  
+  <!--  SEO & Description -->
+  <meta name="description" content="FollowUp vous aide à centraliser et suivre toutes vos candidatures professionnelles avec un système de relances automatiques.">
+  <meta name="keywords" content="candidature, emploi, recherche emploi, suivi candidature, relance">
+  <meta name="author" content="FollowUp">
+  
+  <!--  Theme color pour PWA -->
+  <meta name="theme-color" content="#4CAF50">
+  
+  <!--  Icônes -->
   <link rel="icon" type="image/png" href="assets/icons/logoOnglet.png">
+  <link rel="apple-touch-icon" href="assets/icons/icon-192x192.png">
+  
+  <!--  Manifest PWA -->
   <link rel="manifest" href="manifest.webmanifest">
 </head>
 <body>
   <app-root></app-root>
+  
+  <!--  Fallback si JS désactivé -->
+  <noscript>
+    <div style="text-align: center; padding: 2rem; font-family: sans-serif;">
+      <h1>⚠️ JavaScript requis</h1>
+      <p>FollowUp nécessite JavaScript pour fonctionner. Veuillez l'activer dans votre navigateur.</p>
+    </div>
+  </noscript>
 </body>
 </html>
