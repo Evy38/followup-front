@@ -1,19 +1,19 @@
 /* Shell global : aucune barre de scroll sur la page */
 
 .private-shell {
-  display: flex;
+  display: block;
   height: 100vh;
   overflow: hidden;
 }
 
 /* Sidebar : fixe */
 app-private-sidebar {
-  width: 240px;
+  width: 0;
+  height: 0;
   flex-shrink: 0;
   height: 100vh;
   position: relative;
   z-index: 30;
-  /* overflow: hidden;  supprimé pour permettre au menu de dépasser */
 }
 
 /* Colonne droite : topbar + contenu */
@@ -31,14 +31,16 @@ app-private-sidebar {
 }
 
 /* Topbar : reste visible */
-app-private-topbar {
-  position: sticky;
+/* app-private-topbar { */
+  /* position: sticky;
   top: 0;
   z-index: 10;
   background: #fff;
-  border-bottom: 1px solid rgba(0,0,0,0.06);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
   margin-left: 0;
-}
+} */
+
+
 
 /* Seul le contenu scrolle */
 .private-content {
@@ -47,4 +49,20 @@ app-private-topbar {
   padding: 16px;
   box-sizing: border-box;
   background: transparent;
+}
+
+@media (min-width: 700px) {
+  .private-shell {
+    display: flex;
+  }
+
+  app-private-sidebar {
+    width: 240px;
+    height: 100vh;
+    flex-shrink: 0;
+  }
+
+  .private-main {
+    flex: 1;
+  }
 }

@@ -1,6 +1,20 @@
 
-<aside class="sidebar" aria-label="Navigation privée">
-  <div class="sidebar-profile">
+
+<!-- Bouton burger/croix visible en permanence sur mobile -->
+<button class="burger-btn" (click)="sidebarOpen ? closeSidebar() : toggleSidebar()" aria-label="Menu" [class.open]="sidebarOpen">
+  <span *ngIf="!sidebarOpen"></span>
+  <span *ngIf="!sidebarOpen"></span>
+  <span *ngIf="!sidebarOpen"></span>
+  <svg *ngIf="sidebarOpen" width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <line x1="4" y1="4" x2="18" y2="18" stroke="#a259ff" stroke-width="2.2" stroke-linecap="round"/>
+    <line x1="18" y1="4" x2="4" y2="18" stroke="#a259ff" stroke-width="2.2" stroke-linecap="round"/>
+  </svg>
+</button>
+
+<!-- Sidebar overlay sur mobile -->
+<aside class="sidebar" aria-label="Navigation privée" [class.open]="sidebarOpen" (click)="closeSidebar()">
+  <div class="sidebar-content" (click)="($event.stopPropagation())">
+    <div class="sidebar-profile">
     <div class="avatar-wrapper">
       <img src="/assets/icons/avatar.png" alt="Avatar" class="avatar-img" />
     </div>
@@ -41,7 +55,7 @@
     <div class="profile-separator"></div>
   </div>
 
-  <nav class="sidebar-nav">
+    <nav class="sidebar-nav">
     <a routerLink="/app/dashboard" routerLinkActive="active" class="sidebar-item">
       <img src="/assets/icons/home.png" class="sidebar-icon" alt="Dashboard" />
       <span>Dashboard</span>
@@ -60,7 +74,8 @@
     </a>
   </nav>
 
-  <div class="sidebar-logo">
-    <img src="/assets/icons/logoFUU.png" alt="FollowUp Logo" class="logo-img" />
+    <div class="sidebar-logo">
+      <img src="/assets/icons/logoFUU.png" alt="FollowUp Logo" class="logo-img" />
+    </div>
   </div>
 </aside>

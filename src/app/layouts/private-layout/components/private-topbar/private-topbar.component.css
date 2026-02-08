@@ -3,11 +3,21 @@
    ======================================== */
 
 /* ---------- BASE (MOBILE) ---------- */
-.topbar {
+/* .topbar {
   background: #ffffff;
   border-bottom: 1px solid #e6e6ef;
   padding: 12px 16px;
   box-sizing: border-box;
+} */
+
+/* MOBILE FIRST : topbar masquée par défaut */
+.topbar {
+  display: none;
+}
+
+/* MOBILE : afficher UNIQUEMENT la topbar annonces */
+.topbar[data-context="annonces"] {
+  display: block;
 }
 
 .topbar__left {
@@ -170,7 +180,7 @@
 /* ========================================
    TABLET (≥ 640px)
    ======================================== */
-@media (min-width: 640px) {
+@media (min-width: 700px) {
   .topbar {
     padding: 16px 24px;
     display: flex;

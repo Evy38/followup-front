@@ -1,4 +1,4 @@
-<header class="topbar" aria-label="Barre d'actions">
+<header class="topbar" aria-label="Barre d'actions" [attr.data-context]="topbarContext$ | async">
   @if (topbarContext$ | async; as ctx) {
 
     <!-- CONTENU CONTEXTUEL -->

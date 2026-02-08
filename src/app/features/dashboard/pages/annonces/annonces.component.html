@@ -1,9 +1,6 @@
-<!-- <app-private-topbar [villes]="villes" [postes]="postes" (filtreChange)="onFiltreChange($event)">
-</app-private-topbar> -->
-
 <section class="annonces">
-  <p *ngIf="loading">Chargement des annonces…</p>
-  <p *ngIf="error">{{ error }}</p>
+  <p *ngIf="loading" class="state">Chargement des annonces…</p>
+  <p *ngIf="error" class="state error">{{ error }}</p>
 
   <div *ngIf="!loading && !error && jobs.length === 0" class="no-results">
     <p>Aucune annonce ne correspond à vos critères de recherche.</p>
@@ -14,34 +11,46 @@
     {{ jobs.length }} annonce(s) trouvée(s)
   </p>
 
-  <ul *ngIf="!loading && !error">
+  <ul *ngIf="!loading && !error" class="job-list">
     <li *ngFor="let job of jobs; trackBy: trackByJobId" class="job-card">
-      <div class="job-header">
-        <h3>{{ job.title }}</h3>
-        <!-- ✅ Badge à droite du titre si disponible -->
-        <span *ngIf="job.contractType && job.contractType !== 'Non spécifié'" 
-              class="contract-badge"
-              [class.badge-cdi]="job.contractType === 'CDI'"
-              [class.badge-cdd]="job.contractType === 'CDD'"
-              [class.badge-interim]="job.contractType === 'Intérim'">
+
+      <header class="job-header">
+        <h3 class="job-title">{{ job.title }}</h3>
+
+        <span
+          *ngIf="job.contractType && job.contractType !== 'Non spécifié'"
+          class="contract-badge"
+          [class.badge-cdi]="job.contractType === 'CDI'"
+          [class.badge-cdd]="job.contractType === 'CDD'"
+          [class.badge-interim]="job.contractType === 'Intérim'"
+        >
           {{ job.contractType }}
         </span>
-      </div>
-      
-      <p><strong>{{ job.company }}</strong></p>
-      <p>{{ job.location }}</p>
-      
-      <p *ngIf="job.salaryMin || job.salaryMax">
+      </header>
+
+      <p class="company"><strong>{{ job.company }}</strong></p>
+      <p class="location">{{ job.location }}</p>
+
+      <p *ngIf="job.salaryMin || job.salaryMax" class="salary">
         💰 Salaire :
         {{ job.salaryMin ?? '—' }} € – {{ job.salaryMax ?? '—' }} €
       </p>
-      
+
       <div class="job-actions">
-        <a [href]="job.redirectUrl" target="_blank" rel="noopener noreferrer">
+        <a
+          [href]="job.redirectUrl"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="link"
+        >
           Voir l'annonce
         </a>
-        <button (click)="onCandidated(job)" [disabled]="job._candidated">
-          {{ job._candidated ? 'Déjà candidaté' : 'J\'ai candidaté' }}
+
+        <button
+          (click)="onCandidated(job)"
+          [disabled]="job._candidated"
+        >
+          {{ job._candidated ? 'Déjà candidaté' : 'J’ai candidaté' }}
         </button>
       </div>
     </li>

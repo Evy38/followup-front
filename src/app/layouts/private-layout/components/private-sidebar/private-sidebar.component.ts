@@ -14,6 +14,7 @@ export class PrivateSidebarComponent {
   auth = inject(AuthService);
 
   userMenuOpen = false;
+  sidebarOpen = false;
 
   toggleUserMenu() {
     this.userMenuOpen = !this.userMenuOpen;
@@ -25,5 +26,13 @@ export class PrivateSidebarComponent {
 
   logout() {
     this.auth.logout();
+  }
+
+  toggleSidebar() {
+    this.sidebarOpen = !this.sidebarOpen;
+  }
+
+  closeSidebar() {
+    this.sidebarOpen = false;
   }
 }
