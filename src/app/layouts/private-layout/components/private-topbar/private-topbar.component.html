@@ -1,4 +1,4 @@
-<header class="topbar" aria-label="Barre d’actions">
+<header class="topbar" aria-label="Barre d'actions">
   @if (topbarContext$ | async; as ctx) {
 
     <!-- CONTENU CONTEXTUEL -->
@@ -12,8 +12,10 @@
             name="poste"
             placeholder="Type de poste recherché"
             aria-label="Type de poste recherché"
+            class="search-input"
           />
-          <div class="ville-autocomplete" style="position:relative;flex:1;min-width:180px;">
+          
+          <div class="ville-autocomplete">
             <input
               type="text"
               [ngModel]="villeInput"
@@ -24,18 +26,16 @@
               placeholder="Ville"
               aria-label="Ville"
               autocomplete="off"
-              style="width:100%;height:44px;padding:0 18px;border-radius:16px;border:none;font-size:16px;background:#fff;box-shadow:0 1px 4px rgba(90,80,180,0.04);"
+              class="search-input"
             />
-            <ul *ngIf="showVilleList" class="ville-list" style="position:absolute;z-index:1000;left:0;right:0;top:48px;background:#fff;border-radius:0 0 12px 12px;box-shadow:0 2px 8px rgba(90,80,180,0.13);margin:0;padding:0;list-style:none;max-height:200px;overflow:auto;">
-              <li *ngFor="let ville of filteredVilles" (mousedown)="onVilleSelect(ville)" style="padding:10px 18px;cursor:pointer;">
+            <ul *ngIf="showVilleList" class="ville-list">
+              <li *ngFor="let ville of filteredVilles" 
+                  (mousedown)="onVilleSelect(ville)">
                 {{ ville }}
               </li>
             </ul>
           </div>
-          <select [(ngModel)]="filtre.contrat" name="contrat" aria-label="Type de contrat">
-            <option value="">Type de contrat</option>
-            <option *ngFor="let contrat of contrats" [value]="contrat.value">{{ contrat.label }}</option>
-          </select>
+          
           <button type="submit" class="search-btn">Rechercher</button>
         </form>
       } @else {

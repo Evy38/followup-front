@@ -11,8 +11,6 @@ import { PrivateTopbarComponent } from './components/private-topbar/private-topb
   imports: [RouterOutlet, PrivateSidebarComponent, PrivateTopbarComponent],
 })
 export class PrivateLayoutComponent {
-  constructor() {
 
-}
 
 }

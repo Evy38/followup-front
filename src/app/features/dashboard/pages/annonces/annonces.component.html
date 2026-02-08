@@ -1,21 +1,21 @@
-<app-private-topbar [villes]="villes" [postes]="postes" (filtreChange)="onFiltreChange($event)">
-</app-private-topbar>
+<!-- <app-private-topbar [villes]="villes" [postes]="postes" (filtreChange)="onFiltreChange($event)">
+</app-private-topbar> -->
 
 <section class="annonces">
   <p *ngIf="loading">Chargement des annonces…</p>
   <p *ngIf="error">{{ error }}</p>
 
-  <div *ngIf="!loading && !error && filteredJobs.length === 0" class="no-results">
+  <div *ngIf="!loading && !error && jobs.length === 0" class="no-results">
     <p>Aucune annonce ne correspond à vos critères de recherche.</p>
     <p class="hint">Essayez de modifier vos filtres ou d'élargir votre recherche.</p>
   </div>
 
-  <p *ngIf="!loading && !error && filteredJobs.length > 0" class="results-count">
-    {{ filteredJobs.length }} annonce(s) trouvée(s)
+  <p *ngIf="!loading && !error && jobs.length > 0" class="results-count">
+    {{ jobs.length }} annonce(s) trouvée(s)
   </p>
 
   <ul *ngIf="!loading && !error">
-    <li *ngFor="let job of filteredJobs; trackBy: trackByJobId" class="job-card">
+    <li *ngFor="let job of jobs; trackBy: trackByJobId" class="job-card">
       <div class="job-header">
         <h3>{{ job.title }}</h3>
         <!-- ✅ Badge à droite du titre si disponible -->

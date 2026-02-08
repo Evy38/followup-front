@@ -1,10 +1,11 @@
 import { Component, inject } from '@angular/core';
 import { Output, EventEmitter, Input } from '@angular/core';
-import { ContractType } from '../../../../core/services/contract-type.service';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { filter, map, startWith } from 'rxjs';
+import { AnnonceFilterService } from '../../../../core/services/annonce-filter.service';
+
 
 type TopbarContext = 'dashboard' | 'annonces' | 'candidatures' | 'relances' | 'profil';
 
@@ -18,18 +19,16 @@ type TopbarContext = 'dashboard' | 'annonces' | 'candidatures' | 'relances' | 'p
 export class PrivateTopbarComponent {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private annonceFilterService = inject(AnnonceFilterService);
+
 
   @Input() villes: string[] = [];
   @Input() postes: string[] = [];
-  @Input() contrats: ContractType[] = [];
 
   filtre = {
     ville: '',
-    poste: '',
-    contrat: ''
+    poste: ''
   };
-
-  @Output() filtreChange = new EventEmitter<{ ville: string; poste: string; contrat: string }>();
 
   // Pour l'autocomplétion ville
   villeInput: string = '';
@@ -55,11 +54,25 @@ export class PrivateTopbarComponent {
 
   // Observable du contexte topbar en fonction de la route active
   topbarContext$ = this.router.events.pipe(
-    filter((e) => e instanceof NavigationEnd),
+    filter((e): e is NavigationEnd => e instanceof NavigationEnd),
     startWith(null),
-    map(() => this.getDeepestChild(this.route)),
-    map((r) => (r.snapshot.data['topbar'] as TopbarContext) ?? 'dashboard')
+    map(() => {
+      const route = this.getDeepestChild(this.route);
+      const ctx = route.snapshot.data['topbar'] as TopbarContext | undefined;
+
+      // ✅ fallback intelligent
+      if (ctx) return ctx;
+
+      const url = this.router.url;
+
+      if (url.includes('/annonces')) return 'annonces';
+      if (url.includes('/relances')) return 'relances';
+      if (url.includes('/candidatures')) return 'candidatures';
+
+      return 'dashboard';
+    })
   );
+
 
   private getDeepestChild(route: ActivatedRoute): ActivatedRoute {
     let current = route;
@@ -67,7 +80,8 @@ export class PrivateTopbarComponent {
     return current;
   }
 
-  onFiltreChange() {
-    this.filtreChange.emit({ ...this.filtre });
-  }
+onFiltreChange() {
+  this.annonceFilterService.updateFilter({ ...this.filtre });
+}
+
 }

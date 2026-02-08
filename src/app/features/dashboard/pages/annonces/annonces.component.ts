@@ -4,6 +4,7 @@ import { Job } from '../../models/job.model';
 import { CandidatureService } from '../../../../core/services/candidature.service';
 import { CommonModule } from '@angular/common';
 import { PrivateTopbarComponent } from '../../../../layouts/private-layout/components/private-topbar/private-topbar.component';
+import { AnnonceFilterService, AnnonceFilter } from '../../../../core/services/annonce-filter.service';
 
 @Component({
   selector: 'app-annonces',
@@ -14,7 +15,7 @@ import { PrivateTopbarComponent } from '../../../../layouts/private-layout/compo
 })
 export class AnnoncesComponent implements OnInit {
   jobs: Job[] = [];
-  filteredJobs: Job[] = [];
+
   villes: string[] = [];
   postes: string[] = [];
   loading = true;
@@ -23,21 +24,38 @@ export class AnnoncesComponent implements OnInit {
   constructor(
     private jobService: JobService,
     private candidatureService: CandidatureService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private annonceFilterService: AnnonceFilterService
+
   ) { }
 
   ngOnInit(): void {
-    this.loadJobs();
+    this.annonceFilterService.filter$.subscribe(filter => {
+      this.loadJobs(filter);
+    });
+
     this.candidatureService.refreshNeeded$
       .subscribe(() => this.loadCandidatures());
   }
 
-  loadJobs(filtre?: { ville?: string; poste?: string }) {
+
+  loadJobs(filtre?: { ville: string; poste: string }) {
     this.loading = true;
-    this.jobService.getJobs(filtre).subscribe({
+
+    const cleanFilter: any = {};
+
+    if (filtre?.ville?.trim()) {
+      cleanFilter.ville = filtre.ville.trim();
+    }
+
+    if (filtre?.poste?.trim()) {
+      cleanFilter.poste = filtre.poste.trim();
+    }
+
+    this.jobService.getJobs(cleanFilter).subscribe({
       next: (jobs) => {
         this.jobs = jobs;
-        this.filteredJobs = jobs;
+
         this.villes = Array.from(new Set(jobs.map(j => j.location).filter(Boolean)));
         this.postes = Array.from(new Set(jobs.map(j => j.title).filter(Boolean)));
 
@@ -53,6 +71,8 @@ export class AnnoncesComponent implements OnInit {
     });
   }
 
+
+
   onCandidated(job: Job) {
     if (job._candidated) return;
     this.candidatureService.createFromOffer({
@@ -66,25 +86,6 @@ export class AnnoncesComponent implements OnInit {
     });
   }
 
-  lastFiltre: { ville: string; poste: string } = { ville: '', poste: '' };
-
-  onFiltreChange(filtre: { ville: string; poste: string }) {
-    this.lastFiltre = filtre;
-    
-    this.loadJobs({
-      ville: filtre.ville,
-      poste: filtre.poste,
-    });
-  }
-
-  applyFiltre(filtre: { ville: string; poste: string }) {
-    const ville = filtre.ville.trim().toLowerCase();
-    const poste = filtre.poste.trim().toLowerCase();
-    this.filteredJobs = this.jobs.filter(job =>
-      (!ville || job.location?.toLowerCase().includes(ville)) &&
-      (!poste || job.title?.toLowerCase().includes(poste)) 
-    );
-  }
 
   trackByJobId(index: number, job: Job) {
     return job.externalId;
@@ -100,9 +101,11 @@ export class AnnoncesComponent implements OnInit {
           ...job,
           _candidated: candidatedIds.has(job.externalId),
         }));
-        this.applyFiltre(this.lastFiltre);
         this.cdr.detectChanges();
       },
     });
   }
+
+
+
 }
