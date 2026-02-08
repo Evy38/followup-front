@@ -11,34 +11,20 @@ export class RelanceService {
   private readonly apiUrl = `${environment.apiUrl}/relances`;
 
   constructor(private http: HttpClient) { }
-  markAsDone(relanceId: number): Observable<Relance> {
+  updateRelance(relanceId: number, faite: boolean) {
     return this.http.patch<Relance>(
       `${this.apiUrl}/${relanceId}`,
       {
-        faite: true,
-        dateRealisation: new Date().toISOString(),
+        faite,
+        dateRealisation: faite ? new Date().toISOString() : null,
       },
       {
         headers: {
-          'Content-Type': 'application/merge-patch+json'
-        }
+          'Content-Type': 'application/merge-patch+json',
+        },
       }
     );
   }
 
-  markAsUndone(relanceId: number): Observable<Relance> {
-    return this.http.patch<Relance>(
-      `${this.apiUrl}/${relanceId}`,
-      {
-        faite: false,
-        dateRealisation: null,
-      },
-      {
-        headers: {
-          'Content-Type': 'application/merge-patch+json'
-        }
-      }
-    );
-  }
 
 }

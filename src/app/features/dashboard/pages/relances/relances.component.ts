@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { CandidatureService } from '../../../../core/services/candidature.service';
 import { RelanceService } from '../../../../core/services/relance.service';
 import { Candidature } from '../../models/candidature.model';
-import { EntretienApi } from '../../models/candidature.model';
 import { Relance } from '../../models/relance.model';
 import { EntretienService } from '../../../../core/services/entretien.service';
 
@@ -144,10 +143,9 @@ export class RelancesComponent implements OnInit {
   }
 
   markAsDone(_: Candidature, relance: Relance): void {
-    this.relanceService.markAsDone(relance.id).subscribe({
+    this.relanceService.updateRelance(relance.id, true).subscribe({
       next: (updated: Relance) => {
-        relance.faite = updated.faite;
-        relance.dateRealisation = updated.dateRealisation;
+        Object.assign(relance, updated);
         this.cdr.detectChanges();
       },
       error: (err) => console.error('❌ Erreur markAsDone', err),
@@ -155,15 +153,15 @@ export class RelancesComponent implements OnInit {
   }
 
   markAsUndone(_: Candidature, relance: Relance): void {
-    this.relanceService.markAsUndone(relance.id).subscribe({
+    this.relanceService.updateRelance(relance.id, false).subscribe({
       next: (updated: Relance) => {
-        relance.faite = updated.faite;
-        relance.dateRealisation = updated.dateRealisation;
+        Object.assign(relance, updated);
         this.cdr.detectChanges();
       },
       error: (err) => console.error('❌ Erreur markAsUndone', err),
     });
   }
+
 
   isRelanceOverdue(relance: Relance): boolean {
     if (relance.faite) return false;
@@ -187,7 +185,7 @@ export class RelancesComponent implements OnInit {
           return 'Refusé';
         case 'echanges':
           return 'Échanges en cours';
-        case 'engage':  // ✅ Corrigé : une seule ligne
+        case 'engage':  // Corrigé : une seule ligne
           return 'Engagé';
         case 'attente':
         default:
@@ -225,7 +223,7 @@ export class RelancesComponent implements OnInit {
 
   /**
    * Met à jour le statutReponse (attente / échanges / negative / engage)
-   * ✅ VERSION CORRIGÉE : Suppression du mapping engage ↔ engage
+   *  Suppression du mapping engage ↔ engage
    */
   updateStatutReponse(
     candidature: Candidature,
@@ -244,7 +242,7 @@ export class RelancesComponent implements OnInit {
       return;
     }
 
-    // ✅ Logique de toggle simplifiée (sans mapping)
+    // Logique de toggle simplifiée (sans mapping)
     const isActive = candidature.statutReponse === statut;
     const newStatut = isActive ? 'attente' : statut;
 
@@ -255,7 +253,7 @@ export class RelancesComponent implements OnInit {
     candidature.statutReponse = newStatut;
     this.cdr.detectChanges();
 
-    // ✅ Envoi direct au backend sans mapping
+    // Envoi direct au backend sans mapping
     this.candidatureService.updateStatutReponse(iri, newStatut).subscribe({
       next: () => {
         console.log('✅ Statut mis à jour avec succès');
@@ -338,7 +336,7 @@ export class RelancesComponent implements OnInit {
    */
   markEntretienAsPassed(
     e: any,
-    resultat: 'engage' | 'negative'  // ✅ Corrigé : 'engage' au lieu de 'engage'
+    resultat: 'engage' | 'negative'  // Corrigé : 'engage' au lieu de 'engage'
   ): void {
     console.log('🔄 Marquage entretien comme passé', { e, resultat });
 
@@ -362,7 +360,10 @@ export class RelancesComponent implements OnInit {
   deleteEntretien(c: Candidature, entretien: any, event: Event): void {
     event.stopPropagation();
     if (!confirm('Supprimer cet entretien ?')) return;
-    let entretienIdentifier = entretien['@id'] || entretien.id;
+    let entretienIdentifier = entretien['@id'];
+    if (!entretienIdentifier && entretien.id) {
+      entretienIdentifier = `/api/entretiens/${entretien.id}`;
+    }
     if (!entretienIdentifier) {
       console.error('❌ Impossible de supprimer : ni "@id" ni "id" n\'est présent sur l\'entretien', entretien);
       alert('Erreur : impossible de supprimer cet entretien (aucun identifiant trouvé).');

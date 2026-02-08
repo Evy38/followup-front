@@ -10,7 +10,6 @@ import { Router } from '@angular/router';
   imports: [CommonModule, FormsModule],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.css',
-  encapsulation: ViewEncapsulation.None,
 })
 export class SignupComponent {
   private auth = inject(AuthService);

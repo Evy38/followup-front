@@ -8,19 +8,24 @@ export const authGuard: CanActivateFn = () => {
   const router = inject(Router);
 
   return auth.me().pipe(
-    map((res: any) => {
-      if (!res?.authenticated || res.verified === false) {
-        if (res.verified === false) {
-          auth.setAuthError('Vous devez confirmer votre email avant de continuer.');
-        }
-        auth.logout();
-        return router.createUrlTree([{ outlets: { overlay: ['login'] } }]);
+    map((res: { authenticated: boolean; verified: boolean }) => {
+      if (!res?.authenticated || !res?.verified)
+ {
+        auth.removeToken(); 
+        return redirectToLogin(router);
       }
       return true;
     }),
     catchError(() => {
-      auth.logout();
-      return of(router.createUrlTree([{ outlets: { overlay: ['login'] } }]));
+      auth.removeToken();
+      return of(redirectToLogin(router));
     })
   );
 };
+
+//ok  Fonction utilitaire simple et claire
+function redirectToLogin(router: Router) {
+  return router.createUrlTree([
+    { outlets: { overlay: ['login'] } }
+  ]);
+}

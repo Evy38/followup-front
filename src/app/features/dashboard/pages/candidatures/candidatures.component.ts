@@ -15,7 +15,7 @@ export class CandidaturesComponent implements OnInit {
   loading = true;
   error: string | null = null;
 
-  // ✅ MODALE
+  // MODALE
   confirmOpen = false;
   pendingDelete: Candidature | null = null;
   deleting = false;
@@ -61,8 +61,8 @@ export class CandidaturesComponent implements OnInit {
     }).format(d);
   }
 
-  deleteCandidature(c: any) {
-    const iri = c?.['@id'];
+  deleteCandidature(c: Candidature) {
+    const iri = (this.pendingDelete as any)?.['@id'];
     if (!iri) return;
 
     // Optimiste : on retire direct de l’UI
@@ -79,20 +79,20 @@ export class CandidaturesComponent implements OnInit {
     });
   }
 
-  // ✅ OUVRIR MODALE
+  // OUVRIR MODALE
   askDelete(c: Candidature) {
     this.pendingDelete = c;
     this.confirmOpen = true;
   }
 
-  // ✅ FERMER MODALE
+  // FERMER MODALE
   cancelDelete() {
     if (this.deleting) return; // évite de fermer pendant suppression
     this.confirmOpen = false;
     this.pendingDelete = null;
   }
 
-  // ✅ CONFIRMER SUPPRESSION (vraie suppression)
+  // CONFIRMER SUPPRESSION (vraie suppression)
   confirmDelete() {
     // Utilise l'IRI si présent, sinon construit à partir de l'id
     const iri = (this.pendingDelete as any)?.['@id'] || (this.pendingDelete?.id ? `/api/candidatures/${this.pendingDelete.id}` : undefined);

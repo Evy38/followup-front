@@ -7,9 +7,7 @@ import { environment } from '../../../environments/environment';
 @Injectable({ providedIn: 'root' })
 export class CandidatureService {
   private http = inject(HttpClient);
-    private apiUrl = environment.apiUrl;
-  private baseUrl = environment.baseUrl;
-
+  private apiUrl = environment.apiUrl;
   private refresh$ = new Subject<void>();
   refreshNeeded$ = this.refresh$.asObservable();
 
@@ -23,12 +21,12 @@ export class CandidatureService {
     return this.http.post(`${this.apiUrl}/candidatures/from-offer`, payload);
   }
 
-  getMyCandidatures(): Observable<Candidature[]> {
-    return this.http.get<Candidature[]>(`${this.baseUrl}/api/my-candidatures`);
-  }
+getMyCandidatures(): Observable<Candidature[]> {
+  return this.http.get<Candidature[]>(`${this.apiUrl}/my-candidatures`);
+}
 
   deleteCandidatureByIri(candidatureIri: string) {
-    return this.http.delete(`${this.baseUrl}${candidatureIri}`);
+    return this.http.delete(`${this.apiUrl}${candidatureIri}`);
   }
 
   notifyRefresh() {
@@ -47,7 +45,7 @@ export class CandidatureService {
   ): Observable<any> {
     // Extraction de l'ID depuis l'IRI
     const id = candidatureIri.split('/').pop();
-    
+
     return this.http.patch<any>(
       `${this.apiUrl}/candidatures/${id}/statut-reponse`,
       { statutReponse: statut },

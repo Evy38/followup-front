@@ -1,9 +1,9 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { environment } from '../../../../environments/environment';
 
 
 @Component({
@@ -21,7 +21,6 @@ export class VerifyEmailComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private http: HttpClient,
-    private cdr: ChangeDetectorRef,
     private router: Router
   ) { }
 
@@ -39,7 +38,7 @@ export class VerifyEmailComponent implements OnInit {
     }
 
     this.http
-      .get<{ message?: string }>('http://localhost:8080/api/verify-email', {
+      .get<{ message?: string }>(`${environment.apiUrl}/verify_email`, {
         params: { token }
       })
       .subscribe({
@@ -47,7 +46,7 @@ export class VerifyEmailComponent implements OnInit {
           console.log('Réponse reçue', res);
           this.status = 'success';
           this.message = res?.message || 'Votre compte est maintenant activé.';
-          this.cdr.detectChanges();
+
         },
         error: (err) => {
           console.log('Erreur reçue', err);
@@ -56,7 +55,7 @@ export class VerifyEmailComponent implements OnInit {
             err?.status === 400
               ? (err?.error?.error || err?.error?.message || 'Le lien de validation est invalide ou expiré.')
               : (err?.error?.error || err?.error?.message || 'Une erreur est survenue. Veuillez réessayer.');
-          this.cdr.detectChanges();
+
         }
       });
   }

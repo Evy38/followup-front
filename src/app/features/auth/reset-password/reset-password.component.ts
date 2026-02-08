@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   standalone: true,
@@ -60,7 +61,7 @@ export class ResetPasswordComponent implements OnInit {
     }
 
     this.submitting = true;
-    this.http.post('http://localhost:8080/api/password/reset', {
+    this.http.post(`${environment.apiUrl}/password/reset`, {
       token: this.token,
       newPassword: this.newPassword,
       confirmPassword: this.confirmPassword

@@ -18,6 +18,6 @@ export class JobService {
     if (filtre?.ville) params.ville = filtre.ville;
     if (filtre?.poste) params.poste = filtre.poste;
 
-    return this.http.get<Job[]>('/api/jobs', { params });
+    return this.http.get<Job[]>(this.API_URL, { params });
   }
 }

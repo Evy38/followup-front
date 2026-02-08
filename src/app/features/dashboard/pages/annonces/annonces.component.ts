@@ -4,6 +4,9 @@ import { Job } from '../../models/job.model';
 import { CandidatureService } from '../../../../core/services/candidature.service';
 import { CommonModule } from '@angular/common';
 import { AnnonceFilterService } from '../../../../core/services/annonce-filter.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+
 
 @Component({
   selector: 'app-annonces',
@@ -13,6 +16,7 @@ import { AnnonceFilterService } from '../../../../core/services/annonce-filter.s
   styleUrls: ['./annonces.component.css'],
 })
 export class AnnoncesComponent implements OnInit {
+  private destroy$ = new Subject<void>();
   jobs: Job[] = [];
 
   villes: string[] = [];
@@ -24,17 +28,23 @@ export class AnnoncesComponent implements OnInit {
     private jobService: JobService,
     private candidatureService: CandidatureService,
     private cdr: ChangeDetectorRef,
-    private annonceFilterService: AnnonceFilterService
+    private annonceFilterService: AnnonceFilterService,
 
   ) { }
 
   ngOnInit(): void {
-    this.annonceFilterService.filter$.subscribe(filter => {
-      this.loadJobs(filter);
-    });
+    this.annonceFilterService.filter$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(filter => this.loadJobs(filter));
 
     this.candidatureService.refreshNeeded$
+      .pipe(takeUntil(this.destroy$))
       .subscribe(() => this.loadCandidatures());
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
 
@@ -59,7 +69,7 @@ export class AnnoncesComponent implements OnInit {
         this.postes = Array.from(new Set(jobs.map(j => j.title).filter(Boolean)));
 
         this.loading = false;
-        this.cdr.detectChanges();
+        // this.cdr.detectChanges();
         this.loadCandidatures();
       },
       error: (err) => {

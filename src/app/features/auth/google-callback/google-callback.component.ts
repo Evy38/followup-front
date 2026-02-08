@@ -1,5 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../../core/auth/auth.service';
 
 @Component({
@@ -9,12 +9,12 @@ import { AuthService } from '../../../core/auth/auth.service';
 })
 export class GoogleCallbackComponent implements OnInit {
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private auth = inject(AuthService);
 
   ngOnInit(): void {
-    // Récupérer le token dans l'URL (query param)
-    const url = new URL(window.location.href);
-    const token = url.searchParams.get('token');
+    const token = this.route.snapshot.queryParamMap.get('token');
+    
     if (token) {
       this.auth.handleGoogleCallback(token);
 

@@ -1,3 +1,5 @@
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { Component, Inject, OnInit, PLATFORM_ID, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterModule } from '@angular/router';
@@ -16,14 +18,15 @@ import { ToastService } from '../../../core/ui/toast.service';
   styleUrl: './login.css',
 })
 export class LoginComponent implements OnInit {
-    showSignup = false;
-    constructor(
-      private router: Router,
-      private toast: ToastService,
-      @Inject(PLATFORM_ID) public platformId: Object,
-      private cdr: ChangeDetectorRef
-    ) {}
+  showSignup = false;
+  constructor(
+    private router: Router,
+    private toast: ToastService,
+    @Inject(PLATFORM_ID) public platformId: Object,
+    private cdr: ChangeDetectorRef
+  ) { }
   private auth = inject(AuthService);
+  private destroy$ = new Subject<void>();
 
   // --------- WELCOME ---------
   showWelcome = false;
@@ -36,17 +39,25 @@ export class LoginComponent implements OnInit {
   notVerifiedMessage: string | null = null;
   showResendButton = false;
   lastTriedEmail: string | null = null;
+  
   ngOnInit() {
-    this.auth.authError$.subscribe((msg) => {
-      this.notVerifiedMessage = msg;
-      // Affiche le bouton de renvoi UNIQUEMENT si le message correspond à l'utilisateur non vérifié
-      this.showResendButton = !!msg && msg.includes('confirmer votre email');
-    });
+    this.auth.authError$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((msg) => {
+        this.notVerifiedMessage = msg;
+        // Affiche le bouton de renvoi UNIQUEMENT si le message correspond à l'utilisateur non vérifié
+        this.showResendButton = !!msg && msg.includes('confirmer votre email');
+      });
 
     if (isPlatformBrowser(this.platformId)) {
       this.setVH();
       window.addEventListener('resize', () => this.setVH());
     }
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
 

@@ -21,7 +21,7 @@ export const environment = {
   production: false,
   apiUrl: 'http://localhost:8080/api',
   baseUrl: 'http://localhost:8080',
-  oauthBase: 'http://localhost:8080'
+  backendUrl: 'http://localhost:8080'
 };
 ```
 
@@ -47,7 +47,7 @@ export const environment = {
   production: false,
   apiUrl: 'https://api-sit.followup.com',
   baseUrl: 'https://api-sit.followup.com',
-  oauthBase: 'https://api-sit.followup.com'
+  backendUrl: 'https://api-sit.followup.com'
 };
 ```
 
@@ -79,7 +79,7 @@ export const environment = {
   production: true,
   apiUrl: 'https://api-uat.followup.com',
   baseUrl: 'https://api-uat.followup.com',
-  oauthBase: 'https://api-uat.followup.com'
+  backendUrl: 'https://api-uat.followup.com'
 };
 ```
 
@@ -111,7 +111,7 @@ export const environment = {
   production: true,
   apiUrl: 'https://api.followup.com',
   baseUrl: 'https://api.followup.com',
-  oauthBase: 'https://api.followup.com'
+  backendUrl: 'https://api.followup.com'
 };
 ```
 
