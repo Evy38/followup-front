@@ -83,15 +83,19 @@ export class AnnoncesComponent implements OnInit {
 
 
   onCandidated(job: Job) {
-    if (job._candidated) return;
-    this.candidatureService.createFromOffer({
+    console.log('📦 Payload candidater', {
       externalId: job.externalId,
       company: job.company,
       redirectUrl: job.redirectUrl,
       title: job.title,
       location: job.location,
-    }).subscribe({
+    });
+
+    if (job._candidated) return;
+
+    this.candidatureService.createFromOffer(job).subscribe({
       next: () => this.loadCandidatures(),
+      error: err => console.error('Erreur candidature', err),
     });
   }
 

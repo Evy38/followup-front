@@ -11,19 +11,36 @@ export class CandidatureService {
   private refresh$ = new Subject<void>();
   refreshNeeded$ = this.refresh$.asObservable();
 
-  createFromOffer(payload: {
+  createFromOffer(job: {
     externalId: string;
     company: string;
     redirectUrl: string;
     title?: string;
     location?: string;
-  }): Observable<any> {
-    return this.http.post(`${this.apiUrl}/candidatures/from-offer`, payload);
+  }) {
+    return this.http.post(
+      `${environment.apiUrl}/candidatures/from-offer`,
+      {
+        externalId: String(job.externalId),
+        company: job.company,
+        redirectUrl: job.redirectUrl,
+        title: job.title ?? null,
+        location: job.location ?? null,
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
   }
 
-getMyCandidatures(): Observable<Candidature[]> {
-  return this.http.get<Candidature[]>(`${this.apiUrl}/my-candidatures`);
-}
+
+
+  getMyCandidatures(): Observable<Candidature[]> {
+    return this.http.get<Candidature[]>(`${this.apiUrl}/my-candidatures`);
+  }
 
   deleteCandidatureByIri(candidatureIri: string) {
     return this.http.delete(`${this.apiUrl}${candidatureIri}`);
