@@ -95,7 +95,7 @@ export class CandidaturesComponent implements OnInit {
   // CONFIRMER SUPPRESSION (vraie suppression)
   confirmDelete() {
     // Utilise l'IRI si présent, sinon construit à partir de l'id
-    const iri = (this.pendingDelete as any)?.['@id'] || (this.pendingDelete?.id ? `/api/candidatures/${this.pendingDelete.id}` : undefined);
+    const iri = (this.pendingDelete as any)?.['@id'] || (this.pendingDelete?.id ? `/candidatures/${this.pendingDelete.id}` : undefined);
     if (!iri) {
       return;
     }

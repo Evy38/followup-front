@@ -90,7 +90,10 @@ export class EntretienService {
    * @param entretienIriOrId 
    */
   deleteEntretien(entretienIri: string): Observable<void> {
-    return this.http.delete<void>(`${this.API_URL}${entretienIri}`);
+    // entretienIri est du type /api/entretiens/4
+    // Il faut utiliser l'URL backend de base sans dupliquer /api
+    const url = `${environment.backendUrl}${entretienIri}`;
+    return this.http.delete<void>(url);
   }
 
 }

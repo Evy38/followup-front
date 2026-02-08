@@ -1,327 +1,253 @@
-<!-- relances.component.html -->
 <div class="relances-container">
-  <!-- Header avec stats -->
-  <div class="relances-header">
-    <h1>Mes relances</h1>
-    <div class="stats-bar">
-      <div class="stat-item">
-        <span class="stat-number">{{ candidatures.length }}</span>
-        <span class="stat-label">Candidatures</span>
-      </div>
-      <div class="stat-item urgent">
-        <span class="stat-number">{{ getPendingCount() }}</span>
-        <span class="stat-label">À relancer</span>
-      </div>
-      <div class="stat-item done">
-        <span class="stat-number">{{ getDoneRelancesCount() }}</span>
-        <span class="stat-label">Relances effectuées</span>
-      </div>
+
+  <!-- HEADER STATS -->
+  <ng-container *ngIf="stats$ | async as stats">
+    <app-relances-header [stats]="stats"></app-relances-header>
+  </ng-container>
+
+  <!-- LISTE + ONGLET -->
+  <ng-container *ngIf="candidatures$ | async as candidatures">
+
+    <!-- ONGLET -->
+    <div class="quick-filters">
+      <button
+        type="button"
+        [class.active]="filterStatus === 'relances'"
+        (click)="filterStatus = 'relances'"
+      >
+        Mes relances
+      </button>
+
+      <button
+        type="button"
+        [class.active]="filterStatus === 'reponses'"
+        (click)="filterStatus = 'reponses'"
+      >
+        Réponses employeurs
+      </button>
     </div>
-  </div>
 
-  <!-- Filtres rapides -->
-  <div class="quick-filters">
-    <button [class.active]="filterStatus === 'relances'" (click)="filterStatus = 'relances'">
-      Mes relances
-    </button>
-    <button [class.active]="filterStatus === 'reponses'" (click)="filterStatus = 'reponses'">
-      Réponses employeurs
-    </button>
-  </div>
+    <!-- EMPTY -->
+    <div *ngIf="candidatures.length === 0" class="empty-state">
+      <p>Aucune candidature à afficher</p>
+    </div>
 
-  <!-- Liste des candidatures -->
-  <div class="candidatures-list">
-    <div *ngFor="let c of filteredCandidatures" class="candidature-timeline-card">
+    <!-- LISTE -->
+    <div class="candidatures-list" *ngIf="candidatures.length > 0">
 
-      <!-- Cercle de progression -->
-      <div class="progress-circle">
-        <svg viewBox="0 0 36 36">
-          <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-          <path class="circle-progress" [attr.stroke-dasharray]="getProgress(c) + ', 100'"
-            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-        </svg>
-        <span class="progress-text">{{ getProgress(c) | number:'1.0-0' }}%</span>
-      </div>
+      <div *ngFor="let c of candidatures" class="candidature-timeline-card">
 
-      <!-- Informations de la candidature -->
-      <div class="card-header">
-        <div class="card-info">
-          <h3 class="job-title">{{ c.jobTitle }}</h3>
-          <p class="company-name">{{ c.entreprise.nom || 'Entreprise inconnue' }}</p>
-          <p class="candidature-meta">
-            Candidature envoyée il y a {{ getDaysSince(c.dateCandidature) }} jours
-            <span class="date-badge">{{ c.dateCandidature | date:'dd/MM/yyyy' }}</span>
-          </p>
+        <!-- PROGRESSION -->
+        <div class="progress-circle" aria-label="Progression des relances">
+          <svg viewBox="0 0 36 36">
+            <path
+              class="circle-bg"
+              d="M18 2.0845
+                 a 15.9155 15.9155 0 0 1 0 31.831
+                 a 15.9155 15.9155 0 0 1 0 -31.831"
+            />
+            <path
+              class="circle-progress"
+              [attr.stroke-dasharray]="helpers.getProgress(c) + ', 100'"
+              d="M18 2.0845
+                 a 15.9155 15.9155 0 0 1 0 31.831
+                 a 15.9155 15.9155 0 0 1 0 -31.831"
+            />
+          </svg>
+
+          <span class="progress-text">
+            {{ helpers.getProgress(c) | number:'1.0-0' }}%
+          </span>
         </div>
-      </div>
 
-      <!-- Affichage conditionnel selon l'onglet -->
-      <ng-container *ngIf="filterStatus === 'relances'; else etatCandidatureBlock">
-        <!-- ============================================ -->
-        <!-- ONGLET "MES RELANCES" (INCHANGÉ)            -->
-        <!-- ============================================ -->
-        <div class="relances-timeline">
-          <ng-container *ngFor="let rang of [1, 2, 3]">
-            <ng-container *ngIf="getRelanceByRang(c, rang) as r">
-              <div class="timeline-item" [class.done]="r.faite" [class.overdue]="isRelanceOverdue(r) && !r.faite"
-                [class.upcoming]="!r.faite && !isRelanceOverdue(r)" [class.clickable]="!r.faite"
-                (click)="!r.faite ? markAsDone(c, r) : null">
-                <div class="timeline-point" [class.done]="r.faite" [class.overdue]="isRelanceOverdue(r) && !r.faite"
-                  [class.upcoming]="!r.faite && !isRelanceOverdue(r)">
-                </div>
-                <div class="timeline-content">
-                  <div class="timeline-header">
-                    <span class="relance-number">Relance {{ rang }}</span>
-                    <span class="relance-timing">+{{ rang }} semaine{{ rang > 1 ? 's' : '' }}</span>
-                  </div>
-                  <div class="relance-date">
-                    {{ r.dateRelance | date:'dd/MM' }}
-                    <span *ngIf="isRelanceOverdue(r) && !r.faite" class="overdue-badge">
-                      !
-                    </span>
-                  </div>
-                  <div class="relance-actions">
-                    <button *ngIf="!r.faite" class="btn-mark-done" [class.btn-urgent]="isRelanceOverdue(r)"
-                      (click)="$event.stopPropagation(); markAsDone(c, r)" title="Marquer comme faite">
-                      ✓ Marquer comme faite
-                    </button>
-                    <div *ngIf="r.faite" class="status-done">
-                      <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
-                        <circle cx="8" cy="8" r="7" fill="#22c55e" />
-                        <path d="M5 8L7 10L11 6" stroke="white" stroke-width="2" stroke-linecap="round"
-                          stroke-linejoin="round" />
-                      </svg>
-                      <button (click)="$event.stopPropagation(); markAsUndone(c, r)" class="btn-mark-done btn-urgent"
-                        title="Annuler">
-                        ✕
+        <!-- INFOS CANDIDATURE -->
+        <div class="card-header">
+          <div class="card-info">
+            <h3 class="job-title">{{ c.jobTitle }}</h3>
+
+            <p class="company-name">
+              {{ c.entreprise.nom || 'Entreprise inconnue' }}
+            </p>
+
+            <p class="candidature-meta">
+              Envoyée il y a {{ helpers.getDaysSince(c.dateCandidature) }} jours
+              <span class="date-badge">
+                {{ c.dateCandidature | date:'dd/MM/yyyy' }}
+              </span>
+            </p>
+          </div>
+        </div>
+
+        <!-- ONGLET : RELANCES -->
+        <ng-container *ngIf="filterStatus === 'relances'; else reponsesBlock">
+
+          <div class="relances-timeline">
+            <ng-container *ngFor="let rang of [1, 2, 3]">
+              <ng-container *ngIf="helpers.getRelanceByRang(c, rang) as r">
+
+                <div
+                  class="timeline-item"
+                  [class.done]="r.faite"
+                  [class.overdue]="helpers.isRelanceOverdue(r) && !r.faite"
+                  [class.upcoming]="!r.faite && !helpers.isRelanceOverdue(r)"
+                >
+                  <div
+                    class="timeline-point"
+                    [class.done]="r.faite"
+                    [class.overdue]="helpers.isRelanceOverdue(r) && !r.faite"
+                    [class.upcoming]="!r.faite && !helpers.isRelanceOverdue(r)"
+                  ></div>
+
+                  <div class="timeline-content">
+                    <div class="timeline-header">
+                      <span class="relance-number">Relance {{ rang }}</span>
+                      <span class="relance-timing">
+                        +{{ rang }} semaine{{ rang > 1 ? 's' : '' }}
+                      </span>
+                    </div>
+
+                    <div class="relance-date">
+                      {{ r.dateRelance | date:'dd/MM' }}
+                      <span
+                        *ngIf="helpers.isRelanceOverdue(r) && !r.faite"
+                        class="overdue-badge"
+                      >
+                        !
+                      </span>
+                    </div>
+
+                    <div class="relance-actions">
+                      <button
+                        type="button"
+                        *ngIf="!r.faite"
+                        class="btn-mark-done"
+                        [class.btn-urgent]="helpers.isRelanceOverdue(r)"
+                        (click)="markDone(r)"
+                      >
+                        ✓ Marquer comme faite
                       </button>
+
+                      <div *ngIf="r.faite" class="status-done">
+                        ✓
+                        <button
+                          type="button"
+                          class="btn-mark-done btn-urgent"
+                          (click)="markUndone(r)"
+                          aria-label="Annuler la relance"
+                        >
+                          ✕
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </ng-container>
-          </ng-container>
-        </div>
-      </ng-container>
 
-      <!-- ============================================ -->
-      <!-- ONGLET "RÉPONSES EMPLOYEURS"                 -->
-      <!-- Les entretiens sont maintenant SOUS          -->
-      <!-- ============================================ -->
-      <ng-template #etatCandidatureBlock>
-        <!-- WRAPPER pour contenir timeline + entretiens verticalement -->
-        <div class="reponses-wrapper">
-          
-          <!-- Timeline des statuts (horizontale) -->
-          <div class="reponses-timeline">
-
-            <!-- Cadre 1 : En attente -->
-            <div class="reponse-item reponse-item--attente" [class.active]="c.statutReponse === 'attente'"
-              [class.inactive]="c.statutReponse !== 'attente'" (click)="updateStatutReponse(c, 'attente', $event)">
-              <div class="reponse-point reponse-point--neutral" [class.active]="c.statutReponse === 'attente'">
-              </div>
-              <div class="reponse-content">
-                <div class="reponse-label">En attente</div>
-                <div class="reponse-icon">⏳</div>
-              </div>
-            </div>
-
-            <!-- Cadre 2 : Échanges en cours -->
-            <div class="reponse-item reponse-item--echanges" [class.active]="c.statutReponse === 'echanges'"
-              [class.inactive]="c.statutReponse !== 'echanges'" (click)="updateStatutReponse(c, 'echanges', $event)">
-              <div class="reponse-point reponse-point--info" [class.active]="c.statutReponse === 'echanges'">
-              </div>
-              <div class="reponse-content">
-                <div class="reponse-label">Échanges</div>
-                <div class="reponse-icon">💬</div>
-              </div>
-              <button *ngIf="c.statutReponse === 'echanges'" class="btn-reset-reponse"
-                title="Annuler et repasser en attente" (click)="updateStatutReponse(c, 'echanges', $event)">✕</button>
-            </div>
-
-            <!-- Cadre 3 : Refus -->
-            <div class="reponse-item reponse-item--negative" [class.active]="c.statutReponse === 'negative'"
-              [class.inactive]="c.statutReponse !== 'negative'" (click)="updateStatutReponse(c, 'negative', $event)">
-              <div class="reponse-point reponse-point--danger" [class.active]="c.statutReponse === 'negative'">
-              </div>
-              <div class="reponse-content">
-                <div class="reponse-label">Refus</div>
-                <div class="reponse-icon">✖</div>
-              </div>
-              <button *ngIf="c.statutReponse === 'negative'" class="btn-reset-reponse"
-                title="Annuler et repasser en attente" (click)="updateStatutReponse(c, 'negative', $event)">✕</button>
-            </div>
-
-            <!-- Cadre 4 : Entretien(s) - Affichage enrichi -->
-            <div class="reponse-item reponse-item--entretien" [class.active]="c.entretiens?.length"
-              [class.inactive]="!c.entretiens?.length" (click)="openEntretienModal(c); $event.stopPropagation()">
-              <div class="reponse-point reponse-point--success" [class.active]="c.entretiens?.length">
-              </div>
-              <div class="reponse-content">
-                <div class="reponse-label">
-                  <span *ngIf="!c.entretiens?.length" class="reponse-label-text">+ Entretien</span>
-                  <span *ngIf="getNbEntretiensPrevus(c) > 0" class="reponse-label-text">
-                    {{ getNbEntretiensPrevus(c) }} Prévus
-                  </span>
-                </div>
-                <div class="reponse-icon">
-                  <span>📅</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Cadre 5 : Engagé -->
-            <div class="reponse-item reponse-item--engage" [class.active]="c.statutReponse === 'engage'"
-              [class.inactive]="c.statutReponse !== 'engage'" (click)="updateStatutReponse(c, 'engage', $event)">
-              <div class="reponse-point reponse-point--engage" [class.active]="c.statutReponse === 'engage'">
-              </div>
-              <div class="reponse-content">
-                <div class="reponse-label">Engagé</div>
-                <div class="reponse-icon">🎉</div>
-              </div>
-              <button *ngIf="c.statutReponse === 'engage'" class="btn-reset-reponse"
-                title="Annuler et repasser en attente" (click)="updateStatutReponse(c, 'engage', $event)">✕</button>
-            </div>
-
-          </div>
-
-          <!-- ✅ ENTRETIENS AFFICHÉS SOUS LES STATUTS -->
-          <div *ngIf="hasEntretienPrevu(c)" class="entretiens-preview-row">
-            <ng-container *ngFor="let e of c.entretiens">
-              <div *ngIf="e.statut === 'prevu'" class="entretien-preview-pill pill-hover-delete" (mouseenter)="e._hover=true" (mouseleave)="e._hover=false">
-                <span class="entretien-icon">📅</span>
-                <span>{{ formatDate(e.dateEntretien) }}</span>
-                <span *ngIf="e.heureEntretien">à {{ formatHeure(e.heureEntretien) }}</span>
-                <button *ngIf="e._hover" class="pill-delete-btn" title="Supprimer cet entretien" (click)="deleteEntretien(c, e, $event)">✕</button>
-              </div>
+              </ng-container>
             </ng-container>
           </div>
+        </ng-container>
 
-        </div>
+        <!-- ONGLET : RÉPONSES -->
+        <ng-template #reponsesBlock>
 
-        <!-- MODALE AJOUT ENTRETIEN (style confirmation suppression) -->
-        <div class="modal-overlay" *ngIf="showEntretienModal" (click)="closeEntretienModal()">
-          <div class="modal-card" (click)="$event.stopPropagation()">
-            <div class="modal-header">
-              <div class="modal-icon">📅</div>
-              <h3 class="modal-title">Ajouter un entretien</h3>
-            </div>
-            <p class="modal-text">
-              Planifie un entretien pour <strong>{{ (modalCandidature?.entreprise?.nom ?
-                (modalCandidature?.entreprise?.nom + ' - ') : '') + (modalCandidature?.jobTitle || '') || 'cette
-                entreprise' }}</strong>.<br>
-              Indique la date et l'heure du rendez-vous.
-            </p>
-            <form class="entretien-form" (ngSubmit)="createEntretienFromModal()">
-              <div class="modal-fields">
-                <label>
-                  Date :
-                  <input type="date" [(ngModel)]="entretienForm.date" name="date" required />
-                </label>
-                <label>
-                  Heure :
-                  <input type="time" [(ngModel)]="entretienForm.heure" name="heure" required />
-                </label>
-              </div>
-              <div class="modal-actions">
-                <button class="btn-secondary" type="button" (click)="closeEntretienModal()">Annuler</button>
-                <button type="submit" class="btn-create-entretien">✓ Ajouter</button>
-              </div>
-            </form>
-          </div>
-        </div>
+          <div class="reponses-wrapper">
+            <div class="reponses-timeline">
 
-        <!-- Mini-formulaire entretien (conditionnel, en dessous de la timeline) -->
-        <div class="entretiens-inline" *ngIf="editingEntretienFor === c['@id']" (click)="$event.stopPropagation()">
-
-          <!-- Bouton création si aucun entretien -->
-          <div class="entretien-form" *ngIf="!c.entretiens?.length">
-            <button type="button" class="btn-create-entretien" (click)="createEntretien(c); $event.stopPropagation()">
-              ✓ Créer un entretien
-            </button>
-            <button type="button" class="btn-cancel-entretien"
-              (click)="cancelEditEntretien(); $event.stopPropagation()">
-              ✕ Annuler
-            </button>
-          </div>
-
-          <!-- Liste des entretiens existants -->
-          <div *ngFor="let e of c.entretiens; let i = index" class="entretien-item">
-
-            <div class="entretien-header">
-              <span class="entretien-numero">Entretien {{ i + 1 }}</span>
-              <button type="button" class="btn-delete-entretien" (click)="deleteEntretien(c, e, $event)"
-                title="Supprimer cet entretien">
-                🗑️
+              <button
+                type="button"
+                class="reponse-item reponse-item--attente"
+                [class.active]="c.statutReponse === 'attente'"
+                (click)="updateStatut(c, 'attente')"
+              >
+                <div class="reponse-point reponse-point--neutral"></div>
+                <div class="reponse-label">Attente</div>
               </button>
+
+              <button
+                type="button"
+                class="reponse-item reponse-item--echanges"
+                [class.active]="c.statutReponse === 'echanges'"
+                (click)="updateStatut(c, 'echanges')"
+              >
+                <div class="reponse-point reponse-point--info"></div>
+                <div class="reponse-label">Échanges</div>
+              </button>
+
+              <button
+                type="button"
+                class="reponse-item reponse-item--negative"
+                [class.active]="c.statutReponse === 'negative'"
+                (click)="updateStatut(c, 'negative')"
+              >
+                <div class="reponse-point reponse-point--danger"></div>
+                <div class="reponse-label">Refus</div>
+              </button>
+
+              <button
+                type="button"
+                class="reponse-item reponse-item--entretien"
+                [class.active]="helpers.hasEntretienPrevu(c)"
+                (click)="openEntretien(c)"
+              >
+                <div class="reponse-point reponse-point--success"></div>
+                <div class="reponse-label">
+                  {{ helpers.getNbEntretiensPrevus(c) || '+' }} Entretien
+                </div>
+              </button>
+
+              <button
+                type="button"
+                class="reponse-item reponse-item--engage"
+                [class.active]="c.statutReponse === 'engage'"
+                (click)="updateStatut(c, 'engage')"
+              >
+                <div class="reponse-point reponse-point--engage"></div>
+                <div class="reponse-label">Engagé</div>
+              </button>
+
             </div>
 
-            <!-- Entretien prévu -->
-            <ng-container *ngIf="e.statut === 'prevu'">
-              <div class="entretien-fields">
-                <label class="entretien-field" (click)="$event.stopPropagation()">
-                  <span class="field-label">Date :</span>
-                  <input type="date" [(ngModel)]="e.dateEntretien" (change)="updateEntretien(e)"
-                    (click)="$event.stopPropagation()" class="field-input" />
-                </label>
+            <!-- ENTRETIENS -->
+            <div
+              *ngIf="helpers.hasEntretienPrevu(c)"
+              class="entretiens-preview-row"
+            >
+              <ng-container *ngFor="let e of c.entretiens">
+                <div
+                  *ngIf="e.statut === 'prevu'"
+                  class="entretien-preview-pill"
+                >
+                  📅 {{ helpers.formatDate(e.dateEntretien) }}
+                  <span *ngIf="e.heureEntretien">
+                    à {{ helpers.formatHeure(e.heureEntretien) }}
+                  </span>
 
-                <label class="entretien-field" (click)="$event.stopPropagation()">
-                  <span class="field-label">Heure :</span>
-                  <input type="time" [(ngModel)]="e.heureEntretien" (change)="updateEntretien(e)"
-                    (click)="$event.stopPropagation()" class="field-input" />
-                </label>
-              </div>
+                  <button
+                    type="button"
+                    class="pill-delete-btn"
+                    (click)="deleteEntretien(c, e)"
+                    aria-label="Supprimer l'entretien"
+                  >
+                    ✕
+                  </button>
+                </div>
+              </ng-container>
+            </div>
 
-              <div class="entretien-actions">
-                <button type="button" class="btn-entretien-result btn-entretien-result--success"
-                  (click)="markEntretienAsPassed(e, 'engage'); $event.stopPropagation()">
-                  ✔ Réussi
-                </button>
-
-                <button type="button" class="btn-entretien-result btn-entretien-result--danger"
-                  (click)="markEntretienAsPassed(e, 'negative'); $event.stopPropagation()">
-                  ✖ Refusé
-                </button>
-              </div>
-            </ng-container>
-
-            <!-- Entretien passé (affichage uniquement) -->
-            <ng-container *ngIf="e.statut === 'passe'">
-              <div class="entretien-result">
-                <span class="entretien-badge entretien-badge--success" *ngIf="e.resultat === 'engage'">
-                  ✔ Réussi le {{ formatDate(e.dateEntretien) }} à {{ e.heureEntretien }}
-                </span>
-
-                <span class="entretien-badge entretien-badge--danger" *ngIf="e.resultat === 'negative'">
-                  ✖ Refusé le {{ formatDate(e.dateEntretien) }} à {{ e.heureEntretien }}
-                </span>
-              </div>
-            </ng-container>
           </div>
+        </ng-template>
 
-          <!-- Bouton ajouter un autre entretien -->
-          <button type="button" *ngIf="c.entretiens?.length" class="btn-add-another-entretien"
-            (click)="createEntretien(c); $event.stopPropagation()">
-            + Ajouter un autre entretien
-          </button>
-
-          <!-- Bouton fermer -->
-          <button type="button" class="btn-close-entretien" (click)="cancelEditEntretien(); $event.stopPropagation()">
-            Fermer
-          </button>
-        </div>
-
-      </ng-template>
-
+      </div>
     </div>
-
-    <!-- Message si vide -->
-    <div *ngIf="filteredCandidatures.length === 0" class="empty-state">
-      <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
-        <circle cx="32" cy="32" r="30" stroke="#e5e7eb" stroke-width="4" />
-        <path d="M32 20v16m0 4h.01" stroke="#9ca3af" stroke-width="4" stroke-linecap="round" />
-      </svg>
-      <p>Aucune candidature à afficher</p>
-    </div>
-  </div>
+  </ng-container>
 </div>
+
+<!-- MODALE ENTRETIEN -->
+<app-entretien-modal
+  [show]="showEntretienModal"
+  [entrepriseNom]="selectedCandidature?.entreprise?.nom || ''"
+  [jobTitle]="selectedCandidature?.jobTitle || ''"
+  [formData]="entretienForm"
+  (close)="closeEntretien()"
+  (submit)="submitEntretien($event)"
+></app-entretien-modal>

@@ -53,17 +53,30 @@ export class CandidatureService {
   /**
    * Met à jour le statutReponse d'une candidature
    * 
-   * @param candidatureIri IRI de la candidature (ex: "/api/candidatures/123")
-   * @param statut Nouveau statut (attente | echanges | negative)
+   */
+  /**
+   * Met à jour le statutReponse d'une candidature
+   * Seules les valeurs acceptées par le backend sont autorisées.
    */
   updateStatutReponse(
     candidatureIri: string,
-    statut: 'attente' | 'echanges' | 'negative' | 'engage'
+    statut: string
   ): Observable<any> {
-    // Extraction de l'ID depuis l'IRI
+    if (!candidatureIri) {
+      throw new Error('[CandidatureService] candidatureIri manquant');
+    }
     const id = candidatureIri.split('/').pop();
-
-    return this.http.patch<any>(
+    if (!id) {
+      throw new Error('[CandidatureService] Impossible d’extraire l’id');
+    }
+    // Liste stricte des statuts acceptés par le backend
+    const statutsValides = ['attente', 'negative', 'echanges', 'engage'];
+    if (!statutsValides.includes(statut)) {
+      throw new Error(
+        `[CandidatureService] Statut non autorisé: ${statut}. Autorisés: ${statutsValides.join(', ')}`
+      );
+    }
+    return this.http.patch(
       `${this.apiUrl}/candidatures/${id}/statut-reponse`,
       { statutReponse: statut },
       {
@@ -73,6 +86,7 @@ export class CandidatureService {
       }
     );
   }
+
 
 
 }

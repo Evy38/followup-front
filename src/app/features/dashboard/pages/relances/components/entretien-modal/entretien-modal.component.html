@@ -1,0 +1,55 @@
+<!-- Modale ajout entretien -->
+<div class="modal-overlay" *ngIf="show" (click)="onClose()">
+  <div class="modal-card" (click)="stopPropagation($event)">
+    <div class="modal-header">
+      <div class="modal-icon">📅</div>
+      <h3 class="modal-title">Ajouter un entretien</h3>
+    </div>
+
+    <p class="modal-text">
+      Planifie un entretien pour
+      <strong>{{
+        (entrepriseNom ? entrepriseNom + ' - ' : '') + (jobTitle || '') ||
+          'cette entreprise'
+      }}</strong
+      >.<br />
+      Indique la date et l'heure du rendez-vous.
+    </p>
+
+    <form class="entretien-form" (ngSubmit)="onSubmit()">
+      <div class="modal-fields">
+        <label>
+          Date :
+          <input
+            type="date"
+            [(ngModel)]="formData.date"
+            name="date"
+            required
+          />
+        </label>
+        <label>
+          Heure :
+          <input
+            type="time"
+            [(ngModel)]="formData.heure"
+            name="heure"
+            required
+          />
+        </label>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-secondary" type="button" (click)="onClose()">
+          Annuler
+        </button>
+        <button
+          type="submit"
+          class="btn-create-entretien"
+          [disabled]="!formData.date || !formData.heure"
+        >
+          ✓ Ajouter
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
