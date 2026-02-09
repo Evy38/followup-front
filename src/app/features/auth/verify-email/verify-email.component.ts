@@ -14,7 +14,7 @@ import { environment } from '../../../../environments/environment';
   styleUrl: './verify-email.component.css',
 })
 export class VerifyEmailComponent implements OnInit {
-  status: 'loading' | 'success' | 'error' = 'loading';
+  status: 'loading' | 'success' | 'error' = 'success';
   private requestSent = false;
   message = '';
 
@@ -38,7 +38,7 @@ export class VerifyEmailComponent implements OnInit {
     }
 
     this.http
-      .get<{ message?: string }>(`${environment.apiUrl}/verify_email`, {
+      .get<{ message?: string }>(`${environment.apiUrl}/verify-email`, {
         params: { token }
       })
       .subscribe({
