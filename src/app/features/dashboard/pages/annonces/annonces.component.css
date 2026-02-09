@@ -3,7 +3,7 @@
    ===================================================== */
 
 .annonces {
-  padding: 1rem;
+  padding: 0rem;
 }
 
 .annonces ul {
@@ -118,7 +118,7 @@
    TABLET ≥ 640px
    ===================================================== */
 
-@media (min-width: 640px) {
+@media (min-width: 707px) {
   .annonces ul {
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   }

@@ -68,6 +68,13 @@ export class RelancesComponent implements OnInit {
     c: Candidature,
     statut: 'attente' | 'echanges' | 'negative' | 'engage'
   ) {
+    // Si un entretien est prévu, on ne peut changer le statut que vers "engage" si un entretien passé est réussi
+    if (this.helpers.hasEntretienPrevu(c) && statut !== 'engage') {
+      return;
+    }
+    if (this.helpers.hasEntretienPrevu(c) && statut === 'engage' && !this.helpers.hasEntretienReussi(c)) {
+      return;
+    }
     this.facade.updateStatut(c, statut);
   }
 
@@ -95,7 +102,9 @@ export class RelancesComponent implements OnInit {
     this.closeEntretien();
   }
 
-  deleteEntretien(c: Candidature, e: any) {
-    this.facade.deleteEntretien(c, e);
-  }
+deleteEntretien(c: Candidature, e: any, event: MouseEvent) {
+  event.stopPropagation(); // ⚠️ Empêche la propagation
+  console.log('🗑️ Suppression entretien', e); // DEBUG
+  this.facade.deleteEntretien(c, e);
+}
 }

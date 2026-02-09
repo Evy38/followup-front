@@ -1,23 +1,75 @@
+/* =========================================================
+   STATUTS DE CANDIDATURE — CARDS RESPONSIVES
+========================================================= */
+.candidature-status-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  width: 100%;
+  margin-bottom: 0.7rem;
+}
+
+.candidature-status-card {
+  flex: 1 1 45%;
+  min-width: 120px;
+  max-width: 48%;
+  background: #fff;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 0.7rem 0.2rem;
+  text-align: center;
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: #222;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  margin-bottom: 0.2rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.candidature-status-card.active {
+  border-color: #6d5dfc;
+  box-shadow: 0 2px 10px rgba(109, 93, 252, 0.15);
+  color: #6d5dfc;
+}
+
+@media (max-width: 600px) {
+  .candidature-status-cards {
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .candidature-status-card {
+    max-width: 100%;
+    min-width: 0;
+    width: 100%;
+    font-size: 1rem;
+  }
+}
+
 .reponse-item--attente.active {
   background: #e0e7ff;
   color: #3730a3;
   border-color: #6366f1;
 }
+
 .reponse-item--echanges.active {
   background: #fef3c7;
   color: #b45309;
   border-color: #f59e0b;
 }
+
 .reponse-item--negative.active {
   background: #fee2e2;
   color: #b91c1c;
   border-color: #ef4444;
 }
+
 .reponse-item--engage.active {
   background: #dcfce7;
   color: #166534;
   border-color: #22c55e;
 }
+
 /* =========================================================
    CONTAINER GLOBAL
 ========================================================= */
@@ -298,37 +350,48 @@
 }
 
 /* =========================================================
-   RÉPONSES EMPLOYEURS
+   RÉPONSES EMPLOYEURS — MOBILE FIRST (VISION GLOBALE)
 ========================================================= */
+
 .reponses-wrapper {
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
+  gap: 0.75rem;
+  width: 100%;
 }
 
+/* 🔑 Grille mobile : tout visible d’un coup */
 .reponses-timeline {
-  display: flex;
-  gap: 0.5rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  /* 2 colonnes */
+  gap: 0.6rem;
+  width: 100%;
 }
 
 .reponse-item {
-  min-width: 96px;
-  padding: 0.55rem;
+  width: 100%;
+  min-width: 0;
+  padding: 0.7rem 0.4rem;
   background: #f8f9fa;
-  border-radius: 12px;
+  border-radius: 14px;
   border: 1px solid #e5e7eb;
+
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.35rem;
-  font-weight: 700;
+  gap: 0.3rem;
+
+  font-weight: 800;
   font-size: 0.75rem;
+  text-align: center;
 }
 
 .reponse-item.active {
   border-width: 2px;
 }
 
+/* Points */
 .reponse-point {
   width: 10px;
   height: 10px;
@@ -336,18 +399,55 @@
   border: 2px solid #ccc;
 }
 
-.reponse-point--neutral { border-color: #64748b; }
-.reponse-point--info { border-color: #f59e0b; }
-.reponse-point--danger { border-color: #ef4444; }
+.reponse-point--neutral {
+  border-color: #64748b;
+}
+
+.reponse-point--info {
+  border-color: #f59e0b;
+}
+
+.reponse-point--danger {
+  border-color: #ef4444;
+}
+
 .reponse-point--success,
-.reponse-point--engage { border-color: #22c55e; }
+.reponse-point--engage {
+  border-color: #22c55e;
+}
+
+/* États actifs conservés */
+.reponse-item--attente.active {
+  background: #e0e7ff;
+  color: #3730a3;
+  border-color: #6366f1;
+}
+
+.reponse-item--echanges.active {
+  background: #fef3c7;
+  color: #b45309;
+  border-color: #f59e0b;
+}
+
+.reponse-item--negative.active {
+  background: #fee2e2;
+  color: #b91c1c;
+  border-color: #ef4444;
+}
+
+.reponse-item--engage.active {
+  background: #dcfce7;
+  color: #166534;
+  border-color: #22c55e;
+}
 
 /* =========================================================
-   ENTRETIENS
+   ENTRETIENS — bien visibles sous la grille
 ========================================================= */
+
 .entretiens-preview-row {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.4rem;
   flex-wrap: wrap;
 }
 
@@ -357,15 +457,19 @@
   border: 1px solid #ffd580;
   color: #b26a00;
   border-radius: 999px;
-  padding: 0.35rem 0.9rem;
+  padding: 0.35rem 2rem 0.35rem 0.9rem;
   font-size: 0.75rem;
-  font-weight: 800;
 }
 
-.pill-delete-btn {
+.entretien-preview-pill:hover {
+  background: #fff3d9;
+  border-color: #ffb84d;
+}
+
+/* .pill-delete-btn {
   position: absolute;
-  right: -0.45rem;
-  top: -0.45rem;
+  right: 0.2rem;
+  top: 0.2rem;
   width: 1.25rem;
   height: 1.25rem;
   border-radius: 50%;
@@ -373,34 +477,83 @@
   background: white;
   font-weight: 800;
   cursor: pointer;
+  z-index: 2;
+  pointer-events: auto;
+} */
+
+.pill-delete-btn {
+  position: absolute;
+  right: 0.3rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1.3rem;
+  height: 1.3rem;
+  border-radius: 50%;
+  border: 1px solid #ff6b6b;
+  background: white;
+  color: #ff6b6b;
+
+  display: grid;
+  place-items: center;
+  font-size: 0.75rem;
+  font-weight: 800;
+  line-height: 1;
+
+  cursor: pointer;
+  z-index: 10;
+  pointer-events: auto;
+
+  transition: all 0.15s;
+}
+.pill-delete-btn:hover {
+  background: #ff6b6b;
+  color: white;
+  transform: translateY(-50%) scale(1.1);
 }
 
-/* =========================================================
+  /* =========================================================
+   DESKTOP ≥ 900px — COMPORTEMENT ACTUEL CONSERVÉ
+========================================================= */
+  @media (min-width: 1025px) {
+    .reponses-timeline {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .reponse-item {
+      min-width: 96px;
+      padding: 0.55rem;
+      font-size: 0.75rem;
+    }
+  }
+
+
+  /* =========================================================
    RESPONSIVE — MOBILE / TABLETTE
 ========================================================= */
-@media (max-width: 900px) {
-  .candidature-timeline-card {
-    grid-template-columns: 44px 1fr;
-    grid-template-areas:
-      "progress infos"
-      "actions actions";
+  @media (max-width: 900px) {
+    .candidature-timeline-card {
+      grid-template-columns: 44px 1fr;
+      grid-template-areas:
+        "progress infos"
+        "actions actions";
+    }
+
+    .progress-circle {
+      width: 44px;
+      height: 44px;
+    }
+
+    .relances-timeline {
+      flex-direction: column;
+    }
   }
 
-  .progress-circle {
-    width: 44px;
-    height: 44px;
-  }
-
-  .relances-timeline {
-    flex-direction: column;
-  }
-}
-
-/* =========================================================
+  /* =========================================================
    LARGE DESKTOP
 ========================================================= */
-@media (min-width: 1200px) {
-  .relances-container {
-    max-width: 1400px;
+  @media (min-width: 1200px) {
+    .relances-container {
+      max-width: 1400px;
+    }
   }
-}

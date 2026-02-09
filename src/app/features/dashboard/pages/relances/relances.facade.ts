@@ -173,10 +173,19 @@ export class RelancesFacade {
         candidature: Candidature,
         entretien: EntretienApi
     ): void {
-        // ✅ Extraction robuste de l'IRI
-        const entretienIri = entretien['@id'];
+        console.log('🔍 DEBUG FACADE - entretien reçu:', entretien); // ⚠️ DEBUG
 
+        // ✅ Essai 1 : IRI classique
+        let entretienIri = entretien['@id'];
+
+        // ✅ Essai 2 : Construction manuelle si pas d'IRI
+        if (!entretienIri && entretien.id) {
+            entretienIri = `/api/entretiens/${entretien.id}`;
+        }
+
+        // ❌ Si toujours pas d'identifiant, on abandonne
         if (!entretienIri) {
+            console.error('❌ Pas d\'identifiant pour cet entretien:', entretien);
             this.toastService.show(
                 'Impossible de supprimer cet entretien (identifiant manquant)',
                 'error'
@@ -184,20 +193,28 @@ export class RelancesFacade {
             return;
         }
 
+        console.log('📤 Appel API DELETE avec IRI:', entretienIri);
+
         this.entretienService.deleteEntretien(entretienIri).subscribe({
             next: () => {
+                console.log('✅ Suppression réussie côté backend');
+
+                // ✅ Mise à jour UI : filtre par ID numérique (plus fiable)
                 this.patchCandidature(candidature.id, {
                     entretiens: (candidature.entretiens ?? []).filter(
-                        (e) => e['@id'] !== entretienIri
+                        (e) => e.id !== entretien.id
                     ),
                 });
+
                 this.toastService.show('Entretien supprimé', 'success');
             },
-            error: () =>
+            error: (err) => {
+                console.error('❌ Erreur suppression backend:', err);
                 this.toastService.show(
                     "Erreur lors de la suppression de l'entretien",
                     'error'
-                ),
+                );
+            },
         });
     }
 
