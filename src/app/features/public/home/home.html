@@ -1,11 +1,104 @@
-<div class="landing-container">
-	<div class="landing-content">
-		<h1 class="landing-title">Bienvenus sur FollowUp</h1>
-		<p class="landing-desc">
-			L’application de suivis de vos candidatures pour un tracking en toute sérénité.
-		</p>
-	</div>
-	<div class="landing-illustration">
-		<img src="assets/icons/illu-cv.png" alt="Illustration suivi de candidatures" />
-	</div>
-</div>
+<section class="home">
+
+  <!-- HERO -->
+  <div class="home__hero">
+    <div class="home__content">
+      <h1 class="home__title">
+        Suivez vos candidatures en toute sérénité.<br />
+        Relancez au bon moment.<br />
+        Gardez le contrôle.
+      </h1>
+
+      <p class="home__subtitle">
+        FollowUp vous aide à centraliser toutes vos candidatures,
+        suivre leur évolution et gérer vos relances simplement,
+        sans stress ni oubli.
+      </p>
+
+      <div class="home__cta">
+        <a
+          [routerLink]="[{ outlets: { overlay: ['login'] } }]"
+          class="btn btn--primary"
+        >
+          Créer un compte gratuitement
+        </a>
+
+        <a routerLink="/features" class="btn btn--secondary">
+          Découvrir les fonctionnalités
+        </a>
+      </div>
+    </div>
+
+    <div class="home__illustration">
+      <img
+        src="./../../../../assets/public/illu-serenite.png"
+        alt="Illustration représentant une gestion sereine des candidatures"
+      />
+    </div>
+  </div>
+
+  <!-- BÉNÉFICES -->
+  <div class="home__benefits">
+    <div class="benefit">
+      <h3>Suivi clair de vos candidatures</h3>
+      <p>
+        Toutes vos démarches regroupées au même endroit,
+        accessibles en un coup d’œil.
+      </p>
+    </div>
+
+    <div class="benefit">
+      <h3>Relances guidées, au bon moment</h3>
+      <p>
+        Fini les relances oubliées ou trop tardives :
+        FollowUp vous indique quand agir.
+      </p>
+    </div>
+
+    <div class="benefit">
+      <h3>Une vision globale et apaisante</h3>
+      <p>
+        Un tableau de bord simple pour savoir où vous en êtes,
+        sans multiplier les outils.
+      </p>
+    </div>
+  </div>
+
+  <!-- CIBLES -->
+  <div class="home__targets">
+    <h2>Pour tous les profils</h2>
+
+    <p>
+      FollowUp s’adresse à toutes les personnes en recherche
+      d’opportunités professionnelles, quel que soit leur parcours :
+    </p>
+
+    <ul>
+      <li>Étudiants et alternants</li>
+      <li>Profils juniors ou confirmés</li>
+      <li>Stage, alternance, CDD, CDI</li>
+      <li>Freelance, reconversion, veille d’opportunités</li>
+    </ul>
+  </div>
+
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer__content">
+    <p class="footer__brand">
+      © 2026 – <strong>FollowUp</strong>
+    </p>
+
+    <p class="footer__desc">
+      Application de suivi de candidatures – Projet pédagogique.
+      Données personnelles protégées, aucun usage commercial.
+    </p>
+
+    <nav class="footer__links" aria-label="Liens secondaires">
+      <a href="#">Mentions légales</a>
+      <a href="#">Politique de confidentialité</a>
+      <a href="#">Contact</a>
+    </nav>
+  </div>
+</footer>
