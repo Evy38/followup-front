@@ -69,6 +69,12 @@
   color: #166534;
   border-color: #22c55e;
 }
+.reponse-item--entretien.active {
+  background: #ecfdf5;
+  color: #065f46;
+  border-color: #10b981;
+}
+
 
 /* =========================================================
    CONTAINER GLOBAL

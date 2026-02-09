@@ -91,10 +91,9 @@ export function getNbEntretiensPrevus(candidature: Candidature): number {
 /**
  * Vérifie si la candidature a au moins un entretien prévu
  */
-export function hasEntretienPrevu(candidature: Candidature): boolean {
-  return (candidature.entretiens ?? []).some(e => e.statut === 'prevu');
+export function hasEntretienPrevu(c: Candidature): boolean {
+  return !!c.entretiens?.some(e => e.statut === 'prevu');
 }
-
 
 export function hasEntretienReussi(candidature: Candidature): boolean {
   return (candidature.entretiens ?? []).some(

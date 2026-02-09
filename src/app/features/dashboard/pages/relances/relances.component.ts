@@ -99,6 +99,8 @@ export class RelancesComponent implements OnInit {
       data.date,
       data.heure
     );
+
+    this.filterStatus = 'reponses';
     this.closeEntretien();
   }
 
