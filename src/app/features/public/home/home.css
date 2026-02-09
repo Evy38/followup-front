@@ -118,47 +118,7 @@
   font-weight: 500;
 }
 
-/* FOOTER */
-.footer {
-  background: #f7f8fc;
-  border-top: 1px solid #e6e6ef;
-  padding: 32px 6vw;
-}
 
-.footer__content {
-  max-width: 1400px;
-  margin: 0 auto;
-  text-align: center;
-}
-
-.footer__brand {
-  font-size: 0.95rem;
-  margin-bottom: 8px;
-  color: #333;
-}
-
-.footer__desc {
-  font-size: 0.9rem;
-  color: #666;
-  margin-bottom: 16px;
-}
-
-.footer__links {
-  display: flex;
-  justify-content: center;
-  gap: 24px;
-  flex-wrap: wrap;
-}
-
-.footer__links a {
-  font-size: 0.9rem;
-  color: #6c5ce7;
-  text-decoration: none;
-}
-
-.footer__links a:hover {
-  text-decoration: underline;
-}
 
 /* RESPONSIVE */
 @media (max-width: 900px) {

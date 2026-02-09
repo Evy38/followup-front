@@ -1,5 +1,7 @@
+/* =====================================================
+   BASE — MOBILE FIRST
+   ===================================================== */
 
-/* MOBILE FIRST */
 .stats-bar {
   display: flex;
   flex-direction: column;
@@ -7,52 +9,71 @@
   margin: 1.2rem 0 0.5rem 0;
   align-items: stretch;
 }
+
 .stat-item {
   background: #fff;
   border-radius: 14px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   padding: 1rem 1.2rem;
+
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-width: 0;
+
   width: 100%;
   max-width: 350px;
   margin: 0 auto;
+
+  min-width: 0;
   transition: box-shadow 0.2s;
 }
+
 .stat-item:hover {
-  box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.10);
 }
+
 .stat-label {
   margin-top: 0.2rem;
   color: #7a7a7a;
   font-size: 1rem;
 }
+
+/* Carte avec gradient (À relancer) */
 .stat-item[style*="background:linear-gradient"] {
   border: 1.5px solid #ffe9a3;
 }
 
-/* DESKTOP : horizontal à partir de 700px, wrap si besoin */
+/* =====================================================
+   DESKTOP ≥ 700px
+   (STRICTEMENT IDENTIQUE À TON VISUEL ACTUEL)
+   ===================================================== */
+
 @media (min-width: 700px) {
   .stats-bar {
     flex-direction: row;
     flex-wrap: wrap;
     gap: 1.5rem;
+
     margin: 2rem 2vw 1rem 2vw;
+
     justify-content: flex-start;
     align-items: flex-start;
-    max-width: calc(100vw - 260px); /* évite de passer sous la sidebar (largeur sidebar ~240px + marge) */
+
+    max-width: calc(100vw - 260px);
+    /* sidebar */
     box-sizing: border-box;
   }
+
   .stat-item {
     min-width: 140px;
     width: 220px;
     max-width: 100%;
     margin: 0;
+
     padding: 1.2rem 2.2rem;
     flex: 1 1 220px;
   }
+
   .stat-label {
     font-size: 1.05rem;
   }
