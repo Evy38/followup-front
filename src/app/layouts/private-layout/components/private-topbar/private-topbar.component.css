@@ -228,8 +228,6 @@
     padding: 24px 32px;
     border-bottom: none;
     background: transparent;
-    
-    /* ✅ CENTRAGE ICI */
     max-width: 1400px;
     margin: 0 auto;
   }

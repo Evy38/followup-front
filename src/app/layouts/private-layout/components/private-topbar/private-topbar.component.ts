@@ -60,7 +60,6 @@ export class PrivateTopbarComponent {
       const route = this.getDeepestChild(this.route);
       const ctx = route.snapshot.data['topbar'] as TopbarContext | undefined;
 
-      // ✅ fallback intelligent
       if (ctx) return ctx;
 
       const url = this.router.url;

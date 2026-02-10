@@ -78,7 +78,7 @@ export class RelancesFacade {
         candidature: Candidature,
         statut: 'attente' | 'echanges' | 'negative' | 'engage'
     ): void {
-        // ✅ Construction robuste de l'IRI
+        // Construction robuste de l'IRI
         const iri = candidature['@id'] || `/candidatures/${candidature.id}`;
 
         if (!iri || !candidature.id) {
@@ -100,7 +100,7 @@ export class RelancesFacade {
             );
             return;
         }
-        // ✅ Logique de toggle : si déjà actif, retour à "attente"
+        // Logique de toggle : si déjà actif, retour à "attente"
         const nouveauStatut = (previous === statut) ? 'attente' : statut;
         // Optimistic UI
         this.patchCandidature(candidature.id, {
@@ -133,7 +133,7 @@ export class RelancesFacade {
         date: string,
         heure: string
     ): void {
-        // ✅ Construction robuste de l'IRI
+        // Construction robuste de l'IRI
         const iri = candidature['@id'] || `/api/candidatures/${candidature.id}`;
 
         if (!iri) {
@@ -145,7 +145,7 @@ export class RelancesFacade {
             .createEntretien(iri, date, heure)
             .subscribe({
                 next: (entretien) => {
-                    // ✅ Filtrage des entretiens valides
+                    // Filtrage des entretiens valides
                     const nouveauxEntretiens = [
                         ...(candidature.entretiens ?? []),
                         entretien,
@@ -173,10 +173,10 @@ export class RelancesFacade {
         candidature: Candidature,
         entretien: EntretienApi
     ): void {
-        // ✅ Essai 1 : IRI classique
+        // Essai 1 : IRI classique
         let entretienIri = entretien['@id'];
 
-        // ✅ Essai 2 : Construction manuelle si pas d'IRI
+        // Essai 2 : Construction manuelle si pas d'IRI
         if (!entretienIri && entretien.id) {
             entretienIri = `/api/entretiens/${entretien.id}`;
         }
@@ -193,7 +193,7 @@ export class RelancesFacade {
 
         this.entretienService.deleteEntretien(entretienIri).subscribe({
             next: () => {
-                // ✅ Mise à jour UI : filtre par ID numérique (plus fiable)
+                // Mise à jour UI : filtre par ID numérique (plus fiable)
                 this.patchCandidature(candidature.id, {
                     entretiens: (candidature.entretiens ?? []).filter(
                         (e) => e.id !== entretien.id

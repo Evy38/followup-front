@@ -1,15 +1,3 @@
-/**
- * Composant de liste des utilisateurs (Interface Admin)
- * 
- * @component UsersListComponent
- * @description Affiche la liste complète des utilisateurs avec possibilité
- * de recherche et de filtrage
- * 
- * @conformité REAC CDA - Compétence 2 : Développer des interfaces utilisateur
- * - Interface responsive et accessible
- * - Gestion des états de chargement
- * - Affichage des erreurs utilisateur
- */
 
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -65,19 +53,12 @@ export class UsersListComponent implements OnInit {
   // MÉTHODES PUBLIQUES
   // ============================================================
 
-  /**
-   * Charge la liste complète des utilisateurs depuis l'API
-   * 
-   * @description Appelle le backend GET /api/user
-   * Gère les états de chargement et d'erreur
-   */
   loadUsers(): void {
     this.loading = true;
     this.errorMessage = null;
 
     this.userService.getAllUsers().subscribe({
       next: (users) => {
-        console.log(`✅ [UsersListComponent] ${users.length} utilisateurs chargés`);
         this.users = users;
         this.filteredUsers = users;
         this.loading = false;
@@ -93,12 +74,6 @@ export class UsersListComponent implements OnInit {
   /**
    * Filtre la liste des utilisateurs selon le terme de recherche
    * 
-   * @description Recherche dans :
-   * - Email
-   * - Prénom
-   * - Nom
-   * 
-   * @note Recherche insensible à la casse
    */
   onSearch(): void {
     const term = this.searchTerm.toLowerCase().trim();

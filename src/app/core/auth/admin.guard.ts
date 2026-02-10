@@ -22,33 +22,6 @@ import { CanActivateFn, Router } from '@angular/router';
 import { map, catchError, of } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 
-/**
- * Guard fonctionnel pour protéger les routes admin
- * 
- * @canActivate
- * @description Vérifie si l'utilisateur a le rôle ROLE_ADMIN
- * 
- * Comportement :
- * - ✅ ROLE_ADMIN présent → Accès autorisé
- * - ❌ ROLE_ADMIN absent → Redirection vers /app/dashboard
- * - ❌ Non authentifié → Redirection vers login (géré par authGuard)
- * 
- * @usage Dans app.routes.ts :
- * ```typescript
- * {
- *   path: 'admin',
- *   canActivate: [authGuard, adminGuard],
- *   loadComponent: () => import('./features/admin/...')
- * }
- * ```
- * 
- * @example Logs de débogage
- * ```
- * 🔐 [AdminGuard] Vérification des droits admin
- * ✅ [AdminGuard] Accès autorisé - ROLE_ADMIN détecté
- * ❌ [AdminGuard] Accès refusé - ROLE_ADMIN requis
- * ```
- */
 export const adminGuard: CanActivateFn = () => {
   const authService = inject(AuthService);
   const router = inject(Router);
