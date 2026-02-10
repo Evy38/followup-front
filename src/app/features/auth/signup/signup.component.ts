@@ -27,6 +27,8 @@ export class SignupComponent {
   loading = false;
   message = '';
   error = '';
+  consentRgpd = false;
+
 
   toggleSignup() {
     this.closeSignup.emit();
@@ -39,6 +41,13 @@ export class SignupComponent {
 
     if (!form.valid) {
       this.error = 'Merci de remplir tous les champs requis.';
+      return;
+    }
+
+    // Vérification consentement RGPD
+    if (!this.consentRgpd) {
+      this.error =
+        'Vous devez accepter la politique de confidentialité pour créer un compte.';
       return;
     }
 
@@ -62,7 +71,8 @@ export class SignupComponent {
         firstName: this.firstName,
         lastName: this.lastName,
         email: emailTrimmed,
-        password: this.password
+        password: this.password,
+        consentRgpd: this.consentRgpd,
       })
       .subscribe({
         next: () => {
@@ -72,7 +82,7 @@ export class SignupComponent {
 
           // reset du formulaire
           this.resetForm();
-          
+
           // Fermer le formulaire après 2 secondes
           setTimeout(() => {
             this.closeSignup.emit();
@@ -87,7 +97,6 @@ export class SignupComponent {
         },
       });
   }
-
   private resetForm() {
     this.firstName = '';
     this.lastName = '';
@@ -95,7 +104,7 @@ export class SignupComponent {
     this.password = '';
     this.confirmPassword = '';
   }
-    closeOverlay() {
-  this.router.navigate([{ outlets: { overlay: null } }]);
-}
+  closeOverlay() {
+    this.router.navigate([{ outlets: { overlay: null } }]);
+  }
 }

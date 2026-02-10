@@ -10,4 +10,10 @@
     </main>
 
   </div>
+  <app-rgpd-consent-modal
+  [open]="showRgpdModal"
+  (close)="closeRgpdModal()"
+  (accept)="acceptRgpd()">
+</app-rgpd-consent-modal>
+
 </div>

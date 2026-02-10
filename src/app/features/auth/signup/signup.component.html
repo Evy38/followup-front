@@ -4,20 +4,31 @@
     <h2 class="register-title">Créer un compte</h2>
 
     <label for="signup-lastName">Nom :</label>
-    <input id="signup-lastName" name="lastName" type="text" [(ngModel)]="lastName" required autocomplete="family-name" />
+    <input id="signup-lastName" name="lastName" type="text" [(ngModel)]="lastName" required
+      autocomplete="family-name" />
 
     <label for="signup-firstName">Prénom :</label>
-    <input id="signup-firstName" name="firstName" type="text" [(ngModel)]="firstName" required autocomplete="given-name" />
+    <input id="signup-firstName" name="firstName" type="text" [(ngModel)]="firstName" required
+      autocomplete="given-name" />
 
     <label for="signup-email">Adresse Gmail :</label>
     <input id="signup-email" name="email" type="email" [(ngModel)]="email" required
       placeholder="monjob.followup@gmail.com" autocomplete="email" />
 
     <label for="signup-password">Mot de passe :</label>
-    <input id="signup-password" name="password" type="password" [(ngModel)]="password" required minlength="8" autocomplete="new-password" />
+    <input id="signup-password" name="password" type="password" [(ngModel)]="password" required minlength="8"
+      autocomplete="new-password" />
 
     <label for="signup-confirm">Confirmer le mot de passe :</label>
-    <input id="signup-confirm" name="confirmPassword" type="password" [(ngModel)]="confirmPassword" required autocomplete="new-password" />
+    <input id="signup-confirm" name="confirmPassword" type="password" [(ngModel)]="confirmPassword" required
+      autocomplete="new-password" />
+
+    <label class="rgpd">
+      <input type="checkbox" name="consentRgpd" [(ngModel)]="consentRgpd" required />
+      J’accepte la
+      <a href="/privacy" target="_blank">politique de confidentialité</a>
+      et le traitement de mes données personnelles.
+    </label>
 
     <p class="error" *ngIf="error">{{ error }}</p>
     <p class="success" *ngIf="message">{{ message }}</p>

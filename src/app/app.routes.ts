@@ -101,13 +101,14 @@ export const routes: Routes = [
       import('./features/auth/forgot-password/forgot-password.component')
         .then(m => m.ForgotPasswordComponent),
   },
-  {
-    path: 'reset-password',
-    outlet: 'overlay',
-    loadComponent: () =>
-      import('./features/auth/reset-password/reset-password.component')
-        .then(m => m.ResetPasswordComponent),
-  },
+
+  // {
+  //   path: 'reset-password',
+  //   outlet: 'overlay',
+  //   loadComponent: () =>
+  //     import('./features/auth/reset-password/reset-password.component')
+  //       .then(m => m.ResetPasswordComponent),
+  // },
 
   // ============================
   // CALLBACK OAUTH GOOGLE (route principale, pas d'overlay)
@@ -116,6 +117,33 @@ export const routes: Routes = [
     path: 'google-callback',
     component: GoogleCallbackComponent,
   },
+
+  {
+  path: 'finalize-signup',
+  loadComponent: () =>
+    import('./features/auth/finalize-signup/finalize-signup.component')
+      .then(m => m.FinalizeSignupComponent),
+},
+
+{
+  path: 'privacy',
+  loadComponent: () =>
+    import('./features/public/privacy/privacy.component')
+      .then(m => m.PrivacyComponent),
+},
+{
+  path: 'legal',
+  loadComponent: () =>
+    import('./features/public/legal/legal.component')
+      .then(m => m.LegalComponent),
+},
+{
+  path: 'terms',
+  loadComponent: () =>
+    import('./features/public/terms/terms.component')
+      .then(m => m.TermsComponent),
+},
+
 
   // ============================
   // FALLBACK (404)

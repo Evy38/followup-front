@@ -105,8 +105,7 @@ export class RelancesComponent implements OnInit {
   }
 
 deleteEntretien(c: Candidature, e: any, event: MouseEvent) {
-  event.stopPropagation(); // ⚠️ Empêche la propagation
-  console.log('🗑️ Suppression entretien', e); // DEBUG
+  event.stopPropagation();
   this.facade.deleteEntretien(c, e);
 }
 }

@@ -1,0 +1,24 @@
+<div class="backdrop" *ngIf="open" (click)="close.emit()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <h2>Protection de vos données</h2>
+
+    <p>
+      Pour utiliser FollowUp, vous pouvez accepter le traitement de vos données
+      conformément à notre politique de confidentialité.
+    </p>
+
+    <label class="check">
+      <input type="checkbox" [(ngModel)]="checked" />
+      J’accepte la <a routerLink="/privacy" target="_blank">politique de confidentialité</a>.
+    </label>
+
+    <div class="actions">
+      <button type="button" class="secondary" (click)="close.emit()">
+        Plus tard
+      </button>
+      <button type="button" [disabled]="!checked" (click)="onAccept()">
+        J’accepte
+      </button>
+    </div>
+  </div>
+</div>

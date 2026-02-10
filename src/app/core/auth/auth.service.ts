@@ -12,6 +12,7 @@ export interface RegisterPayload {
   lastName: string;
   email: string;
   password: string;
+  consentRgpd: boolean;
 }
 
 @Injectable({
@@ -19,8 +20,8 @@ export interface RegisterPayload {
 })
 export class AuthService {
 
-private readonly apiUrl = environment.apiUrl;
-private readonly backendUrl = environment.backendUrl;
+  private readonly apiUrl = environment.apiUrl;
+  private readonly backendUrl = environment.backendUrl;
 
   private tokenSubject = new BehaviorSubject<string | null>(null);
   public token$ = this.tokenSubject.asObservable();
@@ -145,6 +146,9 @@ private readonly backendUrl = environment.backendUrl;
 
   clearAuthError() {
     this.authErrorSubject.next(null);
+  }
+  acceptRgpd() {
+    return this.http.post('/api/me/consent', {});
   }
 
 

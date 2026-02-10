@@ -11,7 +11,10 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
     provideRouter(routes),
-    provideHttpClient(withFetch(), withInterceptors([jwtInterceptor, httpErrorInterceptor])),
+    provideHttpClient(
+      withFetch(),
+      withInterceptors([jwtInterceptor, httpErrorInterceptor])
+    ),
     provideServiceWorker('ngsw-worker.js', {
       enabled: !isDevMode(),
       registrationStrategy: 'registerWhenStable:30000'

@@ -1,0 +1,28 @@
+<div class="finalize-card">
+  <h2>Finaliser votre inscription</h2>
+
+  <p>
+    Pour continuer, vous devez accepter la politique de confidentialité
+    et le traitement de vos données personnelles.
+  </p>
+
+  <label class="rgpd">
+    <input
+      type="checkbox"
+      [(ngModel)]="consentRgpd"
+    />
+    J’accepte la
+    <a routerLink="/privacy" target="_blank">
+      politique de confidentialité
+    </a>
+  </label>
+
+  <p class="error" *ngIf="error">{{ error }}</p>
+
+  <button
+    (click)="submit()"
+    [disabled]="loading"
+  >
+    {{ loading ? 'Validation...' : 'Continuer' }}
+  </button>
+</div>

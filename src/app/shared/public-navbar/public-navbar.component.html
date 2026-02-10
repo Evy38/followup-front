@@ -9,7 +9,7 @@
 
     <!-- Liens horizontaux -->
     <div class="nav__links">
-        <a routerLink="/" routerLinkActive="nav__item--active" aria-current="page" class="nav__item">Accueil</a>
+        <a routerLink="/" routerLinkActive="nav__item--active" [routerLinkActiveOptions]="{ exact: true }" aria-current="page" class="nav__item">Accueil</a>
         <a routerLink="/about" routerLinkActive="nav__item--active" class="nav__item">A propos</a>
         <a routerLink="/pricing" routerLinkActive="nav__item--active" class="nav__item">Tarifs & Contacts</a>
         <a routerLink="/features" routerLinkActive="nav__item--active" class="nav__item">Fonctionnalités</a>

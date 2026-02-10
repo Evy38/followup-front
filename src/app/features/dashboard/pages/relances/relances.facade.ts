@@ -173,8 +173,6 @@ export class RelancesFacade {
         candidature: Candidature,
         entretien: EntretienApi
     ): void {
-        console.log('🔍 DEBUG FACADE - entretien reçu:', entretien); // ⚠️ DEBUG
-
         // ✅ Essai 1 : IRI classique
         let entretienIri = entretien['@id'];
 
@@ -193,12 +191,8 @@ export class RelancesFacade {
             return;
         }
 
-        console.log('📤 Appel API DELETE avec IRI:', entretienIri);
-
         this.entretienService.deleteEntretien(entretienIri).subscribe({
             next: () => {
-                console.log('✅ Suppression réussie côté backend');
-
                 // ✅ Mise à jour UI : filtre par ID numérique (plus fiable)
                 this.patchCandidature(candidature.id, {
                     entretiens: (candidature.entretiens ?? []).filter(
