@@ -1,0 +1,181 @@
+<!-- 
+  Template de la liste des utilisateurs (Interface Admin)
+  
+  Affiche :
+  - Statistiques globales
+  - Barre de recherche
+  - Liste des utilisateurs avec leurs informations
+  - États de chargement et d'erreur
+-->
+
+<div class="admin-container">
+  
+  <!-- ============================================================
+       HEADER : TITRE + ACTIONS
+       ============================================================ -->
+  <div class="admin-header">
+    <h1>Gestion des utilisateurs</h1>
+    <button 
+      class="btn-refresh" 
+      (click)="loadUsers()"
+      [disabled]="loading"
+      title="Actualiser la liste">
+      🔄 Actualiser
+    </button>
+  </div>
+
+  <!-- ============================================================
+       STATISTIQUES
+       ============================================================ -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <span class="stat-number">{{ totalUsers }}</span>
+      <span class="stat-label">Total utilisateurs</span>
+    </div>
+    
+    <div class="stat-card">
+      <span class="stat-number">{{ totalAdmins }}</span>
+      <span class="stat-label">Administrateurs</span>
+    </div>
+    
+    <div class="stat-card">
+      <span class="stat-number">{{ totalRegularUsers }}</span>
+      <span class="stat-label">Utilisateurs standard</span>
+    </div>
+    
+    <div class="stat-card">
+      <span class="stat-number">{{ totalVerifiedUsers }}</span>
+      <span class="stat-label">Emails vérifiés</span>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       BARRE DE RECHERCHE
+       ============================================================ -->
+  <div class="search-bar">
+    <input 
+      type="text"
+      class="search-input"
+      placeholder="Rechercher par email, prénom ou nom..."
+      [(ngModel)]="searchTerm"
+      (input)="onSearch()"
+      [disabled]="loading"
+    />
+    
+    <button 
+      class="btn-clear-search" 
+      (click)="clearSearch()"
+      *ngIf="searchTerm"
+      title="Réinitialiser la recherche">
+      ✕
+    </button>
+  </div>
+
+  <!-- ============================================================
+       ÉTAT DE CHARGEMENT
+       ============================================================ -->
+  <div class="loading-container" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Chargement des utilisateurs...</p>
+  </div>
+
+  <!-- ============================================================
+       MESSAGE D'ERREUR
+       ============================================================ -->
+  <div class="error-message" *ngIf="errorMessage && !loading">
+    <span class="error-icon">⚠️</span>
+    <span>{{ errorMessage }}</span>
+    <button class="btn-retry" (click)="loadUsers()">Réessayer</button>
+  </div>
+
+  <!-- ============================================================
+       LISTE DES UTILISATEURS
+       ============================================================ -->
+  <div class="users-list" *ngIf="!loading && !errorMessage">
+    
+    <!-- Message si aucun résultat -->
+    <div class="no-results" *ngIf="filteredUsers.length === 0">
+      <p>Aucun utilisateur trouvé</p>
+      <button class="btn-clear-search" (click)="clearSearch()" *ngIf="searchTerm">
+        Réinitialiser la recherche
+      </button>
+    </div>
+
+    <!-- Tableau des utilisateurs -->
+    <table class="users-table" *ngIf="filteredUsers.length > 0">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Email</th>
+          <th>Nom complet</th>
+          <th>Rôle</th>
+          <th>Vérification</th>
+          <th>RGPD</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of filteredUsers" class="user-row">
+          <!-- ID -->
+          <td class="user-id">{{ user.id }}</td>
+          
+          <!-- Email -->
+          <td class="user-email">
+            {{ user.email }}
+            <span class="oauth-badge" *ngIf="user.googleId" title="Compte Google">
+              🔗 Google
+            </span>
+          </td>
+          
+          <!-- Nom complet -->
+          <td class="user-name">
+            <span *ngIf="user.firstName || user.lastName">
+              {{ user.firstName }} {{ user.lastName }}
+            </span>
+            <span class="text-muted" *ngIf="!user.firstName && !user.lastName">
+              Non renseigné
+            </span>
+          </td>
+          
+          <!-- Rôle -->
+          <td>
+            <span 
+              class="badge"
+              [class.badge-admin]="isAdmin(user)"
+              [class.badge-user]="!isAdmin(user)">
+              {{ getRoleBadge(user) }}
+            </span>
+          </td>
+          
+          <!-- Vérification email -->
+          <td>
+            <span 
+              class="badge"
+              [class.badge-success]="user.isVerified"
+              [class.badge-warning]="!user.isVerified">
+              {{ getVerificationBadge(user) }}
+            </span>
+          </td>
+          
+          <!-- Consentement RGPD -->
+          <td class="user-rgpd">
+            <span *ngIf="user.consentRgpd" class="rgpd-ok" title="Consentement donné">
+              ✅
+            </span>
+            <span *ngIf="!user.consentRgpd" class="rgpd-ko" title="Consentement non donné">
+              ❌
+            </span>
+            <span class="rgpd-date" *ngIf="user.consentRgpdAt">
+              {{ user.consentRgpdAt | date:'dd/MM/yyyy' }}
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Nombre de résultats -->
+    <div class="results-count" *ngIf="filteredUsers.length > 0">
+      Affichage de {{ filteredUsers.length }} utilisateur(s)
+      <span *ngIf="searchTerm"> correspondant à "{{ searchTerm }}"</span>
+    </div>
+  </div>
+</div>

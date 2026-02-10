@@ -1,0 +1,426 @@
+/**
+ * Styles du composant liste des utilisateurs (Interface Admin)
+ * 
+ * @conformité REAC CDA - Compétence 2 : Développer des interfaces utilisateur
+ * - Design responsive (mobile-first)
+ * - Accessibilité (contraste, focus)
+ * - UX moderne et professionnelle
+ */
+
+/* ============================================================
+   CONTENEUR PRINCIPAL
+   ============================================================ */
+.admin-container {
+  padding: 1.5rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* ============================================================
+   HEADER (TITRE + ACTIONS)
+   ============================================================ */
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.admin-header h1 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin: 0;
+}
+
+.btn-refresh {
+  background: #6c47e6;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-refresh:hover:not(:disabled) {
+  background: #5a38c7;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(108, 71, 230, 0.3);
+}
+
+.btn-refresh:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ============================================================
+   STATISTIQUES
+   ============================================================ */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.2rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  transition: box-shadow 0.2s;
+}
+
+.stat-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.stat-number {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #6c47e6;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: #7a7a7a;
+  text-align: center;
+}
+
+/* ============================================================
+   BARRE DE RECHERCHE
+   ============================================================ */
+.search-bar {
+  position: relative;
+  margin-bottom: 2rem;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.9rem 3rem 0.9rem 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 1rem;
+  transition: all 0.2s;
+  box-sizing: border-box;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #6c47e6;
+  box-shadow: 0 0 0 3px rgba(108, 71, 230, 0.1);
+}
+
+.search-input:disabled {
+  background: #f7fafc;
+  cursor: not-allowed;
+}
+
+.btn-clear-search {
+  position: absolute;
+  right: 0.8rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #e2e8f0;
+  border: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  color: #4a5568;
+}
+
+.btn-clear-search:hover {
+  background: #cbd5e0;
+  transform: translateY(-50%) scale(1.1);
+}
+
+/* ============================================================
+   ÉTATS DE CHARGEMENT ET ERREUR
+   ============================================================ */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 3rem;
+  color: #7a7a7a;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #e2e8f0;
+  border-top-color: #6c47e6;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.error-message {
+  background: #fff5f5;
+  border: 1px solid #fc8181;
+  border-radius: 10px;
+  padding: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  color: #c53030;
+  flex-wrap: wrap;
+}
+
+.error-icon {
+  font-size: 1.5rem;
+}
+
+.btn-retry {
+  margin-left: auto;
+  background: #c53030;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.btn-retry:hover {
+  background: #9b2c2c;
+}
+
+/* ============================================================
+   LISTE DES UTILISATEURS
+   ============================================================ */
+.users-list {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+}
+
+.no-results {
+  text-align: center;
+  padding: 3rem;
+  color: #7a7a7a;
+}
+
+.no-results p {
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+/* ============================================================
+   TABLEAU
+   ============================================================ */
+.users-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.users-table thead {
+  background: #f7fafc;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.users-table th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #4a5568;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.user-row {
+  border-bottom: 1px solid #e2e8f0;
+  transition: background 0.2s;
+}
+
+.user-row:hover {
+  background: #f7fafc;
+}
+
+.users-table td {
+  padding: 1rem;
+  color: #2d3748;
+}
+
+.user-id {
+  font-weight: 600;
+  color: #6c47e6;
+}
+
+.user-email {
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+}
+
+.oauth-badge {
+  display: inline-block;
+  margin-left: 0.5rem;
+  font-size: 0.75rem;
+  padding: 0.2rem 0.5rem;
+  background: #e6fffa;
+  color: #234e52;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.text-muted {
+  color: #a0aec0;
+  font-style: italic;
+}
+
+/* ============================================================
+   BADGES
+   ============================================================ */
+.badge {
+  display: inline-block;
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.badge-admin {
+  background: #fef5e7;
+  color: #b88a1a;
+  border: 1px solid #f4d03f;
+}
+
+.badge-user {
+  background: #e8f4f8;
+  color: #1a8ab8;
+  border: 1px solid #a3d5ea;
+}
+
+.badge-success {
+  background: #e6ffed;
+  color: #2eae4a;
+  border: 1px solid #a3e6b8;
+}
+
+.badge-warning {
+  background: #fff5e6;
+  color: #d97706;
+  border: 1px solid #fbbf24;
+}
+
+/* ============================================================
+   RGPD
+   ============================================================ */
+.user-rgpd {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.rgpd-ok {
+  font-size: 1.2rem;
+}
+
+.rgpd-ko {
+  font-size: 1.2rem;
+}
+
+.rgpd-date {
+  font-size: 0.8rem;
+  color: #7a7a7a;
+}
+
+/* ============================================================
+   NOMBRE DE RÉSULTATS
+   ============================================================ */
+.results-count {
+  padding: 1rem;
+  text-align: center;
+  color: #7a7a7a;
+  font-size: 0.9rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+/* ============================================================
+   RESPONSIVE (MOBILE)
+   ============================================================ */
+@media (max-width: 768px) {
+  .admin-container {
+    padding: 1rem;
+  }
+
+  .admin-header h1 {
+    font-size: 1.4rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.8rem;
+  }
+
+  .stat-card {
+    padding: 1rem;
+  }
+
+  .stat-number {
+    font-size: 1.5rem;
+  }
+
+  .stat-label {
+    font-size: 0.8rem;
+  }
+
+  /* Tableau responsive : empile les cellules */
+  .users-table {
+    display: block;
+    overflow-x: auto;
+  }
+
+  .users-table thead {
+    display: none;
+  }
+
+  .user-row {
+    display: block;
+    margin-bottom: 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 1rem;
+  }
+
+  .users-table td {
+    display: block;
+    text-align: left;
+    padding: 0.5rem 0;
+  }
+
+  .users-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    display: block;
+    margin-bottom: 0.3rem;
+    color: #4a5568;
+  }
+}
