@@ -22,7 +22,6 @@ export class AuthService {
 
   private readonly apiUrl = environment.apiUrl;
   private readonly backendUrl = environment.backendUrl;
-
   private tokenSubject = new BehaviorSubject<string | null>(null);
   public token$ = this.tokenSubject.asObservable();
   private isBrowser: boolean;
@@ -94,6 +93,7 @@ export class AuthService {
   }
 
   logout(): void {
+    sessionStorage.removeItem('rgpd_modal_dismissed');
     this.removeToken();
     this.router.navigate([
       {
@@ -147,9 +147,10 @@ export class AuthService {
   clearAuthError() {
     this.authErrorSubject.next(null);
   }
-  acceptRgpd() {
-    return this.http.post('/api/me/consent', {});
-  }
+
+acceptRgpd() {
+  return this.http.post(`${this.apiUrl}/me/consent`, {});
+}
 
 
 }

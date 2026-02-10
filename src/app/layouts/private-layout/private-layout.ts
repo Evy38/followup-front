@@ -18,37 +18,50 @@ export class PrivateLayoutComponent {
 
   showRgpdModal = false;
 
-ngOnInit(): void {
-  this.auth.me().subscribe({
-    next: (res: any) => {
-      const user = res?.user;
+  ngOnInit(): void {
+    this.auth.me().subscribe({
+      next: (res) => {
+        const user = res?.user;
 
-      const mustShowRgpdModal =
-        user &&
-        user.consentRgpd === false &&
-        user.consentRgpdAt === null;
+        // 🔹 refus temporaire pour la session
+        const dismissedForSession =
+          sessionStorage.getItem('rgpd_modal_dismissed') === 'true';
 
-      this.showRgpdModal = mustShowRgpdModal;
-    },
-    error: () => {
-    },
-  });
-}
+        // 🔹 affichage uniquement si :
+        // - utilisateur OAuth
+        // - consentement jamais donné
+        // - pas refusé pour la session
+        const mustShowRgpdModal =
+          !!user &&
+          user.isOAuth === true &&
+          user.consentRgpd === false &&
+          user.consentRgpdAt === null &&
+          !dismissedForSession;
 
+        this.showRgpdModal = mustShowRgpdModal;
+      },
+    });
+  }
 
   closeRgpdModal(): void {
+
+    sessionStorage.setItem('rgpd_modal_dismissed', 'true');
     this.showRgpdModal = false;
   }
 
   acceptRgpd(): void {
+    // fermer immédiatement la modale (UX)
+    this.showRgpdModal = false;
+
     this.auth.acceptRgpd().subscribe({
       next: () => {
-        this.showRgpdModal = false;
+        sessionStorage.removeItem('rgpd_modal_dismissed');
       },
       error: () => {
-        // si échec, on laisse la modale ouverte
+        // optionnel : rollback UI
       },
     });
   }
+
 
 }

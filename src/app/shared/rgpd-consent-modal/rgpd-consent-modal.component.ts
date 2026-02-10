@@ -21,5 +21,6 @@ export class RgpdConsentModalComponent {
   onAccept(): void {
     if (!this.checked) return;
     this.accept.emit();
+    this.close.emit()
   }
 }
