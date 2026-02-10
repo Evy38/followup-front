@@ -39,7 +39,7 @@ export class LoginComponent implements OnInit {
   notVerifiedMessage: string | null = null;
   showResendButton = false;
   lastTriedEmail: string | null = null;
-  
+
   ngOnInit() {
     this.auth.authError$
       .pipe(takeUntil(this.destroy$))
@@ -113,7 +113,14 @@ export class LoginComponent implements OnInit {
             } else {
               this.closeOverlay();
               setTimeout(() => {
-                this.router.navigate(['/app/dashboard'])
+                // 🔑 Vérifier le rôle de l'utilisateur
+                const hasAdminRole = user.user?.roles?.includes('ROLE_ADMIN') ?? false;
+
+                if (hasAdminRole) {
+                  this.router.navigate(['/app/admin/users']);  // Admin → liste des users
+                } else {
+                  this.router.navigate(['/app/dashboard']);     // User normal → dashboard
+                }
               }, 100);
             }
           },

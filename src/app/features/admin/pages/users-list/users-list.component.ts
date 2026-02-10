@@ -1,5 +1,5 @@
 
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef  } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UserService } from '../../../../core/services/user.service';
@@ -13,6 +13,8 @@ import { User } from '../../../../core/models/user.model';
   styleUrls: ['./users-list.component.css']
 })
 export class UsersListComponent implements OnInit {
+  private readonly cdr = inject(ChangeDetectorRef);
+
   // ============================================================
   // SERVICES INJECTÉS
   // ============================================================
@@ -62,11 +64,13 @@ export class UsersListComponent implements OnInit {
         this.users = users;
         this.filteredUsers = users;
         this.loading = false;
+        this.cdr.detectChanges();
       },
       error: (error) => {
         console.error('❌ [UsersListComponent] Erreur de chargement:', error);
         this.errorMessage = error.message || 'Impossible de charger les utilisateurs';
         this.loading = false;
+        this.cdr.detectChanges();
       }
     });
   }
