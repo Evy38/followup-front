@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Relance } from '../../features/dashboard/models/relance.model';
+import { Relance } from '../models/relance.model';
 import { environment } from '../../../environments/environment';
 
 @Injectable({

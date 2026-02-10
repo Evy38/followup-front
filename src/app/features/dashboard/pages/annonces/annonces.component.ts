@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { JobService } from '../../../../core/services/job.service';
-import { Job } from '../../models/job.model';
+import { Job } from '../../../../core/models/job.model';
 import { CandidatureService } from '../../../../core/services/candidature.service';
 import { CommonModule } from '@angular/common';
 import { AnnonceFilterService } from '../../../../core/services/annonce-filter.service';

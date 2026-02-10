@@ -1,7 +1,7 @@
 import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CandidatureService } from '../../../../core/services/candidature.service';
-import { Candidature } from '../../models/candidature.model';
+import { Candidature } from '../../../../core/models/candidature.model';
 
 @Component({
   selector: 'app-candidatures',

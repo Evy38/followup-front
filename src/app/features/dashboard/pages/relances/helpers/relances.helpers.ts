@@ -4,8 +4,8 @@
  * Regroupe les fonctions utilitaires de formatage et calculs
  */
 
-import { Candidature } from '../../../models/candidature.model';
-import { Relance } from '../../../models/relance.model';
+import { Candidature } from '../../../../../core/models/candidature.model';
+import { Relance } from '../../../../../core/models/relance.model';
 
 export function getDaysSince(dateStr: string): number {
   if (!dateStr) return 0;

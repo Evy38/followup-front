@@ -1,7 +1,7 @@
 
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CandidatureService } from '../../../../core/services/candidature.service';
-import { Candidature } from '../../models/candidature.model';
+import { Candidature } from '../../../../core/models/candidature.model';
 
 @Component({
   selector: 'app-dashboard-home',

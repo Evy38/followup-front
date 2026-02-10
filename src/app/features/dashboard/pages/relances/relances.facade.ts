@@ -6,9 +6,9 @@ import { RelanceService } from '../../../../core/services/relance.service';
 import { EntretienService } from '../../../../core/services/entretien.service';
 import { ToastService } from '../../../../core/ui/toast.service';
 
-import { Candidature } from '../../models/candidature.model';
-import { Relance } from '../../models/relance.model';
-import { EntretienApi } from '../../models/candidature.model';
+import { Candidature } from '../../../../core/models/candidature.model';
+import { Relance } from '../../../../core/models/relance.model';
+import { EntretienApi } from '../../../../core/models/candidature.model';
 
 import {
     getPendingRelancesCount,

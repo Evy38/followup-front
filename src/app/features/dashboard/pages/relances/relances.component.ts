@@ -8,8 +8,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { RelancesFacade } from './relances.facade';
-import { Candidature } from '../../models/candidature.model';
-import { Relance } from '../../models/relance.model';
+import { Candidature } from '../../../../core/models/candidature.model';
+import { Relance } from '../../../../core/models/relance.model';
 
 import { RelancesHeaderComponent } from './components/relances-header/relances-header.component';
 import {
