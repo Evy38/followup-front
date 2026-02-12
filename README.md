@@ -197,6 +197,16 @@ API backend déployée séparément
 
 ✅ Architecture scalable et maintenable
 
+---
+
+## 📖 Documentation complémentaire
+
+- **[Guide de déploiement technique](./docs/technical-deployment-doc.md)** : Procédure complète de déploiement
+- **[Guide de l'historique Git](./docs/git-history-guide.md)** : Comment consulter et naviguer dans l'historique Git du projet
+- **[Documentation de déploiement](./deployment/README.md)** : Instructions de déploiement par environnement
+
+---
+
 👩‍💻 Auteur
 
 Cécile
