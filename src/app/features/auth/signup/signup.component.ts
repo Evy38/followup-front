@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { AuthService } from '../../../core/auth/auth.service';
 import { Router } from '@angular/router';
+import { ToastService } from '../../../core/ui/toast.service';
 
 @Component({
   selector: 'app-signup',
@@ -14,6 +15,8 @@ import { Router } from '@angular/router';
 export class SignupComponent {
   private auth = inject(AuthService);
   protected router = inject(Router);
+  private toast = inject(ToastService);
+
 
   @Input() isVisible = false;
   @Output() closeSignup = new EventEmitter<void>();
@@ -25,7 +28,7 @@ export class SignupComponent {
   password = '';
   confirmPassword = '';
   loading = false;
-  message = '';
+
   error = '';
   consentRgpd = false;
 
@@ -36,7 +39,6 @@ export class SignupComponent {
   }
 
   submitRegister(form: NgForm) {
-    this.message = '';
     this.error = '';
 
     if (!form.valid) {
@@ -77,8 +79,11 @@ export class SignupComponent {
       .subscribe({
         next: () => {
           this.loading = false;
-          this.message =
-            'Compte créé. Vous pouvez maintenant vous connecter.';
+          this.toast.show(
+            '🎉 Compte créé avec succès ! Vérifiez votre boîte mail pour activer votre compte.',
+            'success'
+          );
+
 
           // reset du formulaire
           this.resetForm();

@@ -31,7 +31,6 @@
     </label>
 
     <p class="error" *ngIf="error">{{ error }}</p>
-    <p class="success" *ngIf="message">{{ message }}</p>
 
     <button type="submit" [disabled]="loading">
       {{ loading ? 'Création...' : "Valider l'inscription" }}

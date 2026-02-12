@@ -9,9 +9,9 @@ export const authGuard: CanActivateFn = () => {
 
   return auth.me().pipe(
     map((res: { authenticated: boolean; verified: boolean }) => {
-      if (!res?.authenticated || !res?.verified)
+      if (!res?.authenticated || !res?.verified) // verifie si l'user est authentifié/vérifié
  {
-        auth.removeToken(); 
+        auth.removeToken();  //si echec 
         return redirectToLogin(router);
       }
       return true;
