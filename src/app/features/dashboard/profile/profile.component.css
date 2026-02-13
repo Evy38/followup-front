@@ -96,3 +96,45 @@ button:disabled {
   transform: none;
   box-shadow: none;
 }
+
+/* Zone dangereuse */
+.danger-zone {
+  margin-top: 20px;
+}
+
+.danger-zone h2 {
+  color: #ff4d4f;
+}
+
+.danger-description {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.btn-danger {
+  padding: 12px 20px;
+  border-radius: 12px;
+  border: 2px solid #ff4d4f;
+  background: transparent;
+  color: #ff4d4f;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-danger:hover {
+  background: #ff4d4f;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(255, 77, 79, 0.25);
+}
+
+.btn-danger:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}

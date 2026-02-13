@@ -57,5 +57,33 @@
       </button>
     </div>
 
+    <!-- Séparation -->
+    <div class="divider"></div>
+
+    <!-- Zone dangereuse -->
+    <div class="section danger-zone">
+      <h2>Zone dangereuse</h2>
+      <p class="danger-description">
+        Une fois votre compte supprimé, il n'y a pas de retour en arrière. 
+        Veuillez en être certain.
+      </p>
+      <button type="button" class="btn-danger" (click)="openDeleteModal()">
+        Supprimer mon compte
+      </button>
+    </div>
+
   </div>
+
+  <!-- Modal de confirmation -->
+  <app-confirm-modal
+    [open]="showDeleteModal"
+    [title]="'Supprimer votre compte ?'"
+    [message]="'Cette action est irréversible. Toutes vos données seront définitivement supprimées. Êtes-vous absolument certain de vouloir continuer ?'"
+    [confirmText]="'Oui, supprimer mon compte'"
+    [cancelText]="'Annuler'"
+    [danger]="true"
+    [loading]="deletingAccount"
+    (confirm)="confirmDeleteAccount()"
+    (cancel)="closeDeleteModal()">
+  </app-confirm-modal>
 </div>

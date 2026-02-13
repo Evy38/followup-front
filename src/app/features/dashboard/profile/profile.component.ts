@@ -1,15 +1,17 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ProfileService, UpdateProfilePayload } from '../../../core/services/profile.service';
 import { AuthService } from '../../../core/auth/auth.service';
 import { ToastService } from '../../../core/ui/toast.service';
 import { User } from '../../../core/models/user.model';
+import { ConfirmModalComponent } from '../../../shared/confirm-modal/confirm-modal.component';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ConfirmModalComponent],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'
 })
@@ -18,10 +20,13 @@ export class ProfileComponent implements OnInit {
   private readonly profileService = inject(ProfileService);
   private readonly authService = inject(AuthService);
   private readonly toast = inject(ToastService);
+  private readonly router = inject(Router);
 
   user: User | null = null;
 
   loading = false;
+  deletingAccount = false;
+  showDeleteModal = false;
 
   // Form fields
   email = '';
@@ -94,6 +99,35 @@ export class ProfileComponent implements OnInit {
       error: (err) => {
         this.loading = false;
         this.toast.show(err.message || 'Erreur lors de la mise à jour', 'error');
+      }
+    });
+  }
+
+  openDeleteModal(): void {
+    this.showDeleteModal = true;
+  }
+
+  closeDeleteModal(): void {
+    this.showDeleteModal = false;
+  }
+
+  confirmDeleteAccount(): void {
+    this.deletingAccount = true;
+
+    this.profileService.deleteProfile().subscribe({
+      next: (response) => {
+        this.deletingAccount = false;
+        this.showDeleteModal = false;
+        this.toast.show(response.message || 'Demande de suppression envoyée', 'success');
+        
+        // Déconnexion après 2 secondes
+        setTimeout(() => {
+          this.authService.logout();
+        }, 2000);
+      },
+      error: (err) => {
+        this.deletingAccount = false;
+        this.toast.show(err.error?.message || 'Erreur lors de la suppression', 'error');
       }
     });
   }
