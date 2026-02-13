@@ -99,12 +99,28 @@
   text-align: center;
 }
 
+.stat-card.stat-danger .stat-number {
+  color: #ff4d4f;
+}
+
+.stat-card.stat-danger {
+  background: #fff5f5;
+  border: 1px solid #ffb3b3;
+}
+
 /* ============================================================
-   BARRE DE RECHERCHE
+   BARRE DE RECHERCHE ET FILTRES
    ============================================================ */
+.search-and-filters {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
 .search-bar {
   position: relative;
-  margin-bottom: 2rem;
+  flex: 1;
 }
 
 .search-input {
@@ -149,7 +165,57 @@
 
 .btn-clear-search:hover {
   background: #cbd5e0;
-  transform: translateY(-50%) scale(1.1);
+  color: #2d3748;
+}
+
+/* Boutons de filtre */
+.filter-buttons {
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  padding: 0.6rem 1.2rem;
+  background: #f7fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #4a5568;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.filter-btn:hover {
+  border-color: #cbd5e0;
+  background: #edf2f7;
+}
+
+.filter-btn.active {
+  background: #6c47e6;
+  color: white;
+  border-color: #6c47e6;
+  box-shadow: 0 4px 12px rgba(108, 71, 230, 0.25);
+}
+
+.filter-btn.filter-danger {
+  color: #ff4d4f;
+  border-color: #ffb3b3;
+  background: #fff5f5;
+}
+
+.filter-btn.filter-danger:hover {
+  background: #ffe5e5;
+  border-color: #ff7875;
+}
+
+.filter-btn.filter-danger.active {
+  background: #ff4d4f;
+  color: white;
+  border-color: #ff4d4f;
+  box-shadow: 0 4px 12px rgba(255, 77, 79, 0.25);
 }
 
 /* ============================================================
@@ -350,6 +416,42 @@
 .rgpd-date {
   font-size: 0.8rem;
   color: #7a7a7a;
+}
+
+/* ============================================================
+   STATUT DE SUPPRESSION
+   ============================================================ */
+.user-status {
+  text-align: center;
+}
+
+.badge-active {
+  background: #e6ffed;
+  color: #2eae4a;
+  border: 1px solid #a3e6b8;
+}
+
+.btn-hard-delete {
+  padding: 0.5rem 1rem;
+  border: 2px solid #ff4d4f;
+  background: transparent;
+  color: #ff4d4f;
+  font-weight: 600;
+  font-size: 0.85rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-hard-delete:hover {
+  background: #ff4d4f;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 77, 79, 0.2);
+}
+
+.btn-hard-delete:active {
+  transform: translateY(0);
 }
 
 /* ============================================================

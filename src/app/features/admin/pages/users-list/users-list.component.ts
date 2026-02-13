@@ -3,12 +3,14 @@ import { Component, OnInit, inject, ChangeDetectorRef  } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UserService } from '../../../../core/services/user.service';
+import { ToastService } from '../../../../core/ui/toast.service';
 import { User } from '../../../../core/models/user.model';
+import { ConfirmModalComponent } from '../../../../shared/confirm-modal/confirm-modal.component';
 
 @Component({
   selector: 'app-users-list',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ConfirmModalComponent],
   templateUrl: './users-list.component.html',
   styleUrls: ['./users-list.component.css']
 })
@@ -19,6 +21,7 @@ export class UsersListComponent implements OnInit {
   // SERVICES INJECTÉS
   // ============================================================
   private readonly userService = inject(UserService);
+  private readonly toast = inject(ToastService);
 
   // ============================================================
   // PROPRIÉTÉS DU COMPOSANT
@@ -39,6 +42,13 @@ export class UsersListComponent implements OnInit {
   /** Terme de recherche pour le filtrage */
   searchTerm = '';
 
+  // Modal de confirmation pour hard delete
+  showDeleteModal = false;
+  userToDelete: User | null = null;
+  deletingUser = false;
+
+  // Filtre de statut
+  selectedFilter: 'active' | 'deleted' | 'all' = 'all';
   // ============================================================
   // LIFECYCLE HOOKS
   // ============================================================
@@ -61,8 +71,15 @@ export class UsersListComponent implements OnInit {
 
     this.userService.getAllUsers().subscribe({
       next: (users) => {
+        console.log('🔍 [DEBUG] Utilisateurs reçus du backend:', users);
+        console.log('🔍 [DEBUG] Premier utilisateur:', users[0]);
+        if (users[0]) {
+          console.log('🔍 [DEBUG] deletionRequestedAt:', users[0].deletionRequestedAt);
+          console.log('🔍 [DEBUG] deletedAt:', users[0].deletedAt);
+          console.log('🔍 [DEBUG] Type deletionRequestedAt:', typeof users[0].deletionRequestedAt);
+        }
         this.users = users;
-        this.filteredUsers = users;
+        this.applyFilters();
         this.loading = false;
         this.cdr.detectChanges();
       },
@@ -76,32 +93,68 @@ export class UsersListComponent implements OnInit {
   }
 
   /**
+   * Change le filtre de statut
+   */
+  changeFilter(filter: 'active' | 'deleted' | 'all'): void {
+    this.selectedFilter = filter;
+    this.applyFilters();
+  }
+
+  /**
+   * Applique les filtres (statut + recherche)
+   */
+  private applyFilters(): void {
+    // Filtrer par statut d'abord
+    let filtered = this.users.filter(user => {
+      const hasDeletionRequest = this.hasValue(user.deletionRequestedAt);
+      const notHardDeleted = !this.hasValue(user.deletedAt);
+      
+      switch (this.selectedFilter) {
+        case 'active':
+          return !hasDeletionRequest && notHardDeleted;
+        case 'deleted':
+          return hasDeletionRequest && notHardDeleted;
+        case 'all':
+        default:
+          return notHardDeleted;
+      }
+    });
+
+    console.log(`🔍 [DEBUG] Filtre "${this.selectedFilter}": ${filtered.length} résultat(s) sur ${this.users.length}`);
+
+    // Puis appliquer la recherche
+    const term = this.searchTerm.toLowerCase().trim();
+    if (term) {
+      filtered = filtered.filter((user) => {
+        const email = user.email?.toLowerCase() || '';
+        const firstName = user.firstName?.toLowerCase() || '';
+        const lastName = user.lastName?.toLowerCase() || '';
+
+        return (
+          email.includes(term) ||
+          firstName.includes(term) ||
+          lastName.includes(term)
+        );
+      });
+    }
+
+    this.filteredUsers = filtered;
+  }
+
+  /**
+   * Vérifie si une valeur (date ou autre) est définie/non-null
+   * Gère les dates comme objets ou chaînes
+   */
+  private hasValue(value: any): boolean {
+    return value !== null && value !== undefined && value !== '';
+  }
+
+  /**
    * Filtre la liste des utilisateurs selon le terme de recherche
    * 
    */
   onSearch(): void {
-    const term = this.searchTerm.toLowerCase().trim();
-
-    if (!term) {
-      // Pas de recherche : affiche tous les utilisateurs
-      this.filteredUsers = this.users;
-      return;
-    }
-
-    // Filtre par email, prénom ou nom
-    this.filteredUsers = this.users.filter((user) => {
-      const email = user.email?.toLowerCase() || '';
-      const firstName = user.firstName?.toLowerCase() || '';
-      const lastName = user.lastName?.toLowerCase() || '';
-
-      return (
-        email.includes(term) ||
-        firstName.includes(term) ||
-        lastName.includes(term)
-      );
-    });
-
-    console.log(`🔍 [UsersListComponent] Recherche "${term}" : ${this.filteredUsers.length} résultat(s)`);
+    this.applyFilters();
   }
 
   /**
@@ -109,7 +162,7 @@ export class UsersListComponent implements OnInit {
    */
   clearSearch(): void {
     this.searchTerm = '';
-    this.filteredUsers = this.users;
+    this.applyFilters();
     console.log('🔄 [UsersListComponent] Recherche réinitialisée');
   }
 
@@ -145,6 +198,13 @@ export class UsersListComponent implements OnInit {
     return this.users.filter((user) => user.isVerified).length;
   }
 
+  /**
+   * Nombre d'utilisateurs en attente de suppression
+   */
+  get totalPendingDeletion(): number {
+    return this.users.filter((user) => user.deletionRequestedAt && !user.deletedAt).length;
+  }
+
   // ============================================================
   // MÉTHODES UTILITAIRES
   // ============================================================
@@ -177,5 +237,69 @@ export class UsersListComponent implements OnInit {
    */
   getVerificationBadge(user: User): string {
     return user.isVerified ? 'Vérifié' : 'Non vérifié';
+  }
+
+  /**
+   * Vérifie si un utilisateur est marqué pour suppression (soft delete)
+   * 
+   * @param user Utilisateur à vérifier
+   * @returns true si l'utilisateur a demandé la suppression
+   */
+  isMarkedForDeletion(user: User): boolean {
+    const hasDeletionRequest = this.hasValue(user.deletionRequestedAt);
+    const notHardDeleted = !this.hasValue(user.deletedAt);
+    return hasDeletionRequest && notHardDeleted;
+  }
+
+  /**
+   * Ouvre la modal de confirmation pour hard delete
+   * 
+   * @param user Utilisateur à supprimer
+   */
+  openDeleteModal(user: User): void {
+    this.userToDelete = user;
+    this.showDeleteModal = true;
+  }
+
+  /**
+   * Ferme la modal de confirmation
+   */
+  closeDeleteModal(): void {
+    this.showDeleteModal = false;
+    this.userToDelete = null;
+  }
+
+  /**
+   * TrackBy pour optimiser le ngFor
+   */
+  trackByUserId(index: number, user: User): number {
+    return user.id;
+  }
+
+  /**
+   * Confirme la suppression (hard delete) d'un utilisateur
+   */
+  confirmDeleteUser(): void {
+    if (!this.userToDelete) return;
+
+    this.deletingUser = true;
+    const userId = this.userToDelete.id;
+    const userEmail = this.userToDelete.email;
+
+    this.userService.deleteUser(userId).subscribe({
+      next: () => {
+        this.deletingUser = false;
+        this.showDeleteModal = false;
+        this.toast.show(`Utilisateur ${userEmail} supprimé avec succès`, 'success');
+        
+        // Rechargement de la liste
+        this.loadUsers();
+      },
+      error: (err) => {
+        this.deletingUser = false;
+        this.toast.show(err.message || 'Erreur lors de la suppression', 'error');
+        console.error('❌ [UsersListComponent] Erreur suppression:', err);
+      }
+    });
   }
 }

@@ -122,6 +122,32 @@ export interface User {
    * @conformité RGPD : Traçabilité du consentement
    */
   consentRgpdAt?: string | null;
+
+  /**
+   * Date de demande de suppression (soft delete)
+   * 
+   * - null : Compte actif
+   * - string ISO : Demande de suppression en attente
+   * 
+   * @conformité RGPD : Souhait de l'utilisateur de supprimer son compte
+   * @description L'admin peut voir ces utilisateurs et confirmer la suppression
+   */
+  deletionRequestedAt?: string | null;
+
+  /**
+   * Date de suppression confirmée (hard delete)
+   * 
+   * - null : Compte non supprimé
+   * - string ISO : Compte supprimé définitivement
+   * 
+   * @description Rempli quand l'admin confirme la suppression
+   */
+  deletedAt?: string | null;
+
+  /**
+   * OAuth flag si l'utilisateur s'est connecté via OAuth
+   */
+  isOAuth?: boolean;
 }
 
 /**

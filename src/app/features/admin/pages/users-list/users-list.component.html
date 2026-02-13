@@ -40,28 +40,56 @@
       <span class="stat-number">{{ totalVerifiedUsers }}</span>
       <span class="stat-label">Emails vérifiés</span>
     </div>
+
+    <div class="stat-card stat-danger">
+      <span class="stat-number">{{ totalPendingDeletion }}</span>
+      <span class="stat-label">En attente de suppression</span>
+    </div>
   </div>
 
   <!-- ============================================================
-       BARRE DE RECHERCHE
+       BARRE DE RECHERCHE ET FILTRES
        ============================================================ -->
-  <div class="search-bar">
-    <input 
-      type="text"
-      class="search-input"
-      placeholder="Rechercher par email, prénom ou nom..."
-      [(ngModel)]="searchTerm"
-      (input)="onSearch()"
-      [disabled]="loading"
-    />
-    
-    <button 
-      class="btn-clear-search" 
-      (click)="clearSearch()"
-      *ngIf="searchTerm"
-      title="Réinitialiser la recherche">
-      ✕
-    </button>
+  <div class="search-and-filters">
+    <div class="search-bar">
+      <input 
+        type="text"
+        class="search-input"
+        placeholder="Rechercher par email, prénom ou nom..."
+        [(ngModel)]="searchTerm"
+        (input)="onSearch()"
+        [disabled]="loading"
+      />
+      
+      <button 
+        class="btn-clear-search" 
+        (click)="clearSearch()"
+        *ngIf="searchTerm"
+        title="Réinitialiser la recherche">
+        ✕
+      </button>
+    </div>
+
+    <div class="filter-buttons">
+      <button 
+        class="filter-btn"
+        [class.active]="selectedFilter === 'all'"
+        (click)="changeFilter('all')">
+        Tous
+      </button>
+      <button 
+        class="filter-btn"
+        [class.active]="selectedFilter === 'active'"
+        (click)="changeFilter('active')">
+        Actifs
+      </button>
+      <button 
+        class="filter-btn filter-danger"
+        [class.active]="selectedFilter === 'deleted'"
+        (click)="changeFilter('deleted')">
+        En attente de suppression
+      </button>
+    </div>
   </div>
 
   <!-- ============================================================
@@ -98,18 +126,26 @@
     <table class="users-table" *ngIf="filteredUsers.length > 0">
       <thead>
         <tr>
-          <th>ID</th>
           <th>Email</th>
           <th>Nom complet</th>
           <th>Rôle</th>
           <th>Vérification</th>
           <th>RGPD</th>
+          <th>Statut</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let user of filteredUsers" class="user-row">
+        <tr *ngFor="let user of filteredUsers; trackBy: trackByUserId" class="user-row">
+          
           <!-- ID -->
-          <td class="user-id">{{ user.id }}</td>
+          <td class="user-id">
+            {{ user.id }}
+            <div style="font-size: 10px; color: #999;">
+              DR: {{ user.deletionRequestedAt }}<br>
+              DA: {{ user.deletedAt }}<br>
+              Type DR: {{ user.deletionRequestedAt | json }}
+            </div>
+          </td>
           
           <!-- Email -->
           <td class="user-email">
@@ -161,6 +197,22 @@
               {{ user.consentRgpdAt | date:'dd/MM/yyyy' }}
             </span>
           </td>
+
+          <!-- Statut de suppression -->
+          <td class="user-status">
+            <span 
+              *ngIf="!isMarkedForDeletion(user)"
+              class="badge badge-active">
+              Actif
+            </span>
+            <button 
+              *ngIf="isMarkedForDeletion(user)"
+              class="btn-hard-delete"
+              (click)="openDeleteModal(user)"
+              title="Confirmer la suppression">
+              Confirmer suppression
+            </button>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -172,3 +224,16 @@
     </div>
   </div>
 </div>
+
+<!-- Modal de confirmation pour hard delete -->
+<app-confirm-modal
+  [open]="showDeleteModal"
+  [title]="'Confirmer la suppression définitive ?'"
+  [message]="'Vous êtes sur le point de supprimer définitivement le compte de ' + (userToDelete?.email || '') + '. Cette action est irréversible et toutes les données associées seront supprimées.'"
+  [confirmText]="'Oui, supprimer définitivement'"
+  [cancelText]="'Annuler'"
+  [danger]="true"
+  [loading]="deletingUser"
+  (confirm)="confirmDeleteUser()"
+  (cancel)="closeDeleteModal()">
+</app-confirm-modal>
