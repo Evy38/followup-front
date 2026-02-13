@@ -33,7 +33,17 @@ export class ProfileComponent implements OnInit {
   confirmPassword = '';
 
   ngOnInit(): void {
-    this.loadProfile();
+    // Utiliser directement les données de l'utilisateur déjà en mémoire
+    const currentUser = this.authService.currentUser;
+    if (currentUser) {
+      this.user = currentUser;
+      this.email = currentUser.email;
+      this.firstName = currentUser.firstName ?? '';
+      this.lastName = currentUser.lastName ?? '';
+    } else {
+      // Fallback si l'utilisateur n'est pas en mémoire (cas rare)
+      this.loadProfile();
+    }
   }
 
   loadProfile(): void {
