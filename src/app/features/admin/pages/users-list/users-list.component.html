@@ -136,17 +136,7 @@
       </thead>
       <tbody>
         <tr *ngFor="let user of filteredUsers; trackBy: trackByUserId" class="user-row">
-          
-          <!-- ID -->
-          <td class="user-id">
-            {{ user.id }}
-            <div style="font-size: 10px; color: #999;">
-              DR: {{ user.deletionRequestedAt }}<br>
-              DA: {{ user.deletedAt }}<br>
-              Type DR: {{ user.deletionRequestedAt | json }}
-            </div>
-          </td>
-          
+
           <!-- Email -->
           <td class="user-email">
             {{ user.email }}

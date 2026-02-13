@@ -71,13 +71,6 @@ export class UsersListComponent implements OnInit {
 
     this.userService.getAllUsers().subscribe({
       next: (users) => {
-        console.log('🔍 [DEBUG] Utilisateurs reçus du backend:', users);
-        console.log('🔍 [DEBUG] Premier utilisateur:', users[0]);
-        if (users[0]) {
-          console.log('🔍 [DEBUG] deletionRequestedAt:', users[0].deletionRequestedAt);
-          console.log('🔍 [DEBUG] deletedAt:', users[0].deletedAt);
-          console.log('🔍 [DEBUG] Type deletionRequestedAt:', typeof users[0].deletionRequestedAt);
-        }
         this.users = users;
         this.applyFilters();
         this.loading = false;
@@ -119,8 +112,6 @@ export class UsersListComponent implements OnInit {
           return notHardDeleted;
       }
     });
-
-    console.log(`🔍 [DEBUG] Filtre "${this.selectedFilter}": ${filtered.length} résultat(s) sur ${this.users.length}`);
 
     // Puis appliquer la recherche
     const term = this.searchTerm.toLowerCase().trim();

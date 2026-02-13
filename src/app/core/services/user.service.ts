@@ -16,7 +16,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { User } from '../models/user.model';
 
@@ -54,6 +54,7 @@ export class UserService {
     console.log('🔍 [UserService] Récupération de la liste des utilisateurs');
     
     return this.http.get<User[]>(this.apiUrl).pipe(
+      map((users) => users.map((user) => this.normalizeUser(user))),
       tap((users) => {
         console.log(`✅ [UserService] ${users.length} utilisateur(s) récupéré(s)`);
       }),
@@ -83,6 +84,7 @@ export class UserService {
     console.log(`🔍 [UserService] Récupération de l'utilisateur ID ${id}`);
     
     return this.http.get<User>(`${this.apiUrl}/${id}`).pipe(
+      map((user) => this.normalizeUser(user)),
       tap((user) => {
         console.log(`✅ [UserService] Utilisateur récupéré:`, user.email);
       }),
@@ -115,11 +117,40 @@ export class UserService {
     console.log(`✏️ [UserService] Mise à jour de l'utilisateur ID ${id}`, userData);
     
     return this.http.put<User>(`${this.apiUrl}/${id}`, userData).pipe(
+      map((user) => this.normalizeUser(user)),
       tap((user) => {
         console.log(`✅ [UserService] Utilisateur mis à jour:`, user.email);
       }),
       catchError(this.handleError)
     );
+  }
+
+  private normalizeUser(raw: any): User {
+    const consentValue = raw?.consentRgpd ?? raw?.consent_rgpd;
+    const consentRgpd = this.normalizeBoolean(consentValue);
+    const consentRgpdAt = raw?.consentRgpdAt ?? raw?.consent_rgpd_at ?? null;
+    const deletionRequestedAt = raw?.deletionRequestedAt ?? raw?.deletion_requested_at ?? null;
+    const deletedAt = raw?.deletedAt ?? raw?.deleted_at ?? null;
+    const isVerified = this.normalizeBoolean(raw?.isVerified ?? raw?.is_verified ?? false);
+
+    return {
+      ...raw,
+      consentRgpd,
+      consentRgpdAt,
+      deletionRequestedAt,
+      deletedAt,
+      isVerified
+    } as User;
+  }
+
+  private normalizeBoolean(value: any): boolean {
+    if (value === true || value === 1 || value === '1' || value === 'true') {
+      return true;
+    }
+    if (value === false || value === 0 || value === '0' || value === 'false') {
+      return false;
+    }
+    return !!value;
   }
 
   /**

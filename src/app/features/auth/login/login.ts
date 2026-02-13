@@ -113,7 +113,7 @@ export class LoginComponent implements OnInit {
             } else {
               this.closeOverlay();
               setTimeout(() => {
-                // 🔑 Vérifier le rôle de l'utilisateur (structure variable selon la réponse)
+                //Vérifier le rôle de l'utilisateur (structure variable selon la réponse)
                 const roles = user?.user?.roles ?? user?.roles ?? [];
                 console.log('🔍 [Login] me() response:', user);
                 console.log('🔍 [Login] roles:', roles);
