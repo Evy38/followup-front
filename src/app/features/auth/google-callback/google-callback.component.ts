@@ -19,18 +19,20 @@ export class GoogleCallbackComponent implements OnInit {
       this.auth.handleGoogleCallback(token);
 
       this.auth.me().subscribe({
-        next: () => {
+        next: (res: any) => {
+          const roles = res?.user?.roles ?? res?.roles ?? [];
+          const isAdmin = roles.includes('ROLE_ADMIN');
+
           this.router.navigate(
             [
               {
                 outlets: {
-                  primary: ['app', 'dashboard'],
+                  primary: ['app', isAdmin ? 'admin' : 'dashboard', isAdmin ? 'users' : undefined].filter(Boolean),
                   overlay: null
                 }
               }
             ]
           );
-
         },
         error: () => {
           this.router.navigate([{ outlets: { overlay: ['login'] } }]);
