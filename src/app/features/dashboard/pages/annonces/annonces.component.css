@@ -4,6 +4,9 @@
 
 .annonces {
   padding: 0rem;
+  overflow-y: auto;
+  height: 100%;
+  max-height: calc(100vh - 200px); /* Ajuster selon la hauteur de header */
 }
 
 .annonces ul {
@@ -189,4 +192,33 @@
   color: #5A50B4;
   font-weight: 500;
   font-size: 14px;
+}
+
+/* =====================================================
+   Infinite Scroll
+   ===================================================== */
+
+.loading-more {
+  text-align: center;
+  padding: 2rem 1rem;
+}
+
+.loading-more .state {
+  color: #6f5ef8;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.end-of-list {
+  text-align: center;
+  padding: 2rem 1rem;
+  margin-top: 1rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.end-of-list .hint {
+  color: #999;
+  font-size: 14px;
+  font-style: italic;
+  margin: 0;
 }

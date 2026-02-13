@@ -1,5 +1,7 @@
+import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { filter, map, startWith } from 'rxjs';
 import { PrivateSidebarComponent } from './components/private-sidebar/private-sidebar.component';
 import { PrivateTopbarComponent } from './components/private-topbar/private-topbar.component';
 import { AuthService } from '../../core/auth/auth.service';
@@ -11,12 +13,27 @@ import { RgpdConsentModalComponent } from '../../shared/rgpd-consent-modal/rgpd-
   standalone: true,
   templateUrl: './private-layout.html',
   styleUrls: ['./private-layout.css'],
-  imports: [RouterOutlet, PrivateSidebarComponent, PrivateTopbarComponent, RgpdConsentModalComponent],
+  imports: [CommonModule, RouterOutlet, PrivateSidebarComponent, PrivateTopbarComponent, RgpdConsentModalComponent],
 })
 export class PrivateLayoutComponent {
   private auth = inject(AuthService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
   showRgpdModal = false;
+
+  showTopbar$ = this.router.events.pipe(
+    filter((e): e is NavigationEnd => e instanceof NavigationEnd),
+    startWith(null),
+    map(() => {
+      const route = this.getDeepestChild(this.route);
+      const ctx = route.snapshot.data['topbar'] as string | undefined;
+
+      if (ctx === 'admin') return false;
+
+      return !this.router.url.includes('/admin');
+    })
+  );
 
   ngOnInit(): void {
     this.auth.me().subscribe({
@@ -61,6 +78,12 @@ export class PrivateLayoutComponent {
         // optionnel : rollback UI
       },
     });
+  }
+
+  private getDeepestChild(route: ActivatedRoute): ActivatedRoute {
+    let current = route;
+    while (current.firstChild) current = current.firstChild;
+    return current;
   }
 
 

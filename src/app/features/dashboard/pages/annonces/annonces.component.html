@@ -1,4 +1,4 @@
-<section class="annonces">
+<section class="annonces" (scroll)="onScroll($event)">
   <p *ngIf="loading" class="state">Chargement des annonces…</p>
   <p *ngIf="error" class="state error">{{ error }}</p>
 
@@ -55,4 +55,14 @@
       </div>
     </li>
   </ul>
+
+  <!-- Indicateur de chargement de la page suivante -->
+  <div *ngIf="loadingMore" class="loading-more">
+    <p class="state">Chargement d'autres annonces…</p>
+  </div>
+
+  <!-- Message de fin de pagination -->
+  <div *ngIf="!loading && !loadingMore && jobs.length > 0 && !hasMore" class="end-of-list">
+    <p class="hint">Vous avez atteint la fin des résultats</p>
+  </div>
 </section>

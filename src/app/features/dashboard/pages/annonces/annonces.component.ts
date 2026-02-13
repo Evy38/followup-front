@@ -23,6 +23,12 @@ export class AnnoncesComponent implements OnInit {
   loading = true;
   error: string | null = null;
 
+  // Pagination
+  currentPage = 1;
+  hasMore = false;
+  loadingMore = false;
+  currentFilter: { ville: string; poste: string } | undefined = undefined;
+
   constructor(
     private jobService: JobService,
     private candidatureService: CandidatureService,
@@ -31,6 +37,10 @@ export class AnnoncesComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    // Charger les annonces au démarrage avec les filtres par défaut
+    this.loadJobs({ ville: '', poste: '' });
+
+    // Puis s'abonner aux changements de filtres
     this.annonceFilterService.filter$
       .pipe(takeUntil(this.destroy$))
       .subscribe((filter) => this.loadJobs(filter));
@@ -47,6 +57,9 @@ export class AnnoncesComponent implements OnInit {
 
   loadJobs(filtre?: { ville: string; poste: string }) {
     this.loading = true;
+    this.currentPage = 1;
+    this.jobs = []; // Réinitialise la liste
+    this.currentFilter = filtre;
 
     const cleanFilter: any = {};
 
@@ -58,9 +71,14 @@ export class AnnoncesComponent implements OnInit {
       cleanFilter.poste = filtre.poste.trim();
     }
 
-    this.jobService.getJobs(cleanFilter).subscribe({
-      next: (jobs) => {
+    this.jobService.getJobs(cleanFilter, this.currentPage).subscribe({
+      next: (response) => {
+        // Support ancien format (tableau direct) et nouveau format (JobsResponse)
+        const jobs = Array.isArray(response) ? response : response.jobs || [];
+        const hasMore = Array.isArray(response) ? false : (response.hasMore ?? false);
+
         this.jobs = jobs;
+        this.hasMore = hasMore;
 
         this.villes = Array.from(
           new Set(jobs.map((j) => j.location).filter(Boolean))
@@ -76,6 +94,48 @@ export class AnnoncesComponent implements OnInit {
         console.error('Erreur API jobs:', err);
         this.error = 'Impossible de charger les annonces';
         this.loading = false;
+      },
+    });
+  }
+
+  /**
+   * Charge la page suivante (infinite scroll)
+   */
+  loadNextPage() {
+    if (this.loadingMore || !this.hasMore) {
+      return;
+    }
+
+    this.loadingMore = true;
+    this.currentPage++;
+
+    const cleanFilter: any = {};
+
+    if (this.currentFilter?.ville?.trim()) {
+      cleanFilter.ville = this.currentFilter.ville.trim();
+    }
+
+    if (this.currentFilter?.poste?.trim()) {
+      cleanFilter.poste = this.currentFilter.poste.trim();
+    }
+
+    this.jobService.getJobs(cleanFilter, this.currentPage).subscribe({
+      next: (response) => {
+        // Support ancien format (tableau direct) et nouveau format (JobsResponse)
+        const jobs = Array.isArray(response) ? response : response.jobs || [];
+        const hasMore = Array.isArray(response) ? false : (response.hasMore ?? false);
+
+        this.jobs = [...this.jobs, ...jobs]; // Concaténation
+        this.hasMore = hasMore;
+        this.loadingMore = false;
+        
+        // Rafraîchir l'état de candidature pour les nouvelles annonces
+        this.loadCandidatures();
+      },
+      error: (err) => {
+        console.error('Erreur chargement page suivante:', err);
+        this.loadingMore = false;
+        this.currentPage--; // Rollback en cas d'erreur
       },
     });
   }
@@ -126,6 +186,21 @@ export class AnnoncesComponent implements OnInit {
 
   trackByJobId(index: number, job: Job) {
     return job.externalId;
+  }
+
+  /**
+   * Détecte le scroll pour charger la page suivante
+   */
+  onScroll(event: Event) {
+    const element = event.target as HTMLElement;
+    const threshold = 200; // Déclenche le chargement 200px avant la fin
+    
+    const atBottom = element.scrollHeight - element.scrollTop - element.clientHeight < threshold;
+    
+    if (atBottom && this.hasMore && !this.loadingMore && !this.loading) {
+      console.log('🔄 [AnnoncesComponent] Chargement page suivante...');
+      this.loadNextPage();
+    }
   }
 
   loadCandidatures() {
