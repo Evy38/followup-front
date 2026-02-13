@@ -7,7 +7,6 @@ import { AnnonceFilterService } from '../../../../core/services/annonce-filter.s
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-
 @Component({
   selector: 'app-annonces',
   standalone: true,
@@ -29,13 +28,12 @@ export class AnnoncesComponent implements OnInit {
     private candidatureService: CandidatureService,
     private cdr: ChangeDetectorRef,
     private annonceFilterService: AnnonceFilterService,
-
   ) { }
 
   ngOnInit(): void {
     this.annonceFilterService.filter$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(filter => this.loadJobs(filter));
+      .subscribe((filter) => this.loadJobs(filter));
 
     this.candidatureService.refreshNeeded$
       .pipe(takeUntil(this.destroy$))
@@ -46,7 +44,6 @@ export class AnnoncesComponent implements OnInit {
     this.destroy$.next();
     this.destroy$.complete();
   }
-
 
   loadJobs(filtre?: { ville: string; poste: string }) {
     this.loading = true;
@@ -65,11 +62,14 @@ export class AnnoncesComponent implements OnInit {
       next: (jobs) => {
         this.jobs = jobs;
 
-        this.villes = Array.from(new Set(jobs.map(j => j.location).filter(Boolean)));
-        this.postes = Array.from(new Set(jobs.map(j => j.title).filter(Boolean)));
+        this.villes = Array.from(
+          new Set(jobs.map((j) => j.location).filter(Boolean))
+        );
+        this.postes = Array.from(
+          new Set(jobs.map((j) => j.title).filter(Boolean))
+        );
 
         this.loading = false;
-        // this.cdr.detectChanges();
         this.loadCandidatures();
       },
       error: (err) => {
@@ -80,25 +80,49 @@ export class AnnoncesComponent implements OnInit {
     });
   }
 
-
-
+  /**
+   * Gère la candidature à une offre
+   * 
+   * @conformité REAC CDA : Envoi de données structurées vers l'API
+   * 
+   * IMPORTANT : On ne transmet QUE les champs attendus par le backend
+   * pour éviter les erreurs 400 Bad Request
+   */
   onCandidated(job: Job) {
-    console.log('📦 Payload candidater', {
+    // Vérification : déjà candidaté ?
+    if (job._candidated) {
+      console.warn('⚠️ Candidature déjà effectuée pour cette offre');
+      return;
+    }
+
+    // Construction du payload conforme à l'API backend
+    const candidaturePayload = {
       externalId: job.externalId,
       company: job.company,
       redirectUrl: job.redirectUrl,
       title: job.title,
       location: job.location,
-    });
+    };
 
-    if (job._candidated) return;
+    console.log('📤 [AnnoncesComponent] Envoi candidature :', candidaturePayload);
 
-    this.candidatureService.createFromOffer(job).subscribe({
-      next: () => this.loadCandidatures(),
-      error: err => console.error('Erreur candidature', err),
+    // Envoi de la candidature
+    this.candidatureService.createFromOffer(candidaturePayload).subscribe({
+      next: (response) => {
+        console.log('✅ [AnnoncesComponent] Candidature créée avec succès', response);
+        this.loadCandidatures(); // Rafraîchit la liste pour marquer comme "candidaté"
+      },
+      error: (err) => {
+        console.error('❌ [AnnoncesComponent] Erreur lors de la candidature', err);
+
+        // Affichage d'un message utilisateur (optionnel)
+        if (err.status === 400) {
+          console.error('Erreur 400 : Données invalides envoyées au serveur');
+          console.error('Payload envoyé :', candidaturePayload);
+        }
+      },
     });
   }
-
 
   trackByJobId(index: number, job: Job) {
     return job.externalId;
@@ -108,9 +132,9 @@ export class AnnoncesComponent implements OnInit {
     this.candidatureService.getMyCandidatures().subscribe({
       next: (candidatures) => {
         const candidatedIds = new Set(
-          candidatures.map(c => c.externalOfferId)
+          candidatures.map((c) => c.externalOfferId)
         );
-        this.jobs = this.jobs.map(job => ({
+        this.jobs = this.jobs.map((job) => ({
           ...job,
           _candidated: candidatedIds.has(job.externalId),
         }));
@@ -118,7 +142,4 @@ export class AnnoncesComponent implements OnInit {
       },
     });
   }
-
-
-
 }

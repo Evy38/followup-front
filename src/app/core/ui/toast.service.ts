@@ -25,6 +25,18 @@ export class ToastService {
     }, 4000);
   }
 
+  success(message: string) {
+    this.show(message, 'success');
+  }
+
+  error(message: string) {
+    this.show(message, 'error');
+  }
+
+  info(message: string) {
+    this.show(message, 'info');
+  }
+
   clear() {
     this.toastSubject.next(null);
     this.timeoutId = null;

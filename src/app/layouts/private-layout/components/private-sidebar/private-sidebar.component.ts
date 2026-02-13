@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../../../core/auth/auth.service';
@@ -10,7 +10,7 @@ import { AuthService } from '../../../../core/auth/auth.service';
   templateUrl: './private-sidebar.component.html',
   styleUrls: ['./private-sidebar.component.css'],
 })
-export class PrivateSidebarComponent {
+export class PrivateSidebarComponent implements OnInit {
   private readonly authService = inject(AuthService);
   auth = inject(AuthService);
 
@@ -19,8 +19,11 @@ export class PrivateSidebarComponent {
   isAdmin = false;
 
   ngOnInit(): void {
-  this.checkAdminRole(); 
-}
+    this.auth.user$.subscribe(user => {
+      this.isAdmin = user?.roles?.includes('ROLE_ADMIN') ?? false;
+    });
+  }
+
 
   toggleUserMenu() {
     this.userMenuOpen = !this.userMenuOpen;
@@ -42,24 +45,24 @@ export class PrivateSidebarComponent {
     this.sidebarOpen = false;
   }
 
-  /**
-   * Vérifie si l'utilisateur connecté a le rôle ROLE_ADMIN
-   * 
-   * @description Met à jour la propriété isAdmin
-   * pour afficher ou masquer le menu Admin dans la sidebar
-   */
-  private checkAdminRole(): void {
-    this.authService.me().subscribe({
-      next: (response) => {
-        if (response?.user) {
-          this.isAdmin = response.user.roles?.includes('ROLE_ADMIN') ?? false;
-          console.log('🔐 [PrivateSidebar] isAdmin:', this.isAdmin);
-        }
-      },
-      error: (err) => {
-        console.error('❌ [PrivateSidebar] Erreur vérification rôle:', err);
-        this.isAdmin = false;
-      }
-    });
-  }
+  // /**
+  //  * Vérifie si l'utilisateur connecté a le rôle ROLE_ADMIN
+  //  * 
+  //  * @description Met à jour la propriété isAdmin
+  //  * pour afficher ou masquer le menu Admin dans la sidebar
+  //  */
+  // private checkAdminRole(): void {
+  //   this.authService.me().subscribe({
+  //     next: (response) => {
+  //       if (response?.user) {
+  //         this.isAdmin = response.user.roles?.includes('ROLE_ADMIN') ?? false;
+  //         console.log('🔐 [PrivateSidebar] isAdmin:', this.isAdmin);
+  //       }
+  //     },
+  //     error: (err) => {
+  //       console.error('❌ [PrivateSidebar] Erreur vérification rôle:', err);
+  //       this.isAdmin = false;
+  //     }
+  //   });
+  // }
 }

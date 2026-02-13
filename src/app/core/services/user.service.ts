@@ -31,7 +31,7 @@ import { User } from '../models/user.model';
 })
 export class UserService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = `${environment.apiUrl}/user`;
+  private readonly apiUrl = `${environment.apiUrl}/admin/users`;
 
   /**
    * Récupère la liste complète des utilisateurs

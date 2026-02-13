@@ -83,6 +83,14 @@ export const routes: Routes = [
             .then(m => m.RelancesComponent),
         data: { topbar: 'relances' }
       },
+      {
+        path: 'profile',
+        loadComponent: () =>
+          import('./features/dashboard/profile/profile.component')
+            .then(m => m.ProfileComponent),
+        data: { topbar: 'profile' }
+      },
+
 
       // ============================
       // ZONE ADMIN (protégée par authGuard + adminGuard)

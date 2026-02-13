@@ -39,7 +39,7 @@
           </div>
           <div class="user-menu user-menu-popover" *ngIf="userMenuOpen" (mouseleave)="closeUserMenu()">
             <div class="user-menu-arrow-tip"></div>
-            <div class="user-menu-item"><span class="user-menu-icon">👤</span> Mon profil</div>
+            <a routerLink="/app/profile" class="user-menu-item"><span class="user-menu-icon">👤</span> Mon profil</a>
             <div class="user-menu-item"><span class="user-menu-icon">⚙️</span> Paramètres</div>
             <div class="user-menu-item logout" (click)="logout()"><span class="user-menu-icon">🚪</span> Déconnexion
             </div>

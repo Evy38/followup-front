@@ -239,10 +239,13 @@
 	display: flex;
 	align-items: center;
 	transition: background 0.15s;
+	text-decoration: none;
+	color: #222;
 }
 
 .user-menu-item:hover {
 	background: #f5f5f5;
+	color: #222;
 }
 
 .user-menu-icon {

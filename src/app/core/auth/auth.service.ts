@@ -148,9 +148,13 @@ export class AuthService {
     this.authErrorSubject.next(null);
   }
 
-acceptRgpd() {
-  return this.http.post(`${this.apiUrl}/me/consent`, {});
-}
+  acceptRgpd() {
+    return this.http.post(`${this.apiUrl}/me/consent`, {});
+  }
+
+  updateUserInMemory(user: any): void {
+    this.userSubject.next(user);
+  }
 
 
 }
