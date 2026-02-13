@@ -129,6 +129,7 @@
           <th>Email</th>
           <th>Nom complet</th>
           <th>Rôle</th>
+          <th>Action</th>
           <th>Vérification</th>
           <th>RGPD</th>
           <th>Statut</th>
@@ -163,6 +164,18 @@
               [class.badge-user]="!isAdmin(user)">
               {{ getRoleBadge(user) }}
             </span>
+          </td>
+
+          <!-- Action rôle -->
+          <td>
+            <button
+              class="btn-role"
+              [class.btn-role--admin]="isAdmin(user)"
+              [disabled]="isUpdatingRole(user)"
+              (click)="toggleAdminRole(user)"
+            >
+              {{ isAdmin(user) ? 'Retirer admin' : 'Passer admin' }}
+            </button>
           </td>
           
           <!-- Vérification email -->

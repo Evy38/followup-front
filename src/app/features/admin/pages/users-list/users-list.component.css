@@ -109,6 +109,41 @@
 }
 
 /* ============================================================
+   ACTIONS ROLE
+   ============================================================ */
+.btn-role {
+  background: #edf2f7;
+  color: #2d3748;
+  border: 1px solid #cbd5e0;
+  padding: 0.35rem 0.7rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-role:hover:not(:disabled) {
+  background: #e2e8f0;
+}
+
+.btn-role--admin {
+  background: #ffe8e8;
+  border-color: #ffb3b3;
+  color: #d12c2c;
+}
+
+.btn-role--admin:hover:not(:disabled) {
+  background: #ffd6d6;
+}
+
+.btn-role:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ============================================================
    BARRE DE RECHERCHE ET FILTRES
    ============================================================ */
 .search-and-filters {

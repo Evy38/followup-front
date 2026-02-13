@@ -49,6 +49,9 @@ export class UsersListComponent implements OnInit {
 
   // Filtre de statut
   selectedFilter: 'active' | 'deleted' | 'all' = 'all';
+
+  // Gestion des updates de role
+  updatingRoleIds = new Set<number>();
   // ============================================================
   // LIFECYCLE HOOKS
   // ============================================================
@@ -220,6 +223,40 @@ export class UsersListComponent implements OnInit {
     return this.isAdmin(user) ? 'Admin' : 'Utilisateur';
   }
 
+  isUpdatingRole(user: User): boolean {
+    return this.updatingRoleIds.has(user.id);
+  }
+
+  toggleAdminRole(user: User): void {
+    if (this.isUpdatingRole(user)) return;
+
+    const makeAdmin = !this.isAdmin(user);
+    const nextRoles = this.buildRoles(makeAdmin);
+
+    this.updatingRoleIds.add(user.id);
+
+    this.userService.updateUser(user.id, { roles: nextRoles }).subscribe({
+      next: (updated) => {
+        user.roles = updated.roles;
+        this.applyFilters();
+        this.toast.show(
+          makeAdmin
+            ? `Rôle admin accordé à ${user.email}`
+            : `Rôle admin retiré pour ${user.email}`,
+          'success'
+        );
+        this.updatingRoleIds.delete(user.id);
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.toast.show(err.message || 'Erreur lors de la mise à jour du rôle', 'error');
+        console.error('❌ [UsersListComponent] Erreur mise à jour rôle:', err);
+        this.updatingRoleIds.delete(user.id);
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
   /**
    * Retourne un badge de statut de vérification
    * 
@@ -240,6 +277,10 @@ export class UsersListComponent implements OnInit {
     const hasDeletionRequest = this.hasValue(user.deletionRequestedAt);
     const notHardDeleted = !this.hasValue(user.deletedAt);
     return hasDeletionRequest && notHardDeleted;
+  }
+
+  private buildRoles(makeAdmin: boolean): string[] {
+    return makeAdmin ? ['ROLE_USER', 'ROLE_ADMIN'] : ['ROLE_USER'];
   }
 
   /**
