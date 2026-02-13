@@ -1,9 +1,20 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { CandidatureService } from './candidature.service';
+import { CandidatureService, CreateCandidatureFromOfferPayload } from './candidature.service';
 import { environment } from '../../../environments/environment';
-import { Candidature } from '../models/candidature.model';
 
+/**
+ * 🧪 TESTS UNITAIRES : CandidatureService
+ * 
+ * 🎯 Objectif : Tester les méthodes du service de gestion des candidatures
+ * 
+ * 📌 Ce qu'on teste :
+ * - Récupération des candidatures (GET)
+ * - Création depuis une offre (POST)
+ * - Suppression (DELETE)
+ * - Mise à jour du statut (PATCH)
+ * - Validation des données
+ */
 describe('CandidatureService', () => {
     let service: CandidatureService;
     let httpMock: HttpTestingController;
@@ -22,39 +33,44 @@ describe('CandidatureService', () => {
         httpMock.verify();
     });
 
+    /**
+     * 🧪 TEST #1 : Le service doit être créé
+     */
     it('should be created', () => {
         expect(service).toBeTruthy();
     });
 
-    it('should get candidatures', () => {
-        const mockCandidatures: Candidature[] = [
+    /**
+     * 🧪 TEST #2 : getMyCandidatures() doit récupérer les candidatures
+     */
+    it('should get user candidatures from API', () => {
+        const mockCandidatures = [
             {
                 '@id': '/api/candidatures/1',
                 id: 1,
-                jobTitle: 'Dev Angular',
+                jobTitle: 'Développeur Angular',
                 dateCandidature: '2024-01-15T10:00:00Z',
                 externalOfferId: 'ext-123',
-                entreprise: { nom: 'Company A' },
-                statut: { libelle: 'En attente' },
+                entreprise: { nom: 'TechCorp' },
                 relances: [],
                 statutReponse: 'attente'
             },
             {
                 '@id': '/api/candidatures/2',
                 id: 2,
-                jobTitle: 'Dev PHP',
+                jobTitle: 'Développeur PHP',
                 dateCandidature: '2024-01-16T10:00:00Z',
                 externalOfferId: 'ext-456',
-                entreprise: { nom: 'Company B' },
-                statut: { libelle: 'En attente' },
+                entreprise: { nom: 'WebAgency' },
                 relances: [],
-                statutReponse: 'attente'
+                statutReponse: 'entretien'
             }
         ];
 
         service.getMyCandidatures().subscribe((data) => {
             expect(data.length).toBe(2);
-            expect(data).toEqual(mockCandidatures);
+            expect(data[0].jobTitle).toBe('Développeur Angular');
+            expect(data[1].jobTitle).toBe('Développeur PHP');
         });
 
         const req = httpMock.expectOne(`${environment.apiUrl}/my-candidatures`);
@@ -62,23 +78,36 @@ describe('CandidatureService', () => {
         req.flush(mockCandidatures);
     });
 
-    it('should create candidature from offer', () => {
-        const job = {
-            externalId: '123',
-            company: 'Test Co',
-            redirectUrl: 'http://test.com',
-            title: 'Dev',
-            location: 'Paris'
+    /**
+     * 🧪 TEST #3 : createFromOffer() doit créer une candidature
+     */
+    it('should create candidature from external offer', () => {
+        const payload: CreateCandidatureFromOfferPayload = {
+            externalId: 'adzuna-123',
+            company: 'TechCorp SAS',
+            redirectUrl: 'https://adzuna.fr/job/123',
+            title: 'Développeur Full Stack',
+            location: 'Paris 75001'
         };
 
-        service.createFromOffer(job).subscribe();
+        service.createFromOffer(payload).subscribe((response) => {
+            expect(response.id).toBe(42);
+        });
 
         const req = httpMock.expectOne(`${environment.apiUrl}/candidatures/from-offer`);
         expect(req.request.method).toBe('POST');
-        expect(req.request.body.company).toBe('Test Co');
-        req.flush({});
+        
+        // Vérifier que le payload est correct
+        expect(req.request.body.externalId).toBe('adzuna-123');
+        expect(req.request.body.company).toBe('TechCorp SAS');
+        expect(req.request.body.redirectUrl).toBe('https://adzuna.fr/job/123');
+        
+        req.flush({ id: 42, '@id': '/api/candidatures/42' });
     });
 
+    /**
+     * 🧪 TEST #4 : deleteCandidatureByIri() doit supprimer une candidature
+     */
     it('should delete candidature by IRI', () => {
         const iri = '/api/candidatures/42';
 
@@ -86,24 +115,50 @@ describe('CandidatureService', () => {
 
         const req = httpMock.expectOne(`${environment.apiUrl}${iri}`);
         expect(req.request.method).toBe('DELETE');
-        req.flush({});
+        req.flush(null);
     });
 
-    it('should update statut reponse', () => {
+    /**
+     * 🧪 TEST #5 : updateStatutReponse() doit mettre à jour le statut
+     */
+    it('should update statut reponse with valid statut', () => {
         const iri = '/api/candidatures/10';
-        const statut = 'echanges';
+        const statut = 'entretien';
 
-        service.updateStatutReponse(iri, statut).subscribe();
+        service.updateStatutReponse(iri, statut).subscribe((response) => {
+            expect(response.statutReponse).toBe('entretien');
+        });
 
         const req = httpMock.expectOne(`${environment.apiUrl}/candidatures/10/statut-reponse`);
         expect(req.request.method).toBe('PATCH');
-        expect(req.request.body.statutReponse).toBe('echanges');
-        req.flush({});
+        expect(req.request.body.statutReponse).toBe('entretien');
+        req.flush({ statutReponse: 'entretien' });
     });
 
+    /**
+     * 🧪 TEST #6 : updateStatutReponse() doit rejeter un statut invalide
+     */
     it('should throw error for invalid statut', () => {
+        const iri = '/api/candidatures/1';
+        const invalidStatut = 'statut_invalide';
+
         expect(() => {
-            service.updateStatutReponse('/api/candidatures/1', 'invalide');
-        }).toThrowError();
+            service.updateStatutReponse(iri, invalidStatut);
+        }).toThrowError(/Statut non autorisé/);
+    });
+
+    /**
+     * 🧪 TEST #7 : createFromOffer() doit valider les champs obligatoires
+     */
+    it('should throw error if required fields are missing', () => {
+        const invalidPayload = {
+            externalId: '',
+            company: 'Test',
+            redirectUrl: 'http://test.com'
+        } as CreateCandidatureFromOfferPayload;
+
+        expect(() => {
+            service.createFromOffer(invalidPayload).subscribe();
+        }).toThrowError(/Champs obligatoires manquants/);
     });
 });

@@ -2,51 +2,192 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { DashboardHomeComponent } from './dashboard-home.component';
 import { CandidatureService } from '../../../../core/services/candidature.service';
-import { of } from 'rxjs';
+import { Candidature } from '../../../../core/models/candidature.model';
+import { of, throwError } from 'rxjs';
+import { ChangeDetectorRef } from '@angular/core';
 
+/**
+ * 🧪 TESTS DE COMPOSANT : DashboardHomeComponent
+ * 
+ * 🎯 Objectif : Tester l'affichage des statistiques du dashboard
+ * 
+ * 📌 Ce qu'on teste :
+ * - Chargement des candidatures
+ * - Calcul des statistiques (total, relances, entretiens)
+ * - Gestion des erreurs
+ */
 describe('DashboardHomeComponent', () => {
   let component: DashboardHomeComponent;
   let fixture: ComponentFixture<DashboardHomeComponent>;
-  let service: jasmine.SpyObj<CandidatureService>;
+  let candidatureService: jasmine.SpyObj<CandidatureService>;
+  let cdr: jasmine.SpyObj<ChangeDetectorRef>;
 
   beforeEach(async () => {
     const serviceSpy = jasmine.createSpyObj('CandidatureService', ['getMyCandidatures']);
+    const cdrSpy = jasmine.createSpyObj('ChangeDetectorRef', ['detectChanges']);
 
     await TestBed.configureTestingModule({
-      imports: [DashboardHomeComponent, HttpClientTestingModule],
+      imports: [DashboardHomeComponent],
       providers: [
-        { provide: CandidatureService, useValue: serviceSpy }
+        { provide: CandidatureService, useValue: serviceSpy },
+        { provide: ChangeDetectorRef, useValue: cdrSpy }
       ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(DashboardHomeComponent);
     component = fixture.componentInstance;
-    service = TestBed.inject(CandidatureService) as jasmine.SpyObj<CandidatureService>;
+    candidatureService = TestBed.inject(CandidatureService) as jasmine.SpyObj<CandidatureService>;
+    cdr = TestBed.inject(ChangeDetectorRef) as jasmine.SpyObj<ChangeDetectorRef>;
   });
 
-  it('should create', () => {
+  /**
+   * 🧪 TEST #1 : Le composant doit être créé
+   */
+  it('should create the component', () => {
     expect(component).toBeTruthy();
   });
 
+  /**
+   * 🧪 TEST #2 : ngOnInit() doit charger les candidatures
+   */
   it('should load candidatures on init', () => {
-    const mockData = [
-      { id: 1, company: 'A', relances: [], entretiens: [] },
-      { id: 2, company: 'B', relances: [], entretiens: [] }
+    const mockCandidatures: Partial<Candidature>[] = [
+      { 
+        id: 1, 
+        jobTitle: 'Dev Angular',
+        relances: [], 
+        entretiens: [] 
+      },
+      { 
+        id: 2, 
+        jobTitle: 'Dev PHP',
+        relances: [], 
+        entretiens: [] 
+      }
     ];
-    service.getMyCandidatures.and.returnValue(of(mockData as any));
+    
+    candidatureService.getMyCandidatures.and.returnValue(of(mockCandidatures as Candidature[]));
 
     component.ngOnInit();
 
+    expect(candidatureService.getMyCandidatures).toHaveBeenCalled();
     expect(component.candidatures.length).toBe(2);
-    expect(component.totalCandidatures).toBe(2);
+    expect(component.loading).toBe(false);
   });
 
-  it('should calculate entretiens prevus', () => {
+  /**
+   * 🧪 TEST #3 : totalCandidatures doit retourner le nombre total
+   */
+  it('should calculate total candidatures correctly', () => {
     component.candidatures = [
-      { id: 1, entretiens: [{ statut: 'prevu' }] } as any,
-      { id: 2, entretiens: [{ statut: 'passe' }] } as any
+      { id: 1 } as Candidature,
+      { id: 2 } as Candidature,
+      { id: 3 } as Candidature
     ];
 
-    expect(component.entretiensPrevus).toBe(1);
+    expect(component.totalCandidatures).toBe(3);
+  });
+
+  /**
+   * 🧪 TEST #4 : entretiensPrevus doit compter les entretiens prévus
+   */
+  it('should calculate entretiens prevus correctly', () => {
+    component.candidatures = [
+      { 
+        id: 1, 
+        entretiens: [
+          { statut: 'prevu' } as any,
+          { statut: 'prevu' } as any
+        ] 
+      } as Candidature,
+      { 
+        id: 2, 
+        entretiens: [
+          { statut: 'passe' } as any
+        ] 
+      } as Candidature
+    ];
+
+    expect(component.entretiensPrevus).toBe(2);
+  });
+
+  /**
+   * 🧪 TEST #5 : relancesEffectuees doit compter les relances faites
+   */
+  it('should calculate relances effectuees correctly', () => {
+    component.candidatures = [
+      { 
+        id: 1, 
+        relances: [
+          { faite: true } as any,
+          { faite: true } as any
+        ] 
+      } as Candidature,
+      { 
+        id: 2, 
+        relances: [
+          { faite: false } as any,
+          { faite: true } as any
+        ] 
+      } as Candidature
+    ];
+
+    expect(component.relancesEffectuees).toBe(3);
+  });
+
+  /**
+   * 🧪 TEST #6 : retoursPositifs doit compter les résultats positifs
+   */
+  it('should calculate retours positifs correctly', () => {
+    component.candidatures = [
+      { 
+        id: 1,
+        statutReponse: 'engage',
+        entretiens: []
+      } as unknown as Candidature,
+      { 
+        id: 2,
+        statutReponse: 'attente',
+        entretiens: [
+          { statut: 'passe', resultat: 'engage' } as any
+        ]
+      } as unknown as Candidature,
+      { 
+        id: 3,
+        statutReponse: 'attente',
+        entretiens: [
+          { statut: 'passe', resultat: 'negative' } as any
+        ]
+      } as unknown as Candidature
+    ];
+
+    expect(component.retoursPositifs).toBe(2);
+  });
+
+  /**
+   * 🧪 TEST #7 : Gestion des erreurs lors du chargement
+   */
+  it('should handle error when loading candidatures fails', () => {
+    const consoleErrorSpy = spyOn(console, 'error');
+    candidatureService.getMyCandidatures.and.returnValue(
+      throwError(() => new Error('Network error'))
+    );
+
+    component.ngOnInit();
+
+    expect(component.loading).toBe(false);
+    expect(consoleErrorSpy).toHaveBeenCalled();
+  });
+
+  /**
+   * 🧪 TEST #8 : Candidatures vides doit retourner 0
+   */
+  it('should return 0 for empty candidatures array', () => {
+    component.candidatures = [];
+
+    expect(component.totalCandidatures).toBe(0);
+    expect(component.entretiensPrevus).toBe(0);
+    expect(component.relancesEffectuees).toBe(0);
+    expect(component.retoursPositifs).toBe(0);
   });
 });

@@ -104,7 +104,7 @@ export class LoginComponent implements OnInit {
         this.auth.me().subscribe({
           next: (user: any) => {
             this.loading = false;
-            if (user && user.isVerified === false) {
+            if (user?.user?.isVerified === false) {
               this.notVerifiedMessage = 'Vous devez confirmer votre email, cliquez ici pour recevoir un nouveau mail de confirmation.';
               this.showResendButton = true;
               this.lastTriedEmail = this.email;
@@ -114,7 +114,7 @@ export class LoginComponent implements OnInit {
               this.closeOverlay();
               setTimeout(() => {
                 //Vérifier le rôle de l'utilisateur (structure variable selon la réponse)
-                const roles = user?.user?.roles ?? user?.roles ?? [];
+                const roles = user?.user?.roles ?? [];
                 console.log('🔍 [Login] me() response:', user);
                 console.log('🔍 [Login] roles:', roles);
                 const hasAdminRole = roles.includes('ROLE_ADMIN');
@@ -194,5 +194,5 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  
+
 }
