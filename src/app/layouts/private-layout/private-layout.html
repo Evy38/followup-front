@@ -5,7 +5,7 @@
     <app-private-topbar *ngIf="showTopbar$ | async">
     </app-private-topbar>
 
-    <main class="private-content">
+    <main class="private-content" [class.no-scroll]="isAnnonces$ | async">
       <router-outlet></router-outlet>
     </main>
 

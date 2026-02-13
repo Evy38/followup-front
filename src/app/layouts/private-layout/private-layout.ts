@@ -22,17 +22,18 @@ export class PrivateLayoutComponent {
 
   showRgpdModal = false;
 
-  showTopbar$ = this.router.events.pipe(
+  private routeContext$ = this.router.events.pipe(
     filter((e): e is NavigationEnd => e instanceof NavigationEnd),
     startWith(null),
-    map(() => {
-      const route = this.getDeepestChild(this.route);
-      const ctx = route.snapshot.data['topbar'] as string | undefined;
+    map(() => this.getRouteContext())
+  );
 
-      if (ctx === 'admin') return false;
+  showTopbar$ = this.routeContext$.pipe(
+    map((ctx) => ctx !== 'admin' && !this.router.url.includes('/admin'))
+  );
 
-      return !this.router.url.includes('/admin');
-    })
+  isAnnonces$ = this.routeContext$.pipe(
+    map((ctx) => ctx === 'annonces')
   );
 
   ngOnInit(): void {
@@ -84,6 +85,24 @@ export class PrivateLayoutComponent {
     let current = route;
     while (current.firstChild) current = current.firstChild;
     return current;
+  }
+
+  private getRouteContext(): string | undefined {
+    const route = this.getDeepestChild(this.route);
+    const ctx = route.snapshot.data['topbar'] as string | undefined;
+
+    if (ctx) return ctx;
+
+    const url = this.router.url;
+
+    if (url.includes('/admin')) return 'admin';
+    if (url.includes('/annonces')) return 'annonces';
+    if (url.includes('/relances')) return 'relances';
+    if (url.includes('/candidatures')) return 'candidatures';
+    if (url.includes('/profile')) return 'profile';
+    if (url.includes('/dashboard')) return 'dashboard';
+
+    return undefined;
   }
 
 

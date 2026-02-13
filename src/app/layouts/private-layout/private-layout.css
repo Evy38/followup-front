@@ -51,6 +51,10 @@ app-private-sidebar {
   background: transparent;
 }
 
+.private-content.no-scroll {
+  overflow: hidden;
+}
+
 @media (min-width: 700px) {
   .private-shell {
     display: flex;
