@@ -32,8 +32,8 @@ export class LoginComponent implements OnInit {
   showWelcome = false;
 
   // --------- LOGIN ---------
-  email = 'amalriccecile@gmail.com';   // tu peux enlever les valeurs par défaut après tes tests
-  password = 'testtest123';
+  email = '';   // tu peux enlever les valeurs par défaut après tes tests
+  password = '';
   loading = false;
   message = '';
   notVerifiedMessage: string | null = null;
