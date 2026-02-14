@@ -1,129 +1,130 @@
 name: CD - Continuous Deployment
 
-# Déclenchement manuel uniquement (pour la démo)
+# Déclenchement manuel ou automatique après merge sur main
 on:
+  # Déclenchement manuel avec choix de l'environnement
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Environment to deploy to'
+        description: 'Environnement cible'
         required: true
         type: choice
         options:
-          - sit
+          - production
           - uat
-          - prod
+          - sit
+  
+  # Déclenchement automatique sur push vers main (production uniquement)
+  push:
+    branches:
+      - main
 
 jobs:
-  # Job 1 : Build
-  build:
-    name: Build for ${{ github.event.inputs.environment }}
+  # Job 1 : Build de production
+  build-production:
+    name: Build Production
     runs-on: ubuntu-latest
+    # N'exécuter que si c'est un push sur main OU un workflow_dispatch vers production
+    if: github.event_name == 'push' || github.event.inputs.environment == 'production'
     
     steps:
-      - name: Checkout code
+      - name: 📥 Checkout code
         uses: actions/checkout@v4
       
-      - name: Setup Node.js
+      - name: 🟢 Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20.x'
           cache: 'npm'
       
-      - name: Install dependencies
+      - name: 📦 Install dependencies
         run: npm ci
       
-      - name: Build for ${{ github.event.inputs.environment }}
+      - name: 🔨 Build Production
         run: npm run build -- --configuration=production
       
-      - name: Upload build artifacts
+      - name: 📤 Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: build-${{ github.event.inputs.environment }}-${{ github.run_number }}
+          name: production-build
           path: dist/followup-front/browser
           retention-days: 30
+      
+      - name: 📊 Build Summary
+        run: |
+          echo "✅ Build Production terminé"
+          echo "📏 Taille: $(du -sh dist/followup-front/browser | cut -f1)"
+          echo "📦 Fichiers: $(find dist/followup-front/browser -type f | wc -l) fichiers"
   
-  # Job 2 : Déploiement SIT (automatique)
-  deploy-sit:
-    name: Deploy to SIT
-    needs: build
+  # Job 2 : Déploiement sur Render
+  deploy-render:
+    name: Déployer sur Render
+    needs: build-production
     runs-on: ubuntu-latest
-    if: github.event.inputs.environment == 'sit'
-    environment:
-      name: sit
-      url: https://sit.followup.com
     
     steps:
-      - name: Download artifacts
+      - name: 📥 Download build artifacts
         uses: actions/download-artifact@v4
         with:
-          name: build-${{ github.event.inputs.environment }}-${{ github.run_number }}
+          name: production-build
+          path: dist/followup-front/browser
       
-      - name: Simulate deployment to SIT
+      - name: 🚀 Trigger Render deployment
+        env:
+          RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
         run: |
-          echo "🚀 Déploiement vers SIT"
-          echo "📦 Artefacts téléchargés"
-          ls -lh
-          echo "✅ Déploiement SIT simulé avec succès"
+          if [ -z "$RENDER_DEPLOY_HOOK" ]; then
+            echo "⚠️  RENDER_DEPLOY_HOOK non configuré"
+            echo "ℹ️  Le déploiement se fera automatiquement via Render après le push"
+          else
+            echo "🚀 Déclenchement du déploiement Render..."
+            curl -X POST "$RENDER_DEPLOY_HOOK"
+            echo "✅ Déploiement déclenché avec succès"
+          fi
+      
+      - name: 📋 Post-deployment checklist
+        run: |
+          echo "📝 Checklist post-déploiement:"
+          echo "  ☑️  Build uploadé"
+          echo "  ☑️  Render notifié"
+          echo "  ⏳ Attendre 2-3 minutes pour que Render déploie"
+          echo "  🔍 Vérifier: https://followup-frontend.onrender.com"
   
-  # Job 3 : Déploiement UAT (nécessite validation)
-  deploy-uat:
-    name: Deploy to UAT
-    needs: build
+  # Job 3 : Simulation SIT/UAT (pour la documentation)
+  simulate-sit-uat:
+    name: Simulation ${{ github.event.inputs.environment }}
     runs-on: ubuntu-latest
-    if: github.event.inputs.environment == 'uat'
-    environment:
-      name: uat
-      url: https://uat.followup.com
+    if: github.event.inputs.environment == 'sit' || github.event.inputs.environment == 'uat'
     
     steps:
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+      
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          name: build-${{ github.event.inputs.environment }}-${{ github.run_number }}
+          node-version: '20.x'
+          cache: 'npm'
       
-      - name: Simulate deployment to UAT
-        run: |
-          echo "🚀 Déploiement vers UAT"
-          echo "📦 Artefacts téléchargés"
-          ls -lh
-          echo "✅ Déploiement UAT simulé avec succès"
-  
-  # Job 4 : Déploiement PROD (nécessite double validation)
-  deploy-prod:
-    name: Deploy to Production
-    needs: build
-    runs-on: ubuntu-latest
-    if: github.event.inputs.environment == 'prod'
-    environment:
-      name: prod
-      url: https://followup.com
-    
-    steps:
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
+      - name: 📦 Install dependencies
+        run: npm ci
+      
+      - name: 🔨 Build ${{ github.event.inputs.environment }}
+        run: npm run build -- --configuration=${{ github.event.inputs.environment }}
+      
+      - name: 📤 Upload artifacts
+        uses: actions/upload-artifact@v4
         with:
-          name: build-${{ github.event.inputs.environment }}-${{ github.run_number }}
+          name: ${{ github.event.inputs.environment }}-build
+          path: dist/followup-front/browser
+          retention-days: 7
       
-      - name: Create backup (simulated)
+      - name: ℹ️  Information déploiement
         run: |
-          echo "💾 Création d'un backup de production"
-          echo "✅ Backup créé"
-      
-      - name: Simulate deployment to Production
-        run: |
-          echo "🚀 Déploiement vers PRODUCTION"
-          echo "📦 Artefacts téléchargés"
-          ls -lh
-          echo "✅ Déploiement PRODUCTION simulé avec succès"
-      
-      - name: Post-deployment tests (simulated)
-        run: |
-          echo "🧪 Exécution des tests post-déploiement"
-          echo "  ✅ Site accessible"
-          echo "  ✅ Page d'accueil OK"
-          echo "  ✅ API backend répond"
-      
-      - name: Notify deployment
-        run: |
-          echo "📧 Notification de déploiement"
-          echo "Déploiement en production réussi - Build ${{ github.run_number }}"
+          echo "ℹ️  Environnement ${{ github.event.inputs.environment }}"
+          echo "📝 Dans un contexte réel d'entreprise, ce build serait déployé sur:"
+          echo "    - SIT: Serveur de tests d'intégration"
+          echo "    - UAT: Serveur de validation client"
+          echo ""
+          echo "🎓 Pour le projet CDA, ces environnements sont documentés"
+          echo "   mais seul PROD est déployé sur Render (plan gratuit)"
