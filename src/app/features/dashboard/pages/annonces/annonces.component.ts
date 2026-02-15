@@ -10,7 +10,7 @@ import { takeUntil } from 'rxjs/operators';
 @Component({
   selector: 'app-annonces',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './annonces.component.html',
   styleUrls: ['./annonces.component.css'],
 })

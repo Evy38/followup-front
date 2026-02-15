@@ -32,7 +32,7 @@ export class LoginComponent implements OnInit {
   showWelcome = false;
 
   // --------- LOGIN ---------
-  email = '';   // tu peux enlever les valeurs par défaut après tes tests
+  email = '';   
   password = '';
   loading = false;
   message = '';
