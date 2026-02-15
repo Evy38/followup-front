@@ -37,11 +37,45 @@
               </svg>
             </button>
           </div>
-          <div class="user-menu user-menu-popover" *ngIf="userMenuOpen" (mouseleave)="closeUserMenu()">
-            <div class="user-menu-arrow-tip"></div>
-            <a routerLink="/app/profile" class="user-menu-item"><span class="user-menu-icon">👤</span> Mon profil</a>
-            <div class="user-menu-item"><span class="user-menu-icon">⚙️</span> Paramètres</div>
-            <div class="user-menu-item logout" (click)="logout()"><span class="user-menu-icon">🚪</span> Déconnexion
+          <!-- Overlay pour mobile uniquement -->
+          <div class="user-menu-overlay" *ngIf="userMenuOpen" (click)="closeUserMenu()"></div>
+          
+          <!-- Menu utilisateur modal -->
+          <div class="user-menu user-menu-modal" *ngIf="userMenuOpen">
+            <!-- Bouton de fermeture -->
+            <button class="user-menu-close" (click)="closeUserMenu()" aria-label="Fermer">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <line x1="6" y1="6" x2="18" y2="18" stroke="#666" stroke-width="2.5" stroke-linecap="round" />
+                <line x1="18" y1="6" x2="6" y2="18" stroke="#666" stroke-width="2.5" stroke-linecap="round" />
+              </svg>
+            </button>
+
+            <!-- Avatar et infos utilisateur -->
+            <div class="user-menu-header">
+              <div class="user-menu-avatar-wrapper">
+                <img src="/assets/icons/avatar.png" alt="Avatar" class="user-menu-avatar" />
+              </div>
+              <ng-container *ngIf="auth.user$ | async as user">
+                <div class="user-menu-name">{{ user.lastName || 'NOM' }}</div>
+                <div class="user-menu-firstname">{{ user.firstName || 'Prénom' }}</div>
+                <div class="user-menu-email">{{ user.email || 'email@example.com' }}</div>
+              </ng-container>
+            </div>
+
+            <!-- Séparateur -->
+            <div class="user-menu-separator"></div>
+
+            <!-- Options du menu -->
+            <div class="user-menu-options">
+              <a routerLink="/app/profile" class="user-menu-item" (click)="closeUserMenu()">
+                <span class="user-menu-icon">👤</span> Mon profil
+              </a>
+              <div class="user-menu-item" (click)="closeUserMenu()">
+                <span class="user-menu-icon">⚙️</span> Paramètres
+              </div>
+              <div class="user-menu-item user-menu-logout" (click)="logout()">
+                <span class="user-menu-icon">🚪</span> Déconnexion
+              </div>
             </div>
           </div>
         </ng-container>

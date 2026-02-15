@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../../../core/auth/auth.service';
@@ -24,6 +24,17 @@ export class PrivateSidebarComponent implements OnInit {
     });
   }
 
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    const userMenuTrigger = target.closest('.user-menu-trigger');
+    const userMenu = target.closest('.user-menu');
+    
+    // Fermer le menu si on clique en dehors
+    if (!userMenuTrigger && !userMenu && this.userMenuOpen) {
+      this.userMenuOpen = false;
+    }
+  }
 
   toggleUserMenu() {
     this.userMenuOpen = !this.userMenuOpen;
@@ -45,24 +56,4 @@ export class PrivateSidebarComponent implements OnInit {
     this.sidebarOpen = false;
   }
 
-  // /**
-  //  * Vérifie si l'utilisateur connecté a le rôle ROLE_ADMIN
-  //  * 
-  //  * @description Met à jour la propriété isAdmin
-  //  * pour afficher ou masquer le menu Admin dans la sidebar
-  //  */
-  // private checkAdminRole(): void {
-  //   this.authService.me().subscribe({
-  //     next: (response) => {
-  //       if (response?.user) {
-  //         this.isAdmin = response.user.roles?.includes('ROLE_ADMIN') ?? false;
-  //         console.log('🔐 [PrivateSidebar] isAdmin:', this.isAdmin);
-  //       }
-  //     },
-  //     error: (err) => {
-  //       console.error('❌ [PrivateSidebar] Erreur vérification rôle:', err);
-  //       this.isAdmin = false;
-  //     }
-  //   });
-  // }
 }

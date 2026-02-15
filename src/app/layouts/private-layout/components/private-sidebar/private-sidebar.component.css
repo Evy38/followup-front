@@ -71,6 +71,61 @@
 		height: 100%;
 		transform: none !important;
 	}
+
+	/* Desktop : menu utilisateur en popover à côté */
+	.user-menu-overlay {
+		display: none;
+	}
+
+	.user-menu-modal.user-menu {
+		position: absolute;
+		top: 10px;
+		left: 100%;
+		transform: translateX(10px);
+		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.13);
+		width: auto;
+		min-width: 220px;
+		max-width: none;
+		border-radius: 8px;
+		animation: none;
+	}
+
+	.user-menu-close {
+		display: none;
+	}
+
+	.user-menu-header {
+		padding: 20px 16px 16px;
+	}
+
+	.user-menu-avatar-wrapper {
+		width: 70px;
+		height: 70px;
+		margin-bottom: 10px;
+	}
+
+	.user-menu-avatar {
+		width: 62px;
+		height: 62px;
+	}
+
+	.user-menu-name,
+	.user-menu-firstname {
+		font-size: 1rem;
+	}
+
+	.user-menu-email {
+		font-size: 0.85rem;
+	}
+
+	.user-menu-options {
+		padding: 8px 0;
+	}
+
+	.user-menu-item {
+		padding: 10px 16px;
+		font-size: 0.95rem;
+	}
 }
 
 
@@ -190,71 +245,151 @@
 	transform: rotate(90deg);
 }
 
-.user-menu-popover.user-menu {
-	position: absolute;
-	top: 10px;
-	left: 100%;
-	transform: translateX(10px);
+/* Overlay pour le menu utilisateur en mode mobile */
+.user-menu-overlay {
+	position: fixed;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.5);
+	z-index: 1999;
+	display: block;
+}
+
+.user-menu-modal.user-menu {
+	/* Mobile : panneau modal centré */
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
 	background: #fff;
-	border: 1px solid #e0e0e0;
-	border-radius: 8px;
-	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.13);
-	min-width: 170px;
+	border-radius: 16px;
+	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+	width: 85vw;
+	max-width: 320px;
 	z-index: 2000;
-	margin-top: 0;
-	padding: 8px 0 8px 0;
+	padding: 0;
 	display: flex;
 	flex-direction: column;
 	align-items: stretch;
+	animation: slideIn 0.25s ease;
+}
+
+@keyframes slideIn {
+	from {
+		opacity: 0;
+		transform: translate(-50%, -45%);
+	}
+	to {
+		opacity: 1;
+		transform: translate(-50%, -50%);
+	}
+}
+
+.user-menu-close {
+	position: absolute;
+	top: 16px;
+	left: 16px;
+	background: transparent;
+	border: none;
+	cursor: pointer;
+	padding: 4px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 10;
+	opacity: 0.7;
+	transition: opacity 0.2s;
+}
+
+.user-menu-close:hover {
+	opacity: 1;
+}
+
+.user-menu-header {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 40px 24px 24px;
+	text-align: center;
+}
+
+.user-menu-avatar-wrapper {
+	width: 90px;
+	height: 90px;
+	border-radius: 50%;
+	border: 3px solid #a259ff;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-bottom: 12px;
+}
+
+.user-menu-avatar {
+	width: 80px;
+	height: 80px;
+	border-radius: 50%;
+	object-fit: cover;
+}
+
+.user-menu-name {
+	font-weight: bold;
+	font-size: 1.15rem;
+	color: #222;
+	letter-spacing: 0.5px;
+	margin-bottom: 2px;
+}
+
+.user-menu-firstname {
+	font-size: 1.15rem;
+	color: #222;
+	margin-bottom: 6px;
+}
+
+.user-menu-email {
+	font-size: 0.9rem;
+	color: #888;
+}
+
+.user-menu-separator {
+	width: 100%;
+	height: 1px;
+	background: #e0e0e0;
+}
+
+.user-menu-options {
+	padding: 12px 0;
 }
 
 .user-menu-arrow-tip {
-	position: absolute;
-	left: -10px;
-	top: 18px;
-	width: 0;
-	height: 0;
-	border-top: 8px solid transparent;
-	border-bottom: 8px solid transparent;
-	border-right: 10px solid #e0e0e0;
-	z-index: 21;
-}
-
-.user-menu-popover .user-menu-arrow-tip::after {
-	content: '';
-	position: absolute;
-	left: 2px;
-	top: -7px;
-	width: 0;
-	height: 0;
-	border-top: 7px solid transparent;
-	border-bottom: 7px solid transparent;
-	border-right: 8px solid #fff;
+	/* Masqué en mobile, visible en desktop */
+	display: none;
 }
 
 .user-menu-item {
-	padding: 10px 18px;
+	padding: 16px 24px;
 	cursor: pointer;
-	font-size: 1rem;
+	font-size: 1.05rem;
 	display: flex;
 	align-items: center;
 	transition: background 0.15s;
 	text-decoration: none;
 	color: #222;
+	font-weight: 500;
+	border-left: 3px solid transparent;
 }
 
 .user-menu-item:hover {
-	background: #f5f5f5;
+	background: #f8f8f8;
 	color: #222;
 }
 
 .user-menu-icon {
-	margin-right: 8px;
+	margin-right: 12px;
+	font-size: 1.2rem;
 }
 
-.user-menu-item.logout {
+.user-menu-logout {
 	color: #a259ff;
-	font-weight: bold;
+	font-weight: 600;
 }
 
 .profile-name {

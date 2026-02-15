@@ -1,22 +1,48 @@
 <nav class="nav" aria-label="Navigation principale">
-
-
-    <!-- LOGO en haut -->
+    <!-- LOGO -->
     <div class="nav__logo">
         <img src="assets/icons/logoFU.png" alt="Logo FollowUp" />
     </div>
 
+    <!-- Bouton burger pour mobile -->
+    <button 
+        class="nav__burger" 
+        [class.nav__burger--active]="isMenuOpen"
+        (click)="toggleMenu()" 
+        aria-label="Menu"
+        aria-expanded="{{ isMenuOpen }}"
+        type="button">
+        <span class="nav__burger-line"></span>
+        <span class="nav__burger-line"></span>
+        <span class="nav__burger-line"></span>
+    </button>
 
-    <!-- Liens horizontaux -->
-    <div class="nav__links">
-        <a routerLink="/" routerLinkActive="nav__item--active" [routerLinkActiveOptions]="{ exact: true }" aria-current="page" class="nav__item">Accueil</a>
-        <a routerLink="/about" routerLinkActive="nav__item--active" class="nav__item">A propos</a>
-        <a routerLink="/pricing" routerLinkActive="nav__item--active" class="nav__item">Tarifs & Contacts</a>
-        <a routerLink="/features" routerLinkActive="nav__item--active" class="nav__item">Fonctionnalités</a>
-        <a [routerLink]="[{ outlets: { overlay: ['login'] } }]" role="button" aria-label="Connexion ou inscription" class="nav__item nav__item--cta">
+    <!-- Liens de navigation -->
+    <div class="nav__links" [class.nav__links--open]="isMenuOpen">
+        <a routerLink="/" 
+           routerLinkActive="nav__item--active" 
+           [routerLinkActiveOptions]="{ exact: true }" 
+           (click)="closeMenu()"
+           aria-current="page" 
+           class="nav__item">Accueil</a>
+        <a routerLink="/about" 
+           routerLinkActive="nav__item--active" 
+           (click)="closeMenu()"
+           class="nav__item">A propos</a>
+        <a routerLink="/pricing" 
+           routerLinkActive="nav__item--active" 
+           (click)="closeMenu()"
+           class="nav__item">Tarifs & Contacts</a>
+        <a routerLink="/features" 
+           routerLinkActive="nav__item--active" 
+           (click)="closeMenu()"
+           class="nav__item">Fonctionnalités</a>
+        <a [routerLink]="[{ outlets: { overlay: ['login'] } }]" 
+           (click)="closeMenu()"
+           role="button" 
+           aria-label="Connexion ou inscription" 
+           class="nav__item nav__item--cta">
             Connexion / Inscription
         </a>
-
-
     </div>
 </nav>
