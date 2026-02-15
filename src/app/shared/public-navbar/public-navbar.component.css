@@ -24,7 +24,7 @@
     display: flex;
     align-items: center;
     height: 50px;
-    z-index: 102;
+    z-index: 100;
 }
 
 .nav__logo img {
@@ -44,8 +44,9 @@
     border: none;
     cursor: pointer;
     padding: 4px;
-    z-index: 102;
+    z-index: 100;
     transition: all 0.3s ease;
+    position: relative;
 }
 
 .nav__burger:hover {
@@ -73,42 +74,87 @@
     transform: rotate(-45deg) translate(7px, -7px);
 }
 
+/* Overlay sombre derrière le menu mobile */
+.nav__overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 98;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
 /* Menu mobile - cache par defaut */
 .nav__links {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    width: 90%;
+    max-width: 400px;
+    max-height: 80vh;
     background: #fff;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    gap: 1.5rem;
-    padding: 2rem;
-    transform: translateX(-100%);
-    transition: transform 0.3s ease;
-    z-index: 101;
+    justify-content: flex-start;
+    gap: 0.5rem;
+    padding: 60px 1.5rem 2rem;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 99;
+    overflow-y: auto;
 }
 
 /* Menu mobile ouvert */
 .nav__links--open {
-    transform: translateX(0);
+    opacity: 1;
+    pointer-events: auto;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+/* Bouton de fermeture du menu modal */
+.nav__close {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.nav__close:hover {
+    opacity: 1;
 }
 
 /* Liens de navigation */
 .nav__item {
     text-decoration: none;
     color: #222;
-    font-size: 1.125rem;
+    font-size: 1.05rem;
     font-weight: 500;
-    padding: 0.75rem 1.25rem;
-    border-radius: 6px;
-    transition: background 0.15s, color 0.15s;
+    padding: 0.875rem 1.5rem;
+    border-radius: 8px;
+    transition: all 0.2s ease;
     text-align: center;
     width: 100%;
-    max-width: 300px;
     display: block;
 }
 
@@ -125,18 +171,20 @@
 
 /* Style bouton pour Connexion/Inscription */
 .nav__item--cta {
-    color: #1a73e8;
-    border: 1.5px solid #1a73e8;
-    background: #f7fbff;
-    border-radius: 8px;
+    color: #fff;
+    border: 2px solid #1a73e8;
+    background: #1a73e8;
+    border-radius: 10px;
     font-weight: 600;
     margin-top: 1rem;
+    box-shadow: 0 4px 12px rgba(26, 115, 232, 0.2);
 }
 
 .nav__item--cta:hover {
-    background: #1a73e8;
+    background: #1557b0;
+    border-color: #1557b0;
     color: #fff;
-    border-color: #1a73e8;
+    box-shadow: 0 6px 16px rgba(26, 115, 232, 0.3);
 }
 
 /* ===== RESPONSIVE - TABLETTE (768px+) ===== */
@@ -162,17 +210,34 @@
         display: none;
     }
 
+    /* Cache l'overlay sur tablette+ */
+    .nav__overlay {
+        display: none;
+    }
+
+    /* Cache le bouton de fermeture sur tablette+ */
+    .nav__close {
+        display: none;
+    }
+
     /* Menu horizontal sur tablette+ */
     .nav__links {
         position: static;
         width: auto;
         height: auto;
+        max-width: none;
+        max-height: none;
         flex-direction: row;
         gap: 1rem;
         padding: 0;
         margin-right: 8px;
-        transform: none;
+        transform: none !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
         background: transparent;
+        backdrop-filter: none;
+        box-shadow: none;
+        border-radius: 0;
     }
 
     .nav__item {
@@ -182,9 +247,22 @@
         display: inline-block;
     }
 
+    .nav__item:hover {
+        transform: none;
+    }
+
     .nav__item--cta {
         margin-top: 0;
         margin-left: 0.75rem;
+        color: #1a73e8;
+        background: #f7fbff;
+        border-color: #1a73e8;
+    }
+
+    .nav__item--cta:hover {
+        background: #1a73e8;
+        color: #fff;
+        transform: none;
     }
 }
 
