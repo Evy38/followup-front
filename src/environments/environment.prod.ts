@@ -3,6 +3,6 @@ export const environment = {
   production: true,
   backendUrl: 'https://followup-backend-lxkf.onrender.com',
   apiUrl: 'https://followup-backend-lxkf.onrender.com/api',
-  googleClientId: '234119751650-gbqc8cqjc26omgg1sum3acgcc0s3kbki.apps.googleusercontent.com',
+  googleClientId: '234119751650-24qk5gusck58m3hffk7nr8c4dlvnh0iq.apps.googleusercontent.com',
   environmentName: 'PROD'
 };
