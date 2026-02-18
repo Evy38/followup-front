@@ -14,14 +14,31 @@ export class GoogleCallbackComponent implements OnInit {
 
   ngOnInit(): void {
     const token = this.route.snapshot.queryParamMap.get('token');
+    console.log('🔍 Google Callback - Token reçu:', token);
     
     if (token) {
       this.auth.handleGoogleCallback(token);
+      console.log('🔍 Google Callback - Token stocké');
 
       this.auth.me().subscribe({
         next: (res: any) => {
+          console.log('🔍 Google Callback - Réponse /me:', res);
+          
+          if (!res?.authenticated) {
+            console.error('❌ Utilisateur non authentifié');
+            this.router.navigate(['/']);
+            return;
+          }
+          
+          if (!res?.verified) {
+            console.warn('⚠️ Utilisateur non vérifié - redirection vers vérification');
+            this.router.navigate(['/verify-email']);
+            return;
+          }
+
           const roles = res?.user?.roles ?? res?.roles ?? [];
           const isAdmin = roles.includes('ROLE_ADMIN');
+          console.log('✅ Redirection vers:', isAdmin ? 'admin' : 'dashboard');
 
           this.router.navigate(
             [
@@ -34,14 +51,15 @@ export class GoogleCallbackComponent implements OnInit {
             ]
           );
         },
-        error: () => {
-          this.router.navigate([{ outlets: { overlay: ['login'] } }]);
+        error: (error) => {
+          console.error('❌ Google Callback - Erreur /me:', error);
+          this.router.navigate(['/']);
         }
       });
 
     } else {
-      // Pas de token, retour à la page de login
-      this.router.navigate(['/login']);
+      console.error('❌ Pas de token dans l\'URL');
+      this.router.navigate(['/']);
     }
   }
 }
