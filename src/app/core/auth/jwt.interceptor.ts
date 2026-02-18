@@ -9,7 +9,8 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
     '/api/password/reset',
     '/api/verify-email',
     '/auth/google',
-    '/auth/google/callback'
+    '/auth/google/callback',
+    '/google/calback',
   ];
 
   // Vérifier si la requête est vers une route publique
