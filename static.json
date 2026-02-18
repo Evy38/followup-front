@@ -1,13 +1,22 @@
 {
   "routes": [
     {
+      "/**": "index.html"
+    },
+    {
       "src": "^/(?!api).*$",
       "dest": "/index.html",
-      "methods": ["GET", "HEAD"]
+      "methods": [
+        "GET",
+        "HEAD"
+      ]
     },
     {
       "src": "/(.*)",
-      "methods": ["GET", "HEAD"]
+      "methods": [
+        "GET",
+        "HEAD"
+      ]
     }
   ],
   "headers": [
