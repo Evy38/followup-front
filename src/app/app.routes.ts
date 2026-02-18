@@ -137,7 +137,7 @@ export const routes: Routes = [
   // CALLBACK OAUTH GOOGLE (route principale, pas d'overlay)
   // ============================
   {
-    path: 'google-callback',
+    path: 'auth/google/callback',
     component: GoogleCallbackComponent,
   },
 
