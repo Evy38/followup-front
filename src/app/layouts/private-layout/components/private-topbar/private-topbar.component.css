@@ -123,6 +123,30 @@
   transform: translateY(0);
 }
 
+/* ---------- BADGE "À VENIR" ---------- */
+.badge-soon {
+  display: inline-flex;
+  align-items: center;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 20px;
+  background: #fff3e0;
+  color: #e65100;
+  margin-left: 6px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.badge-soon--icon {
+  position: absolute;
+  top: -6px;
+  right: -28px;
+  margin-left: 0;
+  font-size: 9px;
+  padding: 2px 6px;
+}
+
 /* ---------- TABS (OTHER CONTEXTS) ---------- */
 .topbar__tabs {
   display: flex;

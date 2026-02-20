@@ -31,6 +31,24 @@
 }
 
 /* =========================
+   BADGE "À VENIR"
+   ========================= */
+
+.badge-soon {
+	display: inline-flex;
+	align-items: center;
+	font-size: 10px;
+	font-weight: 700;
+	padding: 2px 8px;
+	border-radius: 20px;
+	background: #fff3e0;
+	color: #e65100;
+	margin-left: auto;
+	white-space: nowrap;
+	flex-shrink: 0;
+}
+
+/* =========================
    SIDEBAR - ADMIN VARIANT
    ========================= */
 
