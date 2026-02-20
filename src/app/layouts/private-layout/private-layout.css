@@ -49,6 +49,9 @@ app-private-sidebar {
   padding: 16px;
   box-sizing: border-box;
   background: transparent;
+  /* Comportement natif app : pas de rebond navigateur, scroll fluide */
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
 .private-content.no-scroll {

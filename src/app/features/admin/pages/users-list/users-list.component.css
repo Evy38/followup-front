@@ -501,11 +501,50 @@
 }
 
 /* ============================================================
+   MESSAGE MOBILE — masqué sur desktop
+   ============================================================ */
+.mobile-only-notice {
+  display: none;
+}
+
+/* ============================================================
    RESPONSIVE (MOBILE)
    ============================================================ */
 @media (max-width: 768px) {
+
+  /* Masquer tout le contenu admin et afficher le message à la place */
   .admin-container {
-    padding: 1rem;
+    display: none;
+  }
+
+  .mobile-only-notice {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 1rem;
+    height: calc(100dvh - 80px);
+    padding: 2rem 2rem calc(2rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .mobile-only-notice__icon {
+    font-size: 3.5rem;
+  }
+
+  .mobile-only-notice h2 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #2d3748;
+    margin: 0;
+  }
+
+  .mobile-only-notice p {
+    font-size: 0.95rem;
+    color: #718096;
+    margin: 0;
+    line-height: 1.6;
+    max-width: 280px;
   }
 
   .admin-header h1 {
