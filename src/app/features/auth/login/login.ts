@@ -104,6 +104,16 @@ export class LoginComponent implements OnInit {
         this.auth.me().subscribe({
           next: (user: any) => {
             this.loading = false;
+
+            // Compte marqué pour suppression → connexion refusée
+            const deletionRequested = user?.user?.deletionRequestedAt ?? user?.user?.deletion_requested_at;
+            if (deletionRequested) {
+              this.auth.removeToken();
+              this.toast.show('Ce compte a été supprimé. La connexion est impossible.', 'error');
+              this.cdr.detectChanges();
+              return;
+            }
+
             if (user?.user?.isVerified === false) {
               this.notVerifiedMessage = 'Vous devez confirmer votre email, cliquez ici pour recevoir un nouveau mail de confirmation.';
               this.showResendButton = true;

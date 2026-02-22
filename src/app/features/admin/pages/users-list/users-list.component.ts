@@ -47,6 +47,10 @@ export class UsersListComponent implements OnInit {
   userToDelete: User | null = null;
   deletingUser = false;
 
+  // Modal de confirmation pour purge
+  showPurgeModal = false;
+  isPurging = false;
+
   // Filtre de statut
   selectedFilter: 'active' | 'deleted' | 'all' = 'all';
 
@@ -306,6 +310,38 @@ export class UsersListComponent implements OnInit {
    */
   trackByUserId(index: number, user: User): number {
     return user.id;
+  }
+
+  openPurgeModal(): void {
+    this.showPurgeModal = true;
+  }
+
+  closePurgeModal(): void {
+    this.showPurgeModal = false;
+  }
+
+  confirmPurge(): void {
+    this.isPurging = true;
+
+    this.userService.purgeUsers().subscribe({
+      next: (result) => {
+        this.isPurging = false;
+        this.showPurgeModal = false;
+        if (result.purged > 0) {
+          this.toast.show(`${result.purged} compte(s) supprimé(s) définitivement de la base de données.`, 'success');
+          this.loadUsers();
+        } else {
+          this.toast.show('Aucun compte éligible à la purge (tous les comptes supprimés datent de moins d\'1 mois).', 'info');
+        }
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.isPurging = false;
+        this.showPurgeModal = false;
+        this.toast.show('Une erreur est survenue lors de la purge. Veuillez réessayer.', 'error');
+        this.cdr.detectChanges();
+      }
+    });
   }
 
   /**

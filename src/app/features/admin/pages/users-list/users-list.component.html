@@ -22,6 +22,13 @@
        ============================================================ -->
   <div class="admin-header">
     <h1>Gestion des utilisateurs</h1>
+    <button
+      class="btn-purge"
+      (click)="openPurgeModal()"
+      [disabled]="isPurging || loading"
+      title="Supprimer définitivement les comptes désactivés depuis plus d'1 mois">
+      🗑️ Purger la base
+    </button>
   </div>
 
   <!-- ============================================================
@@ -234,6 +241,19 @@
     </div>
   </div>
 </div>
+
+<!-- Modal de confirmation pour purge -->
+<app-confirm-modal
+  [open]="showPurgeModal"
+  [title]="'Purger la base de données ?'"
+  [message]="'Cette action supprimera définitivement tous les comptes désactivés depuis plus d\'1 mois, ainsi que toutes leurs candidatures, relances et entretiens. Cette action est irréversible.'"
+  [confirmText]="'Oui, purger définitivement'"
+  [cancelText]="'Annuler'"
+  [danger]="true"
+  [loading]="isPurging"
+  (confirm)="confirmPurge()"
+  (cancel)="closePurgeModal()">
+</app-confirm-modal>
 
 <!-- Modal de confirmation pour hard delete -->
 <app-confirm-modal

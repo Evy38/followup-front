@@ -174,6 +174,17 @@ export class UserService {
    * }
    * ```
    */
+  purgeUsers(): Observable<{ message: string; purged: number }> {
+    console.log('🗑️ [UserService] Purge des comptes supprimés depuis plus d\'1 mois');
+
+    return this.http.post<{ message: string; purged: number }>(`${environment.apiUrl}/admin/users/purge`, {}).pipe(
+      tap((result) => {
+        console.log(`✅ [UserService] Purge effectuée: ${result.purged} compte(s) supprimé(s)`);
+      }),
+      catchError(this.handleError)
+    );
+  }
+
   deleteUser(id: number): Observable<void> {
     console.log(`🗑️ [UserService] Suppression de l'utilisateur ID ${id}`);
     
