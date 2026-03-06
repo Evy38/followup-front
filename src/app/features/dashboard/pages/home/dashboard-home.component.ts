@@ -1,3 +1,10 @@
+/**
+ * Composant de la page d'accueil du tableau de bord.
+ *
+ * Affiche un résumé des candidatures en cours de l'utilisateur connecté :
+ * compteurs par statut, relances à venir, et accès rapide aux pages clés.
+ * Charge les candidatures au démarrage via {@link CandidatureService}.
+ */
 
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CandidatureService } from '../../../../core/services/candidature.service';

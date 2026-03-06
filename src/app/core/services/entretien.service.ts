@@ -87,7 +87,15 @@ export class EntretienService {
   }
 
   /**
-   * @param entretienIriOrId 
+   * Supprime un entretien.
+   *
+   * Utilise `environment.backendUrl` (et non `apiUrl`) pour éviter de dupliquer
+   * le préfixe `/api` déjà présent dans l'IRI (ex: `/api/entretiens/4`).
+   *
+   * @param entretienIri IRI de l'entretien (ex: `/api/entretiens/4`)
+   * @returns Observable<void>
+   *
+   * @endpoint DELETE /api/entretiens/{id}
    */
   deleteEntretien(entretienIri: string): Observable<void> {
     // entretienIri est du type /api/entretiens/4

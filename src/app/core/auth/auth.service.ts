@@ -1,3 +1,17 @@
+/**
+ * Service d'authentification.
+ *
+ * Gère l'ensemble du cycle d'authentification :
+ * - Connexion / déconnexion par email+password
+ * - OAuth Google (redirection + callback)
+ * - Stockage du JWT dans localStorage
+ * - Vérification de la session courante via `/api/me`
+ * - Exposition de l'utilisateur courant via `user$` (BehaviorSubject)
+ * - Gestion des erreurs d'authentification (authError$)
+ * - Enregistrement du consentement RGPD
+ *
+ * Le token JWT est ajouté automatiquement sur chaque requête par {@link jwtInterceptor}.
+ */
 import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';

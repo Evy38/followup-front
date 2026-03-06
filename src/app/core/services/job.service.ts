@@ -1,3 +1,13 @@
+/**
+ * Service de récupération des offres d'emploi.
+ *
+ * Interroge le backend (`GET /api/jobs`) qui agrège les offres depuis l'API Adzuna.
+ * Gère la pagination et normalise les réponses pour s'adapter aux différentes
+ * formes que peut retourner l'API (tableau direct, `{ data, pagination }`, `{ jobs }`).
+ *
+ * @see AnnoncesComponent — Composant consommateur principal
+ * @see AnnonceFilterService — Fournit les filtres ville/poste
+ */
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -5,9 +15,7 @@ import { map } from 'rxjs/operators';
 import { Job } from '../models/job.model';
 import { environment } from '../../../environments/environment';
 
-/**
- * Réponse paginée de l'API jobs
- */
+/** Réponse paginée de l'API jobs. */
 export interface JobsResponse {
   /** Liste des annonces de la page courante */
   jobs: Job[];
@@ -19,6 +27,13 @@ export interface JobsResponse {
   total?: number;
 }
 
+/**
+ * Service d'offres d'emploi.
+ *
+ * Point d'entrée unique pour la récupération et la normalisation des offres.
+ * La normalisation (`normalizeJob`) gère les différences de nommage entre
+ * l'API Adzuna et le format interne (camelCase / snake_case).
+ */
 @Injectable({
   providedIn: 'root',
 })

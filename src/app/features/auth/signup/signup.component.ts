@@ -1,3 +1,11 @@
+/**
+ * Composant d'inscription.
+ *
+ * Formulaire de création de compte (email, prénom, nom, mot de passe, consentement RGPD).
+ * Délègue l'appel API à {@link AuthService.register}.
+ * Après succès, émet `registered` pour que le parent (login) affiche
+ * les instructions de vérification d'email.
+ */
 import { Component, Input, Output, EventEmitter, inject, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';

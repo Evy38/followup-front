@@ -1,3 +1,19 @@
+/**
+ * Façade du module Relances.
+ *
+ * Centralise la logique métier de la page Relances en orchestrant
+ * {@link CandidatureService}, {@link RelanceService} et {@link EntretienService}.
+ *
+ * Responsabilités :
+ * - Chargement et exposition des candidatures via `candidatures$`
+ * - Calcul des stats agrégées via `stats$` (total, relances en attente, faites)
+ * - Marquage des relances (fait / à faire) avec optimistic update
+ * - Mise à jour du statut de réponse avec toggle et rollback en cas d'erreur
+ * - Création et suppression d'entretiens avec synchronisation UI locale
+ *
+ * Les composants ne doivent interagir qu'avec cette façade, jamais directement
+ * avec les services sous-jacents.
+ */
 import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, map } from 'rxjs';
 

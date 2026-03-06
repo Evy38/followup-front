@@ -38,7 +38,7 @@
       "name": "api",
       "urls": [
         "http://127.0.0.1:8080/**",
-        "https://api.followup.local/**"
+        "https://followup-backend-lxkf.onrender.com/api/**"
       ],
       "cacheConfig": {
         "strategy": "freshness",

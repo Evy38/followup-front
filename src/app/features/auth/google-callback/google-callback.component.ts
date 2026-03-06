@@ -1,3 +1,16 @@
+/**
+ * Composant de callback OAuth Google.
+ *
+ * Point d'entrée de la route `/google/callback` appelée par le backend
+ * après une authentification Google réussie.
+ *
+ * Traitement dans `ngOnInit()` :
+ * 1. Lit le JWT depuis le query param `?token=...`
+ * 2. Stocke le token via {@link AuthService.handleGoogleCallback}
+ * 3. Appelle `GET /api/me` pour vérifier l'état du compte
+ * 4. Redirige vers le dashboard (utilisateur) ou l'admin (ROLE_ADMIN),
+ *    ou vers `/verify-email` si le compte n'est pas vérifié
+ */
 import { Component, OnInit, inject } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../../core/auth/auth.service';

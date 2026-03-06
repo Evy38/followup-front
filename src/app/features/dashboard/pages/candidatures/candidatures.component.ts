@@ -1,3 +1,11 @@
+/**
+ * Composant de la page Candidatures.
+ *
+ * Affiche la liste des candidatures de l'utilisateur connecté.
+ * Gère la suppression avec confirmation via une modale interne.
+ * S'abonne à `CandidatureService.refreshNeeded$` pour recharger
+ * automatiquement la liste après une mutation.
+ */
 import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CandidatureService } from '../../../../core/services/candidature.service';

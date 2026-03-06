@@ -1,3 +1,17 @@
+/**
+ * Service de gestion des candidatures.
+ *
+ * Centralise les appels HTTP vers l'API candidatures :
+ * - Création depuis une offre externe (Adzuna) — idempotent (200 si existante, 201 si nouvelle)
+ * - Récupération de la liste de l'utilisateur connecté
+ * - Suppression d'une candidature par son IRI
+ * - Mise à jour du statut de réponse (`attente`, `echanges`, `entretien`, `negative`, `engage`, `annule`)
+ *
+ * Expose `refreshNeeded$` (Subject) pour notifier les composants
+ * qu'un rechargement de données est nécessaire après une mutation.
+ *
+ * @see RelancesFacade — Façade principale qui orchestre ce service
+ */
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';

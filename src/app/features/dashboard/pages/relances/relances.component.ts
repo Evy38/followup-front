@@ -1,3 +1,13 @@
+/**
+ * Composant de la page Relances.
+ *
+ * Affiche la liste des candidatures avec leurs relances et entretiens.
+ * Délègue toute la logique métier à {@link RelancesFacade} et se limite
+ * à la gestion de l'UI (sélection, ouverture de modale, appels façade).
+ *
+ * Stratégie de détection : `OnPush` — les mises à jour sont déclenchées
+ * uniquement via les Observables de la façade.
+ */
 import {
   Component,
   OnInit,

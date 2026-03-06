@@ -1,3 +1,13 @@
+/**
+ * Intercepteur JWT.
+ *
+ * Ajoute automatiquement le header `Authorization: Bearer <token>` sur
+ * toutes les requêtes HTTP sortantes, sauf les routes publiques listées
+ * dans `publicRoutes` (login, register, forgot/reset password, OAuth Google).
+ *
+ * Le token est lu depuis `localStorage` (clé `"token"`).
+ * Si aucun token n'est présent, la requête est transmise sans modification.
+ */
 import { HttpInterceptorFn } from '@angular/common/http';
 
 export const jwtInterceptor: HttpInterceptorFn = (req, next) => {

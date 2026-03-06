@@ -1,3 +1,14 @@
+/**
+ * Composant de la page Annonces.
+ *
+ * Affiche les offres d'emploi récupérées depuis l'API Adzuna (via {@link JobService})
+ * avec pagination infinie ("Voir plus") et filtrage par ville/poste.
+ *
+ * S'abonne à {@link AnnonceFilterService.filter$} pour réagir aux changements
+ * de filtre et recharger la liste depuis la page 1.
+ * Permet à l'utilisateur de candidater directement depuis une annonce
+ * (via {@link CandidatureService.createFromOffer}).
+ */
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { JobService } from '../../../../core/services/job.service';
 import { Job } from '../../../../core/models/job.model';

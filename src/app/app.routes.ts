@@ -1,3 +1,19 @@
+/**
+ * Configuration des routes de l'application.
+ *
+ * Structure :
+ * - **Zone publique** (`PublicLayoutComponent`) — pages accessibles sans authentification :
+ *   accueil, à propos, fonctionnalités, tarifs, vérification email.
+ * - **Zone privée** (`PrivateLayoutComponent`, protégée par {@link authGuard}) — tableau de bord
+ *   utilisateur : candidatures, annonces, relances, profil.
+ * - **Zone admin** (sous `/app/admin`, protégée par {@link adminGuard}) — gestion des utilisateurs.
+ * - **Overlay d'authentification** (router-outlet `overlay`) — login et mot de passe oublié
+ *   s'affichent en superposition sur le contenu existant.
+ * - **OAuth Google** (`/google/callback`) — réception du token après redirection Google.
+ * - **Fallback** (`**`) — redirige vers `/` en cas de route inconnue.
+ *
+ * Tous les composants sont chargés en lazy loading (`loadComponent`) pour optimiser le bundle.
+ */
 import { Routes } from '@angular/router';
 import { authGuard } from './core/auth/auth.guard';
 import { adminGuard } from './core/auth/admin.guard';

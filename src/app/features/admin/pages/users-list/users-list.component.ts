@@ -1,3 +1,17 @@
+/**
+ * Composant d'administration — Liste des utilisateurs.
+ *
+ * Accessible uniquement aux administrateurs (ROLE_ADMIN, protégé par {@link adminGuard}).
+ *
+ * Fonctionnalités :
+ * - Affichage paginé de tous les utilisateurs
+ * - Filtrage par email, rôle, statut de vérification, demande de suppression
+ * - Modification inline des rôles et du statut `isVerified`
+ * - Suppression définitive d'un compte avec confirmation
+ * - Purge des comptes en attente de suppression depuis plus d'1 mois
+ *
+ * Délègue les appels HTTP à {@link UserService}.
+ */
 
 import { Component, OnInit, inject, ChangeDetectorRef  } from '@angular/core';
 import { CommonModule } from '@angular/common';

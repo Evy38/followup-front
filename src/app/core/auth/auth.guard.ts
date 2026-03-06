@@ -1,3 +1,14 @@
+/**
+ * Guard d'authentification.
+ *
+ * Protège les routes de la zone privée (`/app/**`).
+ * Appelle `GET /api/me` pour vérifier que l'utilisateur est :
+ * - authentifié (`authenticated: true`)
+ * - et a confirmé son email (`verified: true`)
+ *
+ * En cas d'échec (non authentifié, non vérifié ou erreur réseau),
+ * supprime le token local et redirige vers l'overlay de login.
+ */
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { catchError, map, of } from 'rxjs';
@@ -23,7 +34,6 @@ export const authGuard: CanActivateFn = () => {
   );
 };
 
-//ok  Fonction utilitaire simple et claire
 function redirectToLogin(router: Router) {
   return router.createUrlTree([
     { outlets: { overlay: ['login'] } }

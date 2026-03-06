@@ -1,3 +1,15 @@
+/**
+ * Composant de connexion (overlay d'authentification).
+ *
+ * Affiché dans le router-outlet secondaire `overlay` sur toutes les pages.
+ * Gère deux onglets : connexion par email/mot de passe et inscription.
+ * Propose également la connexion via OAuth Google.
+ *
+ * Après une connexion réussie :
+ * - Redirige l'admin vers `/app/admin/users`
+ * - Redirige l'utilisateur vers `/app/dashboard`
+ * - Ferme l'overlay (outlet `overlay: null`)
+ */
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { Component, Inject, OnInit, PLATFORM_ID, inject, ChangeDetectorRef } from '@angular/core';

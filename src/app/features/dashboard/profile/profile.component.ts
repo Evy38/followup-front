@@ -1,3 +1,14 @@
+/**
+ * Composant de gestion du profil utilisateur.
+ *
+ * Permet à l'utilisateur connecté de :
+ * - Consulter ses informations personnelles
+ * - Modifier son email, prénom, nom et mot de passe (via {@link ProfileService})
+ * - Demander la suppression de son compte (soft delete, confirmation requise)
+ *
+ * Affiche un formulaire avec retour visuel via {@link ToastService}.
+ * Redirige vers la page d'accueil après suppression du compte.
+ */
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';

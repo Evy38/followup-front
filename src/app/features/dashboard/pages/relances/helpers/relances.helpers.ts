@@ -7,6 +7,12 @@
 import { Candidature } from '../../../../../core/models/candidature.model';
 import { Relance } from '../../../../../core/models/relance.model';
 
+/**
+ * Calcule le nombre de jours écoulés depuis une date ISO.
+ *
+ * @param dateStr Date au format ISO 8601
+ * @returns Nombre de jours entiers écoulés (0 si date invalide)
+ */
 export function getDaysSince(dateStr: string): number {
   if (!dateStr) return 0;
 
@@ -14,6 +20,12 @@ export function getDaysSince(dateStr: string): number {
   return Math.floor(diff / (1000 * 60 * 60 * 24));
 }
 
+/**
+ * Formate une date ISO en format français (DD/MM/YYYY).
+ *
+ * @param iso Date au format ISO 8601
+ * @returns Date formatée ou `'—'` si la date est invalide
+ */
 export function formatDate(iso: string): string {
   if (!iso) return '—';
 
@@ -30,6 +42,14 @@ export function formatDate(iso: string): string {
 }
 
 
+/**
+ * Normalise une heure vers le format HH:mm.
+ *
+ * Accepte les formats : `HH:mm`, `HH:mm:ss`, et ISO avec `T`.
+ *
+ * @param heure Heure brute
+ * @returns Heure au format HH:mm, ou la valeur originale si non reconnue
+ */
 export function formatHeure(heure: string): string {
   if (!heure) return '';
 
@@ -47,6 +67,12 @@ export function formatHeure(heure: string): string {
 }
 
 
+/**
+ * Calcule le pourcentage de relances effectuées pour une candidature.
+ *
+ * @param candidature Candidature avec ses relances
+ * @returns Pourcentage entier (0–100), 0 si aucune relance
+ */
 export function getProgress(candidature: Candidature): number {
   if (!candidature.relances?.length) return 0;
 
@@ -55,11 +81,23 @@ export function getProgress(candidature: Candidature): number {
 }
 
 
+/**
+ * Indique si une relance est en retard (date dépassée et non effectuée).
+ *
+ * @param relance Relance à tester
+ * @returns `true` si la date est passée et la relance n'est pas marquée faite
+ */
 export function isRelanceOverdue(relance: Relance): boolean {
   if (relance.faite) return false;
   return new Date(relance.dateRelance) < new Date();
 }
 
+/**
+ * Compte le total des relances effectuées sur toutes les candidatures.
+ *
+ * @param candidatures Liste des candidatures
+ * @returns Nombre total de relances marquées comme faites
+ */
 export function getTotalDoneRelances(candidatures: Candidature[]): number {
   return candidatures.reduce(
     (acc, c) => acc + (c.relances?.filter(r => r.faite).length ?? 0),
@@ -68,12 +106,25 @@ export function getTotalDoneRelances(candidatures: Candidature[]): number {
 }
 
 
+/**
+ * Compte le nombre de candidatures ayant au moins une relance en retard.
+ *
+ * @param candidatures Liste des candidatures
+ * @returns Nombre de candidatures avec relance(s) en retard
+ */
 export function getPendingRelancesCount(candidatures: Candidature[]): number {
   return candidatures.filter((c) =>
     c.relances?.some((r) => !r.faite && isRelanceOverdue(r))
   ).length;
 }
 
+/**
+ * Retourne la relance d'un rang donné pour une candidature.
+ *
+ * @param candidature Candidature source
+ * @param rang        Rang souhaité (1 = J+7, 2 = J+14, 3 = J+21)
+ * @returns La relance correspondante ou `undefined` si introuvable
+ */
 export function getRelanceByRang(
   candidature: Candidature,
   rang: number
@@ -95,12 +146,24 @@ export function hasEntretienPrevu(c: Candidature): boolean {
   return !!c.entretiens?.some(e => e.statut === 'prevu');
 }
 
+/**
+ * Indique si la candidature a au moins un entretien passé avec résultat positif.
+ *
+ * @param candidature Candidature à tester
+ * @returns `true` si un entretien est passé avec `resultat = 'engage'`
+ */
 export function hasEntretienReussi(candidature: Candidature): boolean {
   return (candidature.entretiens ?? []).some(
     e => e.statut === 'passe' && e.resultat === 'engage'
   );
 }
 
+/**
+ * Indique si la candidature a au moins un entretien passé avec résultat négatif.
+ *
+ * @param candidature Candidature à tester
+ * @returns `true` si un entretien est passé avec `resultat = 'negative'`
+ */
 export function hasEntretienRate(candidature: Candidature): boolean {
   return (candidature.entretiens ?? []).some(
     e => e.statut === 'passe' && e.resultat === 'negative'
@@ -108,6 +171,15 @@ export function hasEntretienRate(candidature: Candidature): boolean {
 }
 
 
+/**
+ * Retourne un libellé textuel décrivant l'état courant d'une candidature.
+ *
+ * Prend en compte les entretiens (prévu, réussi, refusé) et le `statutReponse`
+ * quand aucun entretien n'est présent.
+ *
+ * @param candidature Candidature à décrire
+ * @returns Libellé localisé en français
+ */
 export function getEtatCandidature(candidature: Candidature): string {
   const entretiens = candidature.entretiens ?? [];
 

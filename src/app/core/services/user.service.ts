@@ -35,8 +35,8 @@ export class UserService {
 
   /**
    * Récupère la liste complète des utilisateurs
-   * 
-   * @endpoint GET /api/user
+   *
+   * @endpoint GET /api/admin/users
    * @security Nécessite ROLE_ADMIN
    * 
    * @returns Observable<User[]> Liste des utilisateurs
@@ -65,9 +65,9 @@ export class UserService {
   /**
    * Récupère un utilisateur par son ID
    * 
-   * @endpoint GET /api/user/{id}
+   * @endpoint GET /api/admin/users/{id}
    * @security Nécessite ROLE_ADMIN
-   * 
+   *
    * @param id Identifiant de l'utilisateur
    * @returns Observable<User> Utilisateur trouvé
    * @throws HttpErrorResponse Si l'utilisateur n'existe pas (404)
@@ -95,7 +95,7 @@ export class UserService {
   /**
    * Met à jour un utilisateur existant
    * 
-   * @endpoint PUT /api/user/{id}
+   * @endpoint PUT /api/admin/users/{id}
    * @security Nécessite ROLE_ADMIN
    * 
    * @param id Identifiant de l'utilisateur
@@ -154,25 +154,14 @@ export class UserService {
   }
 
   /**
-   * Supprime un utilisateur
-   * 
-   * @endpoint DELETE /api/user/{id}
+   * Purge les comptes marqués comme supprimés depuis plus d'1 mois.
+   *
+   * Déclenche la suppression définitive (hard delete) des comptes dont
+   * `deletionRequestedAt` dépasse le seuil de rétention configuré backend.
+   *
+   * @endpoint POST /api/admin/users/purge
    * @security Nécessite ROLE_ADMIN
-   * 
-   * @param id Identifiant de l'utilisateur à supprimer
-   * @returns Observable<void>
-   * 
-   * @warning Action irréversible - Demander confirmation à l'utilisateur
-   * 
-   * @example
-   * ```typescript
-   * if (confirm('Supprimer cet utilisateur ?')) {
-   *   this.userService.deleteUser(42).subscribe({
-   *     next: () => console.log('Supprimé'),
-   *     error: (err) => console.error('Erreur:', err)
-   *   });
-   * }
-   * ```
+   * @returns Observable<{ message: string; purged: number }> Résultat de la purge
    */
   purgeUsers(): Observable<{ message: string; purged: number }> {
     console.log('🗑️ [UserService] Purge des comptes supprimés depuis plus d\'1 mois');
@@ -185,6 +174,17 @@ export class UserService {
     );
   }
 
+  /**
+   * Supprime définitivement un utilisateur.
+   *
+   * @endpoint DELETE /api/admin/users/{id}
+   * @security Nécessite ROLE_ADMIN
+   *
+   * @param id Identifiant de l'utilisateur à supprimer
+   * @returns Observable<void>
+   *
+   * @warning Action irréversible — demander confirmation à l'utilisateur avant l'appel.
+   */
   deleteUser(id: number): Observable<void> {
     console.log(`🗑️ [UserService] Suppression de l'utilisateur ID ${id}`);
     
