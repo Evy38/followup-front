@@ -1,30 +1,108 @@
-
-<h1>Bienvenue sur votre dashboard 🎉</h1>
-
-<div class="stats-bar">
-	<div class="stat-item">
-		<span class="stat-number" style="color:#6c47e6; font-weight:bold; font-size:2rem;">{{ totalCandidatures }}</span>
-		<span class="stat-label">Candidatures</span>
-	</div>
-	<div class="stat-item" style="background:linear-gradient(90deg,#ffe9a3,#fff6d6);">
-		<span class="stat-number" style="color:#b88a1a; font-weight:bold; font-size:2rem;">{{ relancesAFaire }}</span>
-		<span class="stat-label">À relancer</span>
-	</div>
-	<div class="stat-item">
-		<span class="stat-number" style="color:#6c47e6; font-weight:bold; font-size:2rem;">{{ relancesEffectuees }}</span>
-		<span class="stat-label">Relances effectuées</span>
-	</div>
-	<div class="stat-item">
-		<span class="stat-number" style="color:#1a8ab8; font-weight:bold; font-size:2rem;">{{ entretiensPrevus }}</span>
-		<span class="stat-label">Entretiens prévus</span>
-	</div>
-	<div class="stat-item">
-		<span class="stat-number" style="color:#2eae4a; font-weight:bold; font-size:2rem;">{{ retoursPositifs }}</span>
-		<span class="stat-label">Retours positifs</span>
-	</div>
-	<div class="stat-item">
-		<span class="stat-number" style="color:#e64a47; font-weight:bold; font-size:2rem;">{{ retoursNegatifs }}</span>
-		<span class="stat-label">Retours négatifs</span>
-	</div>
+<!-- CHARGEMENT -->
+<div class="loading-state" *ngIf="loading">
+  <span>Chargement...</span>
 </div>
 
+<ng-container *ngIf="!loading">
+
+  <!-- EN-TÊTE DE BIENVENUE -->
+  <div class="dashboard-header">
+    <h1 class="welcome-title">
+      Bonjour<ng-container *ngIf="firstName$ | async as fn"> {{ fn }}</ng-container>&nbsp;👋
+    </h1>
+    <p class="welcome-subtitle">Voici un résumé de votre recherche d'emploi</p>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-bar">
+    <div class="stat-item stat-candidatures">
+      <span class="stat-number">{{ totalCandidatures }}</span>
+      <span class="stat-label">Candidatures</span>
+    </div>
+    <div class="stat-item stat-relancer">
+      <span class="stat-number">{{ relancesAFaire }}</span>
+      <span class="stat-label">À relancer</span>
+    </div>
+    <div class="stat-item stat-relances-ok">
+      <span class="stat-number">{{ relancesEffectuees }}</span>
+      <span class="stat-label">Relances effectuées</span>
+    </div>
+    <div class="stat-item stat-entretiens">
+      <span class="stat-number">{{ entretiensPrevus }}</span>
+      <span class="stat-label">Entretiens prévus</span>
+    </div>
+    <div class="stat-item stat-positif">
+      <span class="stat-number">{{ retoursPositifs }}</span>
+      <span class="stat-label">Retours positifs</span>
+    </div>
+    <div class="stat-item stat-negatif">
+      <span class="stat-number">{{ retoursNegatifs }}</span>
+      <span class="stat-label">Retours négatifs</span>
+    </div>
+  </div>
+
+  <!-- ÉTAT VIDE -->
+  <div class="empty-state" *ngIf="totalCandidatures === 0">
+    <div class="empty-icon">🚀</div>
+    <p class="empty-text">Vous n'avez pas encore de candidature.</p>
+    <a routerLink="/app/annonces" class="btn-primary">Parcourir les annonces</a>
+  </div>
+
+  <!-- SECTIONS -->
+  <div class="dashboard-sections" *ngIf="totalCandidatures > 0">
+
+    <!-- CANDIDATURES RÉCENTES -->
+    <div class="dashboard-section">
+      <div class="section-header">
+        <h2 class="section-title">Candidatures récentes</h2>
+        <a routerLink="/app/candidatures" class="section-link">Voir tout →</a>
+      </div>
+      <ul class="section-list">
+        <li *ngFor="let c of recentCandidatures" class="section-item">
+          <div class="item-main">
+            <span class="item-title">{{ c.jobTitle }}</span>
+            <span class="item-sub">{{ c.entreprise.nom }}</span>
+          </div>
+          <span class="item-date">{{ formatDate(c.dateCandidature) }}</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- RELANCES EN RETARD -->
+    <div class="dashboard-section section-warning" *ngIf="candidaturesRelancesEnRetard.length > 0">
+      <div class="section-header">
+        <h2 class="section-title">⏰ Relances en retard</h2>
+        <a routerLink="/app/relances" class="section-link">Gérer →</a>
+      </div>
+      <ul class="section-list">
+        <li *ngFor="let c of candidaturesRelancesEnRetard" class="section-item">
+          <div class="item-main">
+            <span class="item-title">{{ c.jobTitle }}</span>
+            <span class="item-sub">{{ c.entreprise.nom }}</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- PROCHAINS ENTRETIENS -->
+    <div class="dashboard-section section-blue" *ngIf="prochainEntretiens.length > 0">
+      <div class="section-header">
+        <h2 class="section-title">🗓️ Prochains entretiens</h2>
+      </div>
+      <ul class="section-list">
+        <li *ngFor="let item of prochainEntretiens" class="section-item section-item--entretien">
+          <div class="item-main">
+            <span class="item-title">{{ item.candidature.jobTitle }}</span>
+            <span class="item-sub">{{ item.candidature.entreprise.nom }}</span>
+          </div>
+          <div class="entretien-datetime">
+            <span class="entretien-date-badge">{{ formatDate(item.dateEntretien) }}</span>
+            <span class="entretien-heure-badge">{{ formatHeure(item.heureEntretien) }}</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+
+</ng-container>
