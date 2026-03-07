@@ -151,7 +151,8 @@
             "styles": [
               "src/styles.css"
             ],
-            "browsers": "ChromeHeadless"
+            "browsers": "ChromeHeadlessNoSandbox",
+            "karmaConfig": "karma.conf.js"
           }
         }
       }

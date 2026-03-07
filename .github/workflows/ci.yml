@@ -1,11 +1,15 @@
 name: CI - Continuous Integration
 
+# Pipeline d'intégration continue : vérifie la qualité du code à chaque push/PR.
+# Étapes : tests unitaires → build de validation pour chaque environnement (sit, uat, production).
+# Le build n'est lancé que si les tests passent (needs: test).
+
 # Déclenchement automatique sur push et pull request
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ main ]
   pull_request:
-    branches: [ main, develop ]
+    branches: [ main ]
 
 jobs:
   # Job 1 : Tests et qualité de code

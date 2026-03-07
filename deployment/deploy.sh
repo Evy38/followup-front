@@ -149,6 +149,3 @@ echo "  Date: $(date)"
 echo "  Taille du build: ${BUILD_SIZE}"
 echo "  Backup: ${BACKUP_DIR}"
 echo "=========================================="
-
-Rendre le script exécutable :
-chmod +x deployment/deploy.sh

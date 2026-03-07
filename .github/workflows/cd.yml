@@ -1,5 +1,9 @@
 name: CD - Continuous Deployment
 
+# Pipeline de déploiement continu : construit et déploie l'application après merge sur main.
+# Étapes : build production → déploiement sur Render (via deploy hook sécurisé).
+# Supporte aussi un déclenchement manuel pour cibler SIT ou UAT (environnements simulés).
+
 # Déclenchement manuel ou automatique après merge sur main
 on:
   # Déclenchement manuel avec choix de l'environnement
