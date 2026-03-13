@@ -494,6 +494,12 @@
   border: 1px solid #a3e6b8;
 }
 
+.badge-purge {
+  background: #f3e8ff;
+  color: #7c3aed;
+  border: 1px solid #c4b5fd;
+}
+
 .btn-hard-delete {
   padding: 0.5rem 1rem;
   border: 2px solid #ff4d4f;

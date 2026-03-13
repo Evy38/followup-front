@@ -66,7 +66,7 @@ export class UsersListComponent implements OnInit {
   isPurging = false;
 
   // Filtre de statut
-  selectedFilter: 'active' | 'deleted' | 'all' = 'all';
+  selectedFilter: 'active' | 'deleted' | 'hard_deleted' | 'all' = 'all';
 
   // Gestion des updates de role
   updatingRoleIds = new Set<number>();
@@ -109,7 +109,7 @@ export class UsersListComponent implements OnInit {
   /**
    * Change le filtre de statut
    */
-  changeFilter(filter: 'active' | 'deleted' | 'all'): void {
+  changeFilter(filter: 'active' | 'deleted' | 'hard_deleted' | 'all'): void {
     this.selectedFilter = filter;
     this.applyFilters();
   }
@@ -121,16 +121,18 @@ export class UsersListComponent implements OnInit {
     // Filtrer par statut d'abord
     let filtered = this.users.filter(user => {
       const hasDeletionRequest = this.hasValue(user.deletionRequestedAt);
-      const notHardDeleted = !this.hasValue(user.deletedAt);
-      
+      const isHardDeleted = this.hasValue(user.deletedAt);
+
       switch (this.selectedFilter) {
         case 'active':
-          return !hasDeletionRequest && notHardDeleted;
+          return !hasDeletionRequest && !isHardDeleted;
         case 'deleted':
-          return hasDeletionRequest && notHardDeleted;
+          return hasDeletionRequest && !isHardDeleted;
+        case 'hard_deleted':
+          return isHardDeleted;
         case 'all':
         default:
-          return notHardDeleted;
+          return true;
       }
     });
 
@@ -217,6 +219,13 @@ export class UsersListComponent implements OnInit {
     return this.users.filter((user) => user.deletionRequestedAt && !user.deletedAt).length;
   }
 
+  /**
+   * Nombre de comptes supprimés définitivement (en attente de purge)
+   */
+  get totalHardDeleted(): number {
+    return this.users.filter((user) => !!user.deletedAt).length;
+  }
+
   // ============================================================
   // MÉTHODES UTILITAIRES
   // ============================================================
@@ -292,9 +301,11 @@ export class UsersListComponent implements OnInit {
    * @returns true si l'utilisateur a demandé la suppression
    */
   isMarkedForDeletion(user: User): boolean {
-    const hasDeletionRequest = this.hasValue(user.deletionRequestedAt);
-    const notHardDeleted = !this.hasValue(user.deletedAt);
-    return hasDeletionRequest && notHardDeleted;
+    return this.hasValue(user.deletionRequestedAt) && !this.hasValue(user.deletedAt);
+  }
+
+  isHardDeleted(user: User): boolean {
+    return this.hasValue(user.deletedAt);
   }
 
   private buildRoles(makeAdmin: boolean): string[] {
@@ -322,7 +333,7 @@ export class UsersListComponent implements OnInit {
   /**
    * TrackBy pour optimiser le ngFor
    */
-  trackByUserId(index: number, user: User): number {
+  trackByUserId(_index: number, user: User): number {
     return user.id;
   }
 

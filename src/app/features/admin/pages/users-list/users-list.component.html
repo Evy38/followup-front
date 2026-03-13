@@ -59,6 +59,11 @@
       <span class="stat-number">{{ totalPendingDeletion }}</span>
       <span class="stat-label">En attente de suppression</span>
     </div>
+
+    <div class="stat-card stat-danger">
+      <span class="stat-number">{{ totalHardDeleted }}</span>
+      <span class="stat-label">À purger</span>
+    </div>
   </div>
 
   <!-- ============================================================
@@ -97,11 +102,17 @@
         (click)="changeFilter('active')">
         Actifs
       </button>
-      <button 
+      <button
         class="filter-btn filter-danger"
         [class.active]="selectedFilter === 'deleted'"
         (click)="changeFilter('deleted')">
         En attente de suppression
+      </button>
+      <button
+        class="filter-btn filter-danger"
+        [class.active]="selectedFilter === 'hard_deleted'"
+        (click)="changeFilter('hard_deleted')">
+        À purger
       </button>
     </div>
   </div>
@@ -182,14 +193,18 @@
 
           <!-- Action rôle -->
           <td>
-            <button
-              class="btn-role"
-              [class.btn-role--admin]="isAdmin(user)"
-              [disabled]="isUpdatingRole(user)"
-              (click)="toggleAdminRole(user)"
-            >
-              {{ isAdmin(user) ? 'Retirer admin' : 'Passer admin' }}
-            </button>
+            @if (!isHardDeleted(user)) {
+              <button
+                class="btn-role"
+                [class.btn-role--admin]="isAdmin(user)"
+                [disabled]="isUpdatingRole(user)"
+                (click)="toggleAdminRole(user)"
+              >
+                {{ isAdmin(user) ? 'Retirer admin' : 'Passer admin' }}
+              </button>
+            } @else {
+              <span class="text-muted">—</span>
+            }
           </td>
           
           <!-- Vérification email -->
@@ -217,18 +232,18 @@
 
           <!-- Statut de suppression -->
           <td class="user-status">
-            <span 
-              *ngIf="!isMarkedForDeletion(user)"
-              class="badge badge-active">
-              Actif
-            </span>
-            <button 
-              *ngIf="isMarkedForDeletion(user)"
-              class="btn-hard-delete"
-              (click)="openDeleteModal(user)"
-              title="Confirmer la suppression">
-              Confirmer suppression
-            </button>
+            @if (isHardDeleted(user)) {
+              <span class="badge badge-purge">À purger</span>
+            } @else if (isMarkedForDeletion(user)) {
+              <button
+                class="btn-hard-delete"
+                (click)="openDeleteModal(user)"
+                title="Confirmer la suppression">
+                Confirmer suppression
+              </button>
+            } @else {
+              <span class="badge badge-active">Actif</span>
+            }
           </td>
         </tr>
       </tbody>
