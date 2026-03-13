@@ -17,14 +17,18 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     const error = this.route.snapshot.queryParamMap.get('error');
     
-    if (error === 'token') {
+    if (error === 'account_deleted') {
+      this.toast.show(
+        'Ce compte a été supprimé. La connexion est impossible.',
+        'error'
+      );
+      window.history.replaceState({}, '', window.location.pathname);
+    } else if (error === 'token') {
       console.error('❌ Erreur d\'authentification Google détectée');
       this.toast.show(
         '❌ Erreur lors de la connexion avec Google. Veuillez réessayer.',
         'error'
       );
-      
-      // Nettoyer l'URL en supprimant le paramètre error
       window.history.replaceState({}, '', window.location.pathname);
     }
   }

@@ -152,11 +152,18 @@ export class LoginComponent implements OnInit {
           error: (err) => {
             this.loading = false;
             if (err.status === 403) {
-              this.notVerifiedMessage = 'Vous devez confirmer votre email, cliquez ici pour recevoir un nouveau mail de confirmation.';
-              this.showResendButton = true;
-              this.lastTriedEmail = this.email;
-              this.auth.removeToken();
-              this.cdr.detectChanges();
+              const errMsg: string = err.error?.message ?? err.error?.error ?? '';
+              if (errMsg.toLowerCase().includes('supprimé')) {
+                this.auth.removeToken();
+                this.toast.show('Ce compte a été supprimé. La connexion est impossible.', 'error');
+                this.cdr.detectChanges();
+              } else {
+                this.notVerifiedMessage = 'Vous devez confirmer votre email, cliquez ici pour recevoir un nouveau mail de confirmation.';
+                this.showResendButton = true;
+                this.lastTriedEmail = this.email;
+                this.auth.removeToken();
+                this.cdr.detectChanges();
+              }
             } else {
               this.message = 'Erreur lors de la vérification du compte.';
             }

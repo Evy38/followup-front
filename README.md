@@ -1,7 +1,9 @@
 # FollowUp – Frontend (Angular PWA)
 
-Application frontend **Angular (SPA + PWA)** destinée au suivi et à la gestion des candidatures d’emploi.  
+Application frontend **Angular (SPA + PWA)** destinée au suivi et à la gestion des candidatures d'emploi.
 Cette application consomme une **API REST Symfony sécurisée par JWT**.
+
+Projet de fin de formation – **Titre Professionnel Concepteur Développeur d'Applications (CDA)**
 
 ---
 
@@ -9,9 +11,11 @@ Cette application consomme une **API REST Symfony sécurisée par JWT**.
 
 FollowUp est une application **mobile-first** permettant à un utilisateur de :
 
-- s’authentifier (email / mot de passe ou Google OAuth),
-- gérer et suivre ses candidatures d’emploi,
-- centraliser sa recherche de manière claire et structurée.
+- s'authentifier (email / mot de passe ou Google OAuth),
+- gérer et suivre ses candidatures d'emploi,
+- planifier et suivre ses relances et entretiens,
+- rechercher des offres d'emploi via l'API Adzuna,
+- administrer les comptes utilisateurs (rôle admin).
 
 Le frontend est conçu comme une **Single Page Application (SPA)** avec séparation stricte des responsabilités et protection des routes.
 
@@ -21,117 +25,246 @@ Le frontend est conçu comme une **Single Page Application (SPA)** avec séparat
 
 ### Stack
 
-- **Framework** : Angular 20.x
-- **Architecture** : Standalone Components
-- **Routing** : Angular Router (outlet principal + outlet secondaire)
-- **Authentification** : JWT (fourni par l’API backend)
-- **HTTP** : HttpClient + Interceptor JWT
-- **PWA** : Service Worker + Manifest
-- **SSR** : volontairement désactivé (SPA)
+| Composant | Technologie | Version |
+|-----------|-------------|---------|
+| **Framework** | Angular | 20.x |
+| **Langage** | TypeScript | 5.9 |
+| **Architecture** | Standalone Components | - |
+| **Routing** | Angular Router (outlet principal + overlay) | - |
+| **HTTP** | HttpClient + Interceptors | - |
+| **PWA** | Service Worker + Manifest | - |
+| **Tests** | Karma + Jasmine | - |
+
+**SSR** : volontairement désactivé (SPA orientée usage authentifié)
 
 ---
 
 ## 📁 Structure du projet
 
+```
 src/
 ├── app/
-│ ├── core/
-│ │ ├── auth/
-│ │ │ ├── auth.service.ts
-│ │ │ ├── auth.guard.ts
-│ │ │ └── jwt.interceptor.ts
-│ │ └── pwa/
-│ │ └── update.service.ts
-│ │
-│ ├── features/
-│ │ ├── public/ # Pages publiques (home, about, pricing…)
-│ │ ├── auth/ # Login, signup, reset password, OAuth
-│ │ └── dashboard/ # Zone privée
-│ │
-│ ├── layouts/
-│ │ ├── public-layout/ # Layout public avec navbar
-│ │ └── private-layout/ # Layout protégé (dashboard)
-│ │
-│ ├── shared/
-│ │ └── components/
-│ │ └── navbar/ # Composants UI réutilisables
-│ │
-│ ├── app.routes.ts # Définition des routes
-│ ├── app.config.ts # Configuration globale
-│ └── app.ts # Composant racine
+│   ├── core/
+│   │   ├── auth/
+│   │   │   ├── auth.service.ts           # Authentification JWT + OAuth + RGPD
+│   │   │   ├── auth.guard.ts             # Garde routes privées
+│   │   │   ├── admin.guard.ts            # Garde routes admin (ROLE_ADMIN)
+│   │   │   └── jwt.interceptor.ts        # Ajout automatique du token aux requêtes
+│   │   ├── http/
+│   │   │   └── http-error.interceptor.ts # Gestion globale 401/403
+│   │   ├── models/
+│   │   │   ├── user.model.ts             # Interface User + enums rôles
+│   │   │   ├── candidature.model.ts      # Interface Candidature + EntretienApi
+│   │   │   ├── relance.model.ts          # Interface Relance
+│   │   │   └── job.model.ts              # Interface JobOffer (Adzuna)
+│   │   ├── services/
+│   │   │   ├── candidature.service.ts    # CRUD candidatures + statut réponse
+│   │   │   ├── entretien.service.ts      # CRUD entretiens
+│   │   │   ├── relance.service.ts        # Mise à jour relances
+│   │   │   ├── profile.service.ts        # Profil utilisateur + suppression compte
+│   │   │   ├── user.service.ts           # Gestion utilisateurs (admin)
+│   │   │   ├── job.service.ts            # Recherche offres (Adzuna)
+│   │   │   └── annonce-filter.service.ts # Filtres de recherche d'annonces
+│   │   ├── ui/
+│   │   │   └── toast.service.ts          # Notifications toast globales
+│   │   └── pwa/
+│   │       └── update.service.ts         # Gestion mises à jour PWA
+│   │
+│   ├── features/
+│   │   ├── public/                       # Pages accessibles sans auth
+│   │   │   ├── home/
+│   │   │   ├── about/
+│   │   │   ├── features/
+│   │   │   ├── pricing/
+│   │   │   ├── privacy/                  # Politique de confidentialité
+│   │   │   ├── legal/                    # Mentions légales
+│   │   │   └── terms/                    # Conditions d'utilisation
+│   │   ├── auth/
+│   │   │   ├── login/
+│   │   │   ├── signup/
+│   │   │   ├── forgot-password/
+│   │   │   ├── reset-password/
+│   │   │   ├── verify-email/
+│   │   │   ├── google-callback/          # Réception token OAuth
+│   │   │   ├── finalize-signup/          # Finalisation inscription OAuth + consentement RGPD
+│   │   │   └── welcome/
+│   │   ├── dashboard/                    # Zone privée utilisateur
+│   │   │   ├── pages/
+│   │   │   │   ├── home/                 # Tableau de bord
+│   │   │   │   ├── candidatures/         # Liste et gestion des candidatures
+│   │   │   │   ├── annonces/             # Recherche d'offres Adzuna
+│   │   │   │   └── relances/
+│   │   │   │       ├── relances.component.ts
+│   │   │   │       ├── relances.facade.ts  # Façade orchestrant les services
+│   │   │   │       ├── helpers/
+│   │   │   │       └── components/
+│   │   │   └── profile/                  # Profil et suppression de compte
+│   │   └── admin/                        # Zone admin (ROLE_ADMIN)
+│   │       └── pages/users-list/         # Gestion des utilisateurs
+│   │
+│   ├── layouts/
+│   │   ├── public-layout/                # Layout public (navbar + footer)
+│   │   └── private-layout/               # Layout dashboard (sidebar + topbar)
+│   │
+│   ├── shared/
+│   │   ├── toast/                        # Composant toast de notification
+│   │   ├── confirm-modal/                # Modal de confirmation générique
+│   │   ├── rgpd-consent-modal/           # Modal consentement RGPD (OAuth)
+│   │   ├── public-navbar/
+│   │   └── public-footer/
+│   │
+│   ├── app.routes.ts                     # Définition des routes
+│   ├── app.config.ts                     # Configuration globale (providers, interceptors)
+│   └── app.ts                            # Composant racine
 │
-├── assets/ # Images, icônes, illustrations
-├── public/ # Manifest PWA et icônes
+├── assets/
+├── public/                               # Manifest PWA et icônes
 └── index.html
-
-
-👉 Cette organisation respecte les bonnes pratiques Angular :
-- **core** : logique transverse (auth, sécurité, PWA),
-- **features** : fonctionnalités métier,
-- **shared** : composants réutilisables,
-- **layouts** : structuration visuelle des zones.
+```
 
 ---
 
 ## 🔐 Authentification & Sécurité
 
-### Méthodes d’authentification
+### Méthodes d'authentification
 
-- **Email / mot de passe**
+- **Email / mot de passe** (uniquement adresses Gmail)
 - **Google OAuth 2.0**
 
-### Fonctionnement
+### Fonctionnement JWT
 
-1. L’utilisateur s’authentifie via l’API backend
+1. L'utilisateur s'authentifie via l'API backend
 2. Le backend retourne un **JWT**
-3. Le token est stocké côté client (`localStorage`)
-4. Un **HTTP Interceptor** ajoute automatiquement le token aux requêtes protégées
-5. Les routes privées sont sécurisées via un **AuthGuard**
+3. Le token est stocké dans **localStorage**
+4. `jwtInterceptor` ajoute automatiquement `Authorization: Bearer {token}` sur chaque requête
+5. `httpErrorInterceptor` gère les erreurs 401 (token expiré → déconnexion) et 403 (accès refusé)
+6. Les routes privées sont sécurisées via `authGuard` et `adminGuard`
+
+### Guards
+
+| Guard | Protection |
+|-------|-----------|
+| `authGuard` | Routes `/app/**` — nécessite un token JWT valide |
+| `adminGuard` | Routes `/app/admin/**` — nécessite `ROLE_ADMIN` |
+
+### Interceptors
+
+| Interceptor | Rôle |
+|-------------|------|
+| `jwtInterceptor` | Injecte le token JWT dans chaque requête sortante |
+| `httpErrorInterceptor` | Redirige vers login sur 401/403 |
+
+### RGPD
+
+- Consentement RGPD requis à l'inscription (champ `consentRgpd`)
+- Pour les utilisateurs OAuth : modal `RgpdConsentModalComponent` affichée après connexion
+- Appel `POST /api/me/consent` via `AuthService.acceptRgpd()`
+- Demande de suppression de compte depuis la page profil (`ProfileService.deleteProfile()`)
 
 ---
 
-### Endpoints consommés (backend)
+## 🌐 Endpoints consommés (backend)
 
-| Méthode | Endpoint | Description |
-|-------|---------|------------|
-| POST | `/api/login_check` | Connexion JWT |
-| POST | `/api/register` | Inscription |
-| POST | `/api/password/request` | Demande de reset |
-| POST | `/api/password/reset` | Réinitialisation |
-| GET | `/auth/google` | OAuth Google |
+| Méthode | Endpoint | Service |
+|---------|---------|---------|
+| POST | `/api/login_check` | `AuthService` |
+| POST | `/api/register` | `AuthService` |
+| GET | `/api/me` | `AuthService` |
+| POST | `/api/me/consent` | `AuthService` |
+| POST | `/api/password/request` | `AuthService` |
+| POST | `/api/password/reset` | `AuthService` |
+| POST | `/api/verify-email/resend` | `AuthService` |
+| GET | `/auth/google` | `AuthService` |
+| GET | `/api/user/profile` | `ProfileService` |
+| PUT | `/api/user/profile` | `ProfileService` |
+| DELETE | `/api/user/profile` | `ProfileService` |
+| GET | `/api/my-candidatures` | `CandidatureService` |
+| POST | `/api/candidatures/from-offer` | `CandidatureService` |
+| DELETE | `/api/candidatures/{id}` | `CandidatureService` |
+| PATCH | `/api/candidatures/{id}/statut-reponse` | `CandidatureService` |
+| POST | `/api/entretiens` | `EntretienService` |
+| PATCH | `/api/entretiens/{id}` | `EntretienService` |
+| DELETE | `/api/entretiens/{id}` | `EntretienService` |
+| PATCH | `/api/relances/{id}` | `RelanceService` |
+| GET | `/api/jobs` | `JobService` |
+| GET | `/api/admin/users` | `UserService` |
+| PUT | `/api/admin/users/{id}` | `UserService` |
+| DELETE | `/api/admin/users/{id}` | `UserService` |
 
 ---
 
 ## 🧭 Routing & Navigation
 
-### Séparation claire des zones
+### Vue d'ensemble
 
-- **Zone publique**
-  - `/`
-  - `/about`
-  - `/features`
-  - `/pricing`
+```
+/                          Zone publique (PublicLayoutComponent)
+├── /                      Page d'accueil
+├── /about
+├── /features
+├── /pricing
+├── /verify-email          Vérification email (token en query param)
+├── /privacy
+├── /legal
+└── /terms
 
-- **Zone privée (protégée)**
-  - `/dashboard`
+/app                       Zone privée (PrivateLayoutComponent, authGuard)
+├── /app/dashboard         Tableau de bord
+├── /app/candidatures      Gestion des candidatures
+├── /app/annonces          Recherche d'offres Adzuna
+├── /app/relances          Relances et entretiens
+├── /app/profile           Profil utilisateur
+└── /app/admin             Zone admin (adminGuard)
+    └── /app/admin/users   Gestion des utilisateurs
 
-- **Authentification en overlay**
-  - `/login`
-  - `/forgot-password`
+/google/callback           Réception du token OAuth Google
+/finalize-signup           Finalisation inscription OAuth (consentement RGPD)
+/reset-password            Réinitialisation du mot de passe
 
-👉 Les écrans d’authentification sont affichés via un **router-outlet secondaire**, ce qui permet :
+(outlet: overlay)          Superposés sur le contenu existant
+├── login                  Formulaire de connexion
+└── forgot-password        Demande de réinitialisation
+```
+
+### Overlay d'authentification
+
+Les écrans de connexion et mot de passe oublié utilisent un **router-outlet secondaire** (`outlet: overlay`), ce qui permet :
 - de conserver le contexte de navigation,
-- d’améliorer l’expérience utilisateur,
-- d’éviter les ruptures de navigation.
+- d'améliorer l'expérience utilisateur,
+- d'éviter les rechargements de page.
+
+### Lazy loading
+
+Tous les composants sont chargés en **lazy loading** (`loadComponent`) pour optimiser le bundle initial.
+
+---
+
+## 🔄 Façade Pattern (Relances)
+
+La page Relances utilise une **façade** (`RelancesFacade`) qui orchestre les services :
+
+```
+RelancesComponent
+    └── RelancesFacade
+            ├── CandidatureService  → chargement liste + mise à jour statut réponse
+            ├── RelanceService      → marquage fait / à faire
+            └── EntretienService    → création / suppression entretiens
+```
+
+Avantages :
+- Les composants n'accèdent jamais directement aux services
+- **Optimistic UI** : mise à jour locale immédiate avant confirmation serveur
+- **Rollback automatique** en cas d'erreur backend
+- Stats agrégées exposées via `stats$` (total, relances en attente, faites)
 
 ---
 
 ## 📱 Progressive Web App (PWA)
 
 - Service Worker activé en production
-- Manifest configuré
-- Application installable sur mobile
-- Gestion des mises à jour avec confirmation utilisateur
+- Manifest configuré (icônes, couleurs, display standalone)
+- Application installable sur mobile et desktop
+- `UpdateService` : détecte les nouvelles versions et propose une confirmation de mise à jour
 
 ---
 
@@ -139,10 +272,9 @@ src/
 
 ### Principes
 
-- Mobile-first
-- Composants standalone
+- **Mobile-first**
+- Composants standalone (Angular 17+)
 - Navigation simple et lisible
-- UX orientée utilisateur authentifié
 
 ### Palette principale
 
@@ -152,11 +284,51 @@ src/
 --accent: #1a3a57;
 --text: #334;
 --text-light: #5b6c75;
- 
- ---
+```
+
+### Composants UI partagés
+
+- `ToastComponent` + `ToastService` : notifications contextuelles (succès, erreur)
+- `ConfirmModalComponent` : modal de confirmation générique
+- `RgpdConsentModalComponent` : modal de consentement RGPD pour les utilisateurs OAuth
+
+---
+
+## 🧪 Tests
+
+### Tests unitaires (Karma + Jasmine)
+
+| Fichier spec | Composant testé | Exemples de tests |
+|-------------|----------------|-------------------|
+| `auth.service.spec.ts` | `AuthService` | login JWT, isLogged, logout, register, me(), resendVerificationEmail |
+| `candidature.service.spec.ts` | `CandidatureService` | En cours |
+| `entretien.service.spec.ts` | `EntretienService` | En cours |
+| `login.component.spec.ts` | `LoginComponent` | En cours |
+| `dashboard-home.component.spec.ts` | `DashboardHomeComponent` | En cours |
+| `app.spec.ts` | `AppComponent` | En cours |
+
+### Commandes
+
+```bash
+# Tous les tests
+npm test
+
+# Tests en mode watch
+npm run test -- --watch
+
+# Tests avec couverture de code
+npm run test -- --code-coverage
+```
+
+### Tests end-to-end
+
+Prévus avec **Cypress** ou **Playwright**.
+
+---
 
 ## 🚀 Installation & lancement
 
+```bash
 # Installation des dépendances
 npm install
 
@@ -166,42 +338,50 @@ npm start
 
 # Build production
 npm run build
+```
 
-🧪 Tests
+### Variables d'environnement
 
-Les tests frontend ne sont pas encore implémentés.
+```typescript
+// src/environments/environment.ts
+export const environment = {
+  production: false,
+  apiUrl: 'http://localhost:8000/api',
+  backendUrl: 'http://localhost:8000'
+};
+```
 
-Prévu :
+---
 
-Tests unitaires (Jasmine / Karma ou Vitest)
+## 📦 Déploiement
 
-Tests end-to-end (Cypress ou Playwright)
+- Build Angular classique (`/dist`)
+- Compatible hébergement statique (Netlify, Vercel, Render Static Sites)
+- API backend déployée séparément
+- Configurer `src/environments/environment.production.ts` avec les URLs de production
 
-📦 Déploiement
+---
 
-Build Angular classique (/dist)
+## 📌 Choix techniques assumés
 
-Compatible hébergement statique
+- ❌ **Pas de SSR** : application orientée usage authentifié, pas d'indexation SEO nécessaire
+- ✅ **JWT stateless** stocké en localStorage (adapté au contexte SPA)
+- ✅ **Séparation claire public / privé** via layouts et guards
+- ✅ **OAuth traité hors API REST** (redirection navigateur vers backend)
+- ✅ **Façade pattern** pour la page Relances (orchestration multi-services)
+- ✅ **Optimistic UI** avec rollback pour les mutations fréquentes
+- ✅ **Lazy loading** systématique pour optimiser le bundle
 
-API backend déployée séparément
+---
 
-📌 Choix techniques assumés
+## 👤 Auteur
 
-❌ Pas de SSR : application orientée usage authentifié
+**Cécile MOREL**
+Développeuse Full Stack
+Projet réalisé dans le cadre du **Titre Professionnel Concepteur Développeur d'Applications** (REAC TP-01281 v04)
 
-✅ JWT stateless
+---
 
-✅ Séparation claire public / privé
+## 📄 Licence
 
-✅ OAuth traité hors API REST
-
-✅ Architecture scalable et maintenable
-
-👩‍💻 Auteur
-
-Cécile
-Projet réalisé dans le cadre du Titre Professionnel Concepteur Développeur d’Applications (CDA)
-
-Année : 2025
-
-Version : 1.0.0
+Ce projet est réalisé dans un cadre pédagogique (CDA).
