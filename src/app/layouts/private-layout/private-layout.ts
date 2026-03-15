@@ -40,44 +40,21 @@ export class PrivateLayoutComponent {
     this.auth.me().subscribe({
       next: (res) => {
         const user = res?.user;
-
-        // 🔹 refus temporaire pour la session
-        const dismissedForSession =
-          sessionStorage.getItem('rgpd_modal_dismissed') === 'true';
-
-        // 🔹 affichage uniquement si :
-        // - utilisateur OAuth
-        // - consentement jamais donné
-        // - pas refusé pour la session
-        const mustShowRgpdModal =
+        this.showRgpdModal =
           !!user &&
           user.isOAuth === true &&
-          user.consentRgpd === false &&
-          user.consentRgpdAt === null &&
-          !dismissedForSession;
-
-        this.showRgpdModal = mustShowRgpdModal;
+          user.consentRgpd === false;
       },
     });
   }
 
-  closeRgpdModal(): void {
-
-    sessionStorage.setItem('rgpd_modal_dismissed', 'true');
-    this.showRgpdModal = false;
+  onLogout(): void {
+    this.auth.logout();
   }
 
   acceptRgpd(): void {
-    // fermer immédiatement la modale (UX)
-    this.showRgpdModal = false;
-
     this.auth.acceptRgpd().subscribe({
-      next: () => {
-        sessionStorage.removeItem('rgpd_modal_dismissed');
-      },
-      error: () => {
-        // optionnel : rollback UI
-      },
+      next: () => { this.showRgpdModal = false; },
     });
   }
 

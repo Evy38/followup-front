@@ -22,7 +22,7 @@ import { FormsModule } from '@angular/forms';
 export class RgpdConsentModalComponent {
   @Input() open = false;
 
-  @Output() close = new EventEmitter<void>();
+  @Output() logout = new EventEmitter<void>();
   @Output() accept = new EventEmitter<void>();
 
   checked = false;
@@ -30,6 +30,5 @@ export class RgpdConsentModalComponent {
   onAccept(): void {
     if (!this.checked) return;
     this.accept.emit();
-    this.close.emit()
   }
 }
