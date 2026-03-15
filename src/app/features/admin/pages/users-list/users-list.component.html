@@ -59,6 +59,11 @@
       <span class="stat-number">{{ totalPendingDeletion }}</span>
       <span class="stat-label">En attente de suppression</span>
     </div>
+
+    <div class="stat-card stat-purge">
+      <span class="stat-number">{{ totalToPurge }}</span>
+      <span class="stat-label">À purger</span>
+    </div>
   </div>
 
   <!-- ============================================================
@@ -97,11 +102,17 @@
         (click)="changeFilter('active')">
         Actifs
       </button>
-      <button 
+      <button
         class="filter-btn filter-danger"
         [class.active]="selectedFilter === 'deleted'"
         (click)="changeFilter('deleted')">
         En attente de suppression
+      </button>
+      <button
+        class="filter-btn filter-purge"
+        [class.active]="selectedFilter === 'purge'"
+        (click)="changeFilter('purge')">
+        À purger
       </button>
     </div>
   </div>
@@ -217,18 +228,24 @@
 
           <!-- Statut de suppression -->
           <td class="user-status">
-            <span 
-              *ngIf="!isMarkedForDeletion(user)"
+            <span
+              *ngIf="!isMarkedForDeletion(user) && !user.deletedAt"
               class="badge badge-active">
               Actif
             </span>
-            <button 
+            <button
               *ngIf="isMarkedForDeletion(user)"
               class="btn-hard-delete"
               (click)="openDeleteModal(user)"
               title="Confirmer la suppression">
               Confirmer suppression
             </button>
+            <span
+              *ngIf="user.deletedAt"
+              class="badge badge-purge"
+              [title]="'Suppression confirmée le ' + (user.deletedAt | date:'dd/MM/yyyy')">
+              À purger
+            </span>
           </td>
         </tr>
       </tbody>

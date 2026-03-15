@@ -14,6 +14,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../../core/auth/auth.service';
+import { ToastService } from '../../../core/ui/toast.service';
 
 @Component({
   selector: 'app-google-callback',
@@ -24,8 +25,17 @@ export class GoogleCallbackComponent implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private auth = inject(AuthService);
+  private toast = inject(ToastService);
 
   ngOnInit(): void {
+    const error = this.route.snapshot.queryParamMap.get('error');
+    if (error === 'account_deleted') {
+      this.auth.removeToken();
+      this.toast.show(`Votre compte est en cours de suppression et n'est plus accessible. Pour revenir sur cette décision, contactez notre support.`, 'error');
+      this.router.navigate(['/']);
+      return;
+    }
+
     const token = this.route.snapshot.queryParamMap.get('token');
     console.log('🔍 Google Callback - Token reçu:', token);
     
@@ -38,7 +48,8 @@ export class GoogleCallbackComponent implements OnInit {
           console.log('🔍 Google Callback - Réponse /me:', res);
           
           if (!res?.authenticated) {
-            console.error('❌ Utilisateur non authentifié');
+            this.auth.removeToken();
+            this.toast.show(`Votre compte est en cours de suppression et n'est plus accessible. Pour revenir sur cette décision, contactez notre support.`, 'error');
             this.router.navigate(['/']);
             return;
           }
@@ -64,8 +75,11 @@ export class GoogleCallbackComponent implements OnInit {
             ]
           );
         },
-        error: (error) => {
-          console.error('❌ Google Callback - Erreur /me:', error);
+        error: (err) => {
+          this.auth.removeToken();
+          if (err.status === 403) {
+            this.toast.show(`Votre compte est en cours de suppression et n'est plus accessible. Pour revenir sur cette décision, contactez notre support.`, 'error');
+          }
           this.router.navigate(['/']);
         }
       });

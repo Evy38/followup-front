@@ -66,7 +66,7 @@ export class UsersListComponent implements OnInit {
   isPurging = false;
 
   // Filtre de statut
-  selectedFilter: 'active' | 'deleted' | 'all' = 'all';
+  selectedFilter: 'active' | 'deleted' | 'purge' | 'all' = 'all';
 
   // Gestion des updates de role
   updatingRoleIds = new Set<number>();
@@ -109,7 +109,7 @@ export class UsersListComponent implements OnInit {
   /**
    * Change le filtre de statut
    */
-  changeFilter(filter: 'active' | 'deleted' | 'all'): void {
+  changeFilter(filter: 'active' | 'deleted' | 'purge' | 'all'): void {
     this.selectedFilter = filter;
     this.applyFilters();
   }
@@ -121,16 +121,18 @@ export class UsersListComponent implements OnInit {
     // Filtrer par statut d'abord
     let filtered = this.users.filter(user => {
       const hasDeletionRequest = this.hasValue(user.deletionRequestedAt);
-      const notHardDeleted = !this.hasValue(user.deletedAt);
-      
+      const hasDeletedAt = this.hasValue(user.deletedAt);
+
       switch (this.selectedFilter) {
         case 'active':
-          return !hasDeletionRequest && notHardDeleted;
+          return !hasDeletionRequest && !hasDeletedAt;
         case 'deleted':
-          return hasDeletionRequest && notHardDeleted;
+          return hasDeletionRequest && !hasDeletedAt;
+        case 'purge':
+          return hasDeletedAt;
         case 'all':
         default:
-          return notHardDeleted;
+          return true;
       }
     });
 
@@ -211,10 +213,17 @@ export class UsersListComponent implements OnInit {
   }
 
   /**
-   * Nombre d'utilisateurs en attente de suppression
+   * Nombre d'utilisateurs en attente de confirmation de suppression
    */
   get totalPendingDeletion(): number {
     return this.users.filter((user) => user.deletionRequestedAt && !user.deletedAt).length;
+  }
+
+  /**
+   * Nombre d'utilisateurs en attente de purge (suppression confirmée)
+   */
+  get totalToPurge(): number {
+    return this.users.filter((user) => !!user.deletedAt).length;
   }
 
   // ============================================================

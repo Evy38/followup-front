@@ -121,7 +121,7 @@ export class LoginComponent implements OnInit {
             const deletionRequested = user?.user?.deletionRequestedAt ?? user?.user?.deletion_requested_at;
             if (deletionRequested) {
               this.auth.removeToken();
-              this.toast.show('Ce compte a été supprimé. La connexion est impossible.', 'error');
+              this.toast.show(`Votre compte est en cours de suppression et n'est plus accessible. Pour revenir sur cette décision, contactez notre support.`, 'error');
               this.cdr.detectChanges();
               return;
             }
@@ -151,11 +151,11 @@ export class LoginComponent implements OnInit {
           },
           error: (err) => {
             this.loading = false;
-            if (err.status === 403) {
-              const errMsg: string = err.error?.message ?? err.error?.error ?? '';
+            const errMsg: string = err.error?.message ?? err.error?.error ?? err.error?.detail ?? '';
+            if (err.status === 401 || err.status === 403) {
               if (errMsg.toLowerCase().includes('supprimé')) {
                 this.auth.removeToken();
-                this.toast.show('Ce compte a été supprimé. La connexion est impossible.', 'error');
+                this.toast.show(`Votre compte est en cours de suppression et n'est plus accessible. Pour revenir sur cette décision, contactez notre support.`, 'error');
                 this.cdr.detectChanges();
               } else {
                 this.notVerifiedMessage = 'Vous devez confirmer votre email, cliquez ici pour recevoir un nouveau mail de confirmation.';

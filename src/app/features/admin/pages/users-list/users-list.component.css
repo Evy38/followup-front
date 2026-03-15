@@ -136,6 +136,15 @@
   border: 1px solid #ffb3b3;
 }
 
+.stat-card.stat-purge .stat-number {
+  color: #d97706;
+}
+
+.stat-card.stat-purge {
+  background: #fffbeb;
+  border: 1px solid #fcd34d;
+}
+
 /* ============================================================
    ACTIONS ROLE
    ============================================================ */
@@ -279,6 +288,24 @@
   color: white;
   border-color: #ff4d4f;
   box-shadow: 0 4px 12px rgba(255, 77, 79, 0.25);
+}
+
+.filter-btn.filter-purge {
+  color: #d97706;
+  border-color: #fcd34d;
+  background: #fffbeb;
+}
+
+.filter-btn.filter-purge:hover {
+  background: #fef3c7;
+  border-color: #f59e0b;
+}
+
+.filter-btn.filter-purge.active {
+  background: #d97706;
+  color: white;
+  border-color: #d97706;
+  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.25);
 }
 
 /* ============================================================
@@ -492,6 +519,12 @@
   background: #e6ffed;
   color: #2eae4a;
   border: 1px solid #a3e6b8;
+}
+
+.badge-purge {
+  background: #fffbeb;
+  color: #d97706;
+  border: 1px solid #fcd34d;
 }
 
 .btn-hard-delete {
