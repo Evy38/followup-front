@@ -107,7 +107,6 @@ export class AuthService {
   }
 
   logout(): void {
-    sessionStorage.removeItem('rgpd_modal_dismissed');
     this.removeToken();
     this.router.navigate([
       {

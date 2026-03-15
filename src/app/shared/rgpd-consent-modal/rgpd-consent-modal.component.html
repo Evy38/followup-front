@@ -1,9 +1,9 @@
-<div class="backdrop" *ngIf="open" (click)="close.emit()">
-  <div class="modal" (click)="$event.stopPropagation()">
+<div class="backdrop" *ngIf="open">
+  <div class="modal">
     <h2>Protection de vos données</h2>
 
     <p>
-      Pour utiliser FollowUp, vous pouvez accepter le traitement de vos données
+      Pour utiliser FollowUp, vous devez accepter le traitement de vos données
       conformément à notre politique de confidentialité.
     </p>
 
@@ -13,8 +13,8 @@
     </label>
 
     <div class="actions">
-      <button type="button" class="secondary" (click)="close.emit()">
-        Plus tard
+      <button type="button" class="secondary" (click)="logout.emit()">
+        Se déconnecter
       </button>
       <button type="button" [disabled]="!checked" (click)="onAccept()">
         J’accepte
