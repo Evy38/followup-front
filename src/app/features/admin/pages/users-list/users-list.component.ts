@@ -301,9 +301,11 @@ export class UsersListComponent implements OnInit {
    * @returns true si l'utilisateur a demandé la suppression
    */
   isMarkedForDeletion(user: User): boolean {
-    const hasDeletionRequest = this.hasValue(user.deletionRequestedAt);
-    const notHardDeleted = !this.hasValue(user.deletedAt);
-    return hasDeletionRequest && notHardDeleted;
+    return this.hasValue(user.deletionRequestedAt) && !this.hasValue(user.deletedAt);
+  }
+
+  isHardDeleted(user: User): boolean {
+    return this.hasValue(user.deletedAt);
   }
 
   private buildRoles(makeAdmin: boolean): string[] {

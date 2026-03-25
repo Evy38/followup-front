@@ -53,7 +53,7 @@ export class UserService {
   getAllUsers(): Observable<User[]> {
     console.log('🔍 [UserService] Récupération de la liste des utilisateurs');
     
-    return this.http.get<User[]>(this.apiUrl).pipe(
+    return this.http.get<User[]>(`${this.apiUrl}?filter=all_with_deleted`).pipe(
       map((users) => users.map((user) => this.normalizeUser(user))),
       tap((users) => {
         console.log(`✅ [UserService] ${users.length} utilisateur(s) récupéré(s)`);

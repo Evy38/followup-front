@@ -193,14 +193,18 @@
 
           <!-- Action rôle -->
           <td>
-            <button
-              class="btn-role"
-              [class.btn-role--admin]="isAdmin(user)"
-              [disabled]="isUpdatingRole(user)"
-              (click)="toggleAdminRole(user)"
-            >
-              {{ isAdmin(user) ? 'Retirer admin' : 'Passer admin' }}
-            </button>
+            @if (!isHardDeleted(user)) {
+              <button
+                class="btn-role"
+                [class.btn-role--admin]="isAdmin(user)"
+                [disabled]="isUpdatingRole(user)"
+                (click)="toggleAdminRole(user)"
+              >
+                {{ isAdmin(user) ? 'Retirer admin' : 'Passer admin' }}
+              </button>
+            } @else {
+              <span class="text-muted">—</span>
+            }
           </td>
           
           <!-- Vérification email -->
