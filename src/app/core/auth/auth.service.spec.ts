@@ -136,7 +136,7 @@ describe('AuthService', () => {
   it('should fetch user data with me() and update userSubject', (done) => {
     const mockUserResponse = { 
       authenticated: true, 
-      user: { id: 1, email: 'test@gmail.com', isVerified: true, roles: ['ROLE_USER'] } 
+      user: { id: '00000000-0000-0000-0000-000000000001', email: 'test@gmail.com', isVerified: true, roles: ['ROLE_USER'] }
     };
     
     service.me().subscribe((res) => {

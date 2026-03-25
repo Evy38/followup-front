@@ -41,8 +41,8 @@ export interface EntretienApi {
 	/** IRI unique de l'entretien (ex: "/api/entretiens/1") */
 	'@id': string;
 
-	/** Identifiant numérique */
-	id: number;
+	/** Identifiant UUID */
+	id: string;
 
 	/** Date de l'entretien au format ISO 8601 (YYYY-MM-DD) */
 	dateEntretien: string;
@@ -69,8 +69,8 @@ export interface EntretienApi {
  * @example
  * ```typescript
  * const candidature: Candidature = {
- *   '@id': '/api/candidatures/42',
- *   id: 42,
+ *   '@id': '/api/candidatures/550e8400-e29b-41d4-a716-446655440000',
+ *   id: '550e8400-e29b-41d4-a716-446655440000',
  *   jobTitle: 'Développeur Full Stack',
  *   dateCandidature: '2024-01-15T10:30:00Z',
  *   entreprise: { nom: 'TechCorp' },
@@ -85,8 +85,8 @@ export interface Candidature {
 	/** IRI unique de la candidature (ex: "/api/candidatures/42") */
 	'@id': string;
 
-	/** Identifiant numérique */
-	id: number;
+	/** Identifiant UUID */
+	id: string;
 
 	/** Titre du poste */
 	jobTitle: string;
@@ -104,7 +104,7 @@ export interface Candidature {
 	externalOfferId: string;
 
 	/** Entreprise associée à la candidature */
-	entreprise: EntrepriseApi;
+	entreprise: EntrepriseApi | null;
 
 	/** Statut actuel de la candidature */
 	statut: StatutApi;

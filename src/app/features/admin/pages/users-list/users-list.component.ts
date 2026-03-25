@@ -69,7 +69,7 @@ export class UsersListComponent implements OnInit {
   selectedFilter: 'active' | 'deleted' | 'purge' | 'all' = 'all';
 
   // Gestion des updates de role
-  updatingRoleIds = new Set<number>();
+  updatingRoleIds = new Set<string>();
   // ============================================================
   // LIFECYCLE HOOKS
   // ============================================================
@@ -331,7 +331,7 @@ export class UsersListComponent implements OnInit {
   /**
    * TrackBy pour optimiser le ngFor
    */
-  trackByUserId(index: number, user: User): number {
+  trackByUserId(index: number, user: User): string {
     return user.id;
   }
 

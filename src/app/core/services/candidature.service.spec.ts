@@ -46,8 +46,8 @@ describe('CandidatureService', () => {
     it('should get user candidatures from API', () => {
         const mockCandidatures = [
             {
-                '@id': '/api/candidatures/1',
-                id: 1,
+                '@id': '/api/candidatures/00000000-0000-0000-0000-000000000001',
+                id: '00000000-0000-0000-0000-000000000001',
                 jobTitle: 'Développeur Angular',
                 dateCandidature: '2024-01-15T10:00:00Z',
                 externalOfferId: 'ext-123',
@@ -56,8 +56,8 @@ describe('CandidatureService', () => {
                 statutReponse: 'attente'
             },
             {
-                '@id': '/api/candidatures/2',
-                id: 2,
+                '@id': '/api/candidatures/00000000-0000-0000-0000-000000000002',
+                id: '00000000-0000-0000-0000-000000000002',
                 jobTitle: 'Développeur PHP',
                 dateCandidature: '2024-01-16T10:00:00Z',
                 externalOfferId: 'ext-456',
@@ -91,7 +91,7 @@ describe('CandidatureService', () => {
         };
 
         service.createFromOffer(payload).subscribe((response) => {
-            expect(response.id).toBe(42);
+            expect(response.id).toBe('00000000-0000-0000-0000-000000000042');
         });
 
         const req = httpMock.expectOne(`${environment.apiUrl}/candidatures/from-offer`);
@@ -102,7 +102,7 @@ describe('CandidatureService', () => {
         expect(req.request.body.company).toBe('TechCorp SAS');
         expect(req.request.body.redirectUrl).toBe('https://adzuna.fr/job/123');
         
-        req.flush({ id: 42, '@id': '/api/candidatures/42' });
+        req.flush({ id: '00000000-0000-0000-0000-000000000042', '@id': '/api/candidatures/00000000-0000-0000-0000-000000000042' });
     });
 
     /**

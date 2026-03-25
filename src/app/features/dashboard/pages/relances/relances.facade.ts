@@ -243,7 +243,7 @@ export class RelancesFacade {
     }
 
     private patchCandidature(
-        id: number,
+        id: string,
         patch: Partial<Candidature>
     ): void {
         this.candidaturesSubject.next(

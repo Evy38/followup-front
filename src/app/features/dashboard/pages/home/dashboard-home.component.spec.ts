@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideRouter } from '@angular/router';
 import { DashboardHomeComponent } from './dashboard-home.component';
 import { CandidatureService } from '../../../../core/services/candidature.service';
 import { Candidature } from '../../../../core/models/candidature.model';
@@ -29,6 +31,9 @@ describe('DashboardHomeComponent', () => {
     await TestBed.configureTestingModule({
       imports: [DashboardHomeComponent],
       providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
         { provide: CandidatureService, useValue: serviceSpy },
         { provide: ChangeDetectorRef, useValue: cdrSpy }
       ]
@@ -38,6 +43,11 @@ describe('DashboardHomeComponent', () => {
     component = fixture.componentInstance;
     candidatureService = TestBed.inject(CandidatureService) as jasmine.SpyObj<CandidatureService>;
     cdr = TestBed.inject(ChangeDetectorRef) as jasmine.SpyObj<ChangeDetectorRef>;
+  });
+
+  afterEach(() => {
+    component.candidatures = [];
+    fixture.destroy();
   });
 
   /**
@@ -53,13 +63,13 @@ describe('DashboardHomeComponent', () => {
   it('should load candidatures on init', () => {
     const mockCandidatures: Partial<Candidature>[] = [
       { 
-        id: 1, 
+        id: '00000000-0000-0000-0000-000000000001',
         jobTitle: 'Dev Angular',
         relances: [], 
         entretiens: [] 
       },
       { 
-        id: 2, 
+        id: '00000000-0000-0000-0000-000000000002',
         jobTitle: 'Dev PHP',
         relances: [], 
         entretiens: [] 
@@ -80,9 +90,9 @@ describe('DashboardHomeComponent', () => {
    */
   it('should calculate total candidatures correctly', () => {
     component.candidatures = [
-      { id: 1 } as Candidature,
-      { id: 2 } as Candidature,
-      { id: 3 } as Candidature
+      { id: '00000000-0000-0000-0000-000000000001' } as Candidature,
+      { id: '00000000-0000-0000-0000-000000000002' } as Candidature,
+      { id: '00000000-0000-0000-0000-000000000003' } as Candidature
     ];
 
     expect(component.totalCandidatures).toBe(3);
@@ -94,14 +104,14 @@ describe('DashboardHomeComponent', () => {
   it('should calculate entretiens prevus correctly', () => {
     component.candidatures = [
       { 
-        id: 1, 
+        id: '00000000-0000-0000-0000-000000000001',
         entretiens: [
           { statut: 'prevu' } as any,
           { statut: 'prevu' } as any
         ] 
       } as Candidature,
       { 
-        id: 2, 
+        id: '00000000-0000-0000-0000-000000000002',
         entretiens: [
           { statut: 'passe' } as any
         ] 
@@ -117,14 +127,14 @@ describe('DashboardHomeComponent', () => {
   it('should calculate relances effectuees correctly', () => {
     component.candidatures = [
       { 
-        id: 1, 
+        id: '00000000-0000-0000-0000-000000000001',
         relances: [
           { faite: true } as any,
           { faite: true } as any
         ] 
       } as Candidature,
       { 
-        id: 2, 
+        id: '00000000-0000-0000-0000-000000000002',
         relances: [
           { faite: false } as any,
           { faite: true } as any
@@ -141,19 +151,19 @@ describe('DashboardHomeComponent', () => {
   it('should calculate retours positifs correctly', () => {
     component.candidatures = [
       { 
-        id: 1,
+        id: '00000000-0000-0000-0000-000000000001',
         statutReponse: 'engage',
         entretiens: []
       } as unknown as Candidature,
       { 
-        id: 2,
+        id: '00000000-0000-0000-0000-000000000002',
         statutReponse: 'attente',
         entretiens: [
           { statut: 'passe', resultat: 'engage' } as any
         ]
       } as unknown as Candidature,
       { 
-        id: 3,
+        id: '00000000-0000-0000-0000-000000000003',
         statutReponse: 'attente',
         entretiens: [
           { statut: 'passe', resultat: 'negative' } as any

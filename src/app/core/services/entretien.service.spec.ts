@@ -43,8 +43,8 @@ describe('EntretienService', () => {
    */
   it('should create entretien with correct payload', () => {
     const mockResponse: EntretienApi = {
-      '@id': '/api/entretiens/1',
-      id: 1,
+      '@id': '/api/entretiens/00000000-0000-0000-0000-000000000001',
+      id: '00000000-0000-0000-0000-000000000001',
       dateEntretien: '2025-03-15',
       heureEntretien: '10:00:00',
       statut: 'prevu'
@@ -72,8 +72,8 @@ describe('EntretienService', () => {
    */
   it('should update entretien status and result', () => {
     const mockResponse: EntretienApi = {
-      '@id': '/api/entretiens/2',
-      id: 2,
+      '@id': '/api/entretiens/00000000-0000-0000-0000-000000000002',
+      id: '00000000-0000-0000-0000-000000000002',
       dateEntretien: '2025-03-15',
       heureEntretien: '10:00:00',
       statut: 'passe',

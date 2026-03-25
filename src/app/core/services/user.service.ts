@@ -80,7 +80,7 @@ export class UserService {
    * });
    * ```
    */
-  getUserById(id: number): Observable<User> {
+  getUserById(id: string): Observable<User> {
     console.log(`🔍 [UserService] Récupération de l'utilisateur ID ${id}`);
     
     return this.http.get<User>(`${this.apiUrl}/${id}`).pipe(
@@ -113,7 +113,7 @@ export class UserService {
    * });
    * ```
    */
-  updateUser(id: number, userData: Partial<User>): Observable<User> {
+  updateUser(id: string, userData: Partial<User>): Observable<User> {
     console.log(`✏️ [UserService] Mise à jour de l'utilisateur ID ${id}`, userData);
     
     return this.http.put<User>(`${this.apiUrl}/${id}`, userData).pipe(
@@ -185,7 +185,7 @@ export class UserService {
    *
    * @warning Action irréversible — demander confirmation à l'utilisateur avant l'appel.
    */
-  deleteUser(id: number): Observable<void> {
+  deleteUser(id: string): Observable<void> {
     console.log(`🗑️ [UserService] Suppression de l'utilisateur ID ${id}`);
     
     return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(

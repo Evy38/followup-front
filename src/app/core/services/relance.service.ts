@@ -33,7 +33,7 @@ export class RelanceService {
    *
    * @endpoint PATCH /api/relances/{id}
    */
-  updateRelance(relanceId: number, faite: boolean) {
+  updateRelance(relanceId: string, faite: boolean) {
     return this.http.patch<Relance>(
       `${this.apiUrl}/${relanceId}`,
       {
