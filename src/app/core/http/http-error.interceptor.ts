@@ -40,14 +40,12 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
         const msg: string = err.error?.message ?? err.error?.error ?? err.error?.detail ?? '';
 
         if (msg.toLowerCase().includes('supprimé')) {
-          localStorage.removeItem('token');
           toast.show(`Votre compte est en cours de suppression et n'est plus accessible. Pour revenir sur cette décision, contactez notre support.`, 'error');
           router.navigate([{ outlets: { primary: '', overlay: 'login' } }]);
         } else if (msg.toLowerCase().includes('vérifié') || msg.toLowerCase().includes('verifié')) {
           // laissé aux composants (login, google-callback)
         } else {
           // session expirée ou token invalide
-          localStorage.removeItem('token');
           router.navigate([{ outlets: { primary: '', overlay: 'login' } }]);
         }
       }
