@@ -33,7 +33,6 @@ describe('LoginComponent', () => {
     const authSpy = jasmine.createSpyObj('AuthService', [
       'login',
       'me',
-      'removeToken',
       'clearAuthError',
       'googleLogin',
       'resendVerificationEmail'
@@ -144,7 +143,7 @@ describe('LoginComponent', () => {
       .toContain('confirmer votre email');
 
     expect(component.showResendButton).toBeTrue();
-    expect(authService.removeToken).toHaveBeenCalled();
+    // removeToken n'existe plus — le cookie est supprimé côté serveur via POST /api/logout
   });
 
 
