@@ -66,10 +66,10 @@ export class UsersListComponent implements OnInit {
   isPurging = false;
 
   // Filtre de statut
-  selectedFilter: 'active' | 'deleted' | 'hard_deleted' | 'all' = 'all';
+  selectedFilter: 'active' | 'deleted' | 'purge' | 'all' = 'all';
 
   // Gestion des updates de role
-  updatingRoleIds = new Set<number>();
+  updatingRoleIds = new Set<string>();
   // ============================================================
   // LIFECYCLE HOOKS
   // ============================================================
@@ -109,7 +109,7 @@ export class UsersListComponent implements OnInit {
   /**
    * Change le filtre de statut
    */
-  changeFilter(filter: 'active' | 'deleted' | 'hard_deleted' | 'all'): void {
+  changeFilter(filter: 'active' | 'deleted' | 'purge' | 'all'): void {
     this.selectedFilter = filter;
     this.applyFilters();
   }
@@ -121,15 +121,15 @@ export class UsersListComponent implements OnInit {
     // Filtrer par statut d'abord
     let filtered = this.users.filter(user => {
       const hasDeletionRequest = this.hasValue(user.deletionRequestedAt);
-      const isHardDeleted = this.hasValue(user.deletedAt);
+      const hasDeletedAt = this.hasValue(user.deletedAt);
 
       switch (this.selectedFilter) {
         case 'active':
-          return !hasDeletionRequest && !isHardDeleted;
+          return !hasDeletionRequest && !hasDeletedAt;
         case 'deleted':
-          return hasDeletionRequest && !isHardDeleted;
-        case 'hard_deleted':
-          return isHardDeleted;
+          return hasDeletionRequest && !hasDeletedAt;
+        case 'purge':
+          return hasDeletedAt;
         case 'all':
         default:
           return true;
@@ -213,16 +213,16 @@ export class UsersListComponent implements OnInit {
   }
 
   /**
-   * Nombre d'utilisateurs en attente de suppression
+   * Nombre d'utilisateurs en attente de confirmation de suppression
    */
   get totalPendingDeletion(): number {
     return this.users.filter((user) => user.deletionRequestedAt && !user.deletedAt).length;
   }
 
   /**
-   * Nombre de comptes supprimés définitivement (en attente de purge)
+   * Nombre d'utilisateurs en attente de purge (suppression confirmée)
    */
-  get totalHardDeleted(): number {
+  get totalToPurge(): number {
     return this.users.filter((user) => !!user.deletedAt).length;
   }
 
@@ -333,7 +333,7 @@ export class UsersListComponent implements OnInit {
   /**
    * TrackBy pour optimiser le ngFor
    */
-  trackByUserId(_index: number, user: User): number {
+  trackByUserId(index: number, user: User): string {
     return user.id;
   }
 

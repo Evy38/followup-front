@@ -4,23 +4,21 @@
  * Gère l'ensemble du cycle d'authentification :
  * - Connexion / déconnexion par email+password
  * - OAuth Google (redirection + callback)
- * - Stockage du JWT dans localStorage
  * - Vérification de la session courante via `/api/me`
  * - Exposition de l'utilisateur courant via `user$` (BehaviorSubject)
  * - Gestion des erreurs d'authentification (authError$)
  * - Enregistrement du consentement RGPD
  *
- * Le token JWT est ajouté automatiquement sur chaque requête par {@link jwtInterceptor}.
+ * Le token JWT est transporté en cookie HttpOnly — aucun stockage localStorage.
+ * Le cookie est envoyé automatiquement par le navigateur via {@link credentialsInterceptor}.
  */
-import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 
-// Interface pour l'inscription
 export interface RegisterPayload {
   firstName: string;
   lastName: string;
@@ -36,98 +34,49 @@ export class AuthService {
 
   private readonly apiUrl = environment.apiUrl;
   private readonly backendUrl = environment.backendUrl;
-  private tokenSubject = new BehaviorSubject<string | null>(null);
-  public token$ = this.tokenSubject.asObservable();
-  private isBrowser: boolean;
   private userSubject = new BehaviorSubject<any | null>(null);
   user$ = this.userSubject.asObservable();
-
 
   constructor(
     private http: HttpClient,
     private router: Router,
-    @Inject(PLATFORM_ID) platformId: Object
-  ) {
-    this.isBrowser = isPlatformBrowser(platformId);
-    if (this.isBrowser) {
-      const token = this.getToken();
-      this.tokenSubject.next(token);
-    }
-  }
-
-  private getToken(): string | null {
-    if (!this.isBrowser) return null;
-    return localStorage.getItem('token');
-  }
-
-  private setToken(token: string): void {
-    if (this.isBrowser) {
-      localStorage.setItem('token', token);
-      this.tokenSubject.next(token);
-    }
-  }
-
-  removeToken(): void {
-    if (this.isBrowser) {
-      localStorage.removeItem('token');
-      this.tokenSubject.next(null);
-    }
-  }
+  ) {}
 
   isLogged(): boolean {
-    return !!this.getToken();
+    return !!this.userSubject.value;
   }
 
   login(email: string, password: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/login_check`, {
-      email,
-      password
-    }).pipe(
-      tap((response: any) => {
-        if (response?.token) {
-          this.setToken(response.token);
-        }
-      })
-    );
+    return this.http.post(`${this.apiUrl}/login_check`, { email, password });
   }
-
 
   register(payload: RegisterPayload): Observable<any> {
     return this.http.post(`${this.apiUrl}/register`, payload);
   }
 
   forgotPassword(email: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/password/request`, { email }).pipe(
-      tap({
-        next: (response) => console.log('📧 AuthService: réponse reçue', response),
-        error: (error) => console.error('📧 AuthService: erreur', error),
-        complete: () => console.log('📧 AuthService: complete')
-      })
-    );
+    return this.http.post(`${this.apiUrl}/password/request`, { email });
   }
 
   logout(): void {
-    sessionStorage.removeItem('rgpd_modal_dismissed');
-    this.removeToken();
-    this.router.navigate([
-      {
-        outlets: {
-          primary: '',
-          overlay: 'login'
-        }
+    this.http.post(`${this.apiUrl}/logout`, {}).subscribe({
+      complete: () => {
+        this.userSubject.next(null);
+        this.router.navigate([{ outlets: { primary: '', overlay: 'login' } }]);
+      },
+      error: () => {
+        this.userSubject.next(null);
+        this.router.navigate([{ outlets: { primary: '', overlay: 'login' } }]);
       }
-    ]);
+    });
   }
-
 
   googleLogin(): void {
-    if (this.isBrowser) {
-      window.location.href = `${this.backendUrl}/auth/google`;
-    }
+    window.location.href = `${this.backendUrl}/auth/google`;
   }
 
-  handleGoogleCallback(token: string): void {
-    this.setToken(token);
+  handleGoogleCallback(): void {
+    // Le cookie est posé par le backend avant la redirection — rien à faire ici
   }
 
   me() {
@@ -145,7 +94,6 @@ export class AuthService {
   get currentUser() {
     return this.userSubject.value;
   }
-
 
   resendVerificationEmail(email: string) {
     return this.http.post(`${this.apiUrl}/verify-email/resend`, { email });
@@ -169,6 +117,4 @@ export class AuthService {
   updateUserInMemory(user: any): void {
     this.userSubject.next(user);
   }
-
-
 }

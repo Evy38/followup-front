@@ -5,7 +5,7 @@ import { environment } from '../../../environments/environment';
 
 export interface EntretienApi {
   '@id': string;
-  id: number;
+  id: string;
   dateEntretien: string;
   heureEntretien: string;
   statut: 'prevu' | 'passe' | 'annule';

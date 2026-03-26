@@ -60,8 +60,8 @@
       <span class="stat-label">En attente de suppression</span>
     </div>
 
-    <div class="stat-card stat-danger">
-      <span class="stat-number">{{ totalHardDeleted }}</span>
+    <div class="stat-card stat-purge">
+      <span class="stat-number">{{ totalToPurge }}</span>
       <span class="stat-label">À purger</span>
     </div>
   </div>
@@ -109,9 +109,9 @@
         En attente de suppression
       </button>
       <button
-        class="filter-btn filter-danger"
-        [class.active]="selectedFilter === 'hard_deleted'"
-        (click)="changeFilter('hard_deleted')">
+        class="filter-btn filter-purge"
+        [class.active]="selectedFilter === 'purge'"
+        (click)="changeFilter('purge')">
         À purger
       </button>
     </div>
@@ -232,18 +232,24 @@
 
           <!-- Statut de suppression -->
           <td class="user-status">
-            @if (isHardDeleted(user)) {
-              <span class="badge badge-purge">À purger</span>
-            } @else if (isMarkedForDeletion(user)) {
-              <button
-                class="btn-hard-delete"
-                (click)="openDeleteModal(user)"
-                title="Confirmer la suppression">
-                Confirmer suppression
-              </button>
-            } @else {
-              <span class="badge badge-active">Actif</span>
-            }
+            <span
+              *ngIf="!isMarkedForDeletion(user) && !user.deletedAt"
+              class="badge badge-active">
+              Actif
+            </span>
+            <button
+              *ngIf="isMarkedForDeletion(user)"
+              class="btn-hard-delete"
+              (click)="openDeleteModal(user)"
+              title="Confirmer la suppression">
+              Confirmer suppression
+            </button>
+            <span
+              *ngIf="user.deletedAt"
+              class="badge badge-purge"
+              [title]="'Suppression confirmée le ' + (user.deletedAt | date:'dd/MM/yyyy')">
+              À purger
+            </span>
           </td>
         </tr>
       </tbody>

@@ -51,7 +51,7 @@
             <h3 class="job-title">{{ c.jobTitle }}</h3>
 
             <p class="company-name">
-              {{ c.entreprise.nom || 'Entreprise inconnue' }}
+              {{ c.entreprise?.nom || 'Entreprise inconnue' }}
             </p>
 
             <p class="candidature-meta">

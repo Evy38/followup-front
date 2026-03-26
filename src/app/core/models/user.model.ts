@@ -37,7 +37,7 @@ export enum UserRole {
  * @example
  * ```typescript
  * const user: User = {
- *   id: 1,
+ *   id: '550e8400-e29b-41d4-a716-446655440000',
  *   email: 'user@example.com',
  *   firstName: 'Jean',
  *   lastName: 'Dupont',
@@ -50,7 +50,7 @@ export enum UserRole {
  */
 export interface User {
   /** Identifiant unique de l'utilisateur */
-  id: number;
+  id: string;
 
   /**
    * Adresse email (identifiant de connexion)

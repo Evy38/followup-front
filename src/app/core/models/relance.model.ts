@@ -21,7 +21,7 @@
  * @example
  * ```typescript
  * const relance: Relance = {
- *   id: 1,
+ *   id: '550e8400-e29b-41d4-a716-446655440000',
  *   rang: 1,
  *   dateRelance: '2024-02-15',
  *   faite: false,
@@ -31,7 +31,7 @@
  */
 export interface Relance {
   /** Identifiant unique de la relance */
-  id: number;
+  id: string;
 
   /**
    * Rang de la relance (ordre chronologique)

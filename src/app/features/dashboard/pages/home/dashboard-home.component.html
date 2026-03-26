@@ -61,7 +61,7 @@
         <li *ngFor="let c of recentCandidatures" class="section-item">
           <div class="item-main">
             <span class="item-title">{{ c.jobTitle }}</span>
-            <span class="item-sub">{{ c.entreprise.nom }}</span>
+            <span class="item-sub">{{ c.entreprise?.nom }}</span>
           </div>
           <span class="item-date">{{ formatDate(c.dateCandidature) }}</span>
         </li>
@@ -78,7 +78,7 @@
         <li *ngFor="let c of candidaturesRelancesEnRetard" class="section-item">
           <div class="item-main">
             <span class="item-title">{{ c.jobTitle }}</span>
-            <span class="item-sub">{{ c.entreprise.nom }}</span>
+            <span class="item-sub">{{ c.entreprise?.nom }}</span>
           </div>
         </li>
       </ul>
@@ -93,7 +93,7 @@
         <li *ngFor="let item of prochainEntretiens" class="section-item section-item--entretien">
           <div class="item-main">
             <span class="item-title">{{ item.candidature.jobTitle }}</span>
-            <span class="item-sub">{{ item.candidature.entreprise.nom }}</span>
+            <span class="item-sub">{{ item.candidature.entreprise?.nom }}</span>
           </div>
           <div class="entretien-datetime">
             <span class="entretien-date-badge">{{ formatDate(item.dateEntretien) }}</span>

@@ -130,11 +130,7 @@ export class ProfileComponent implements OnInit {
         this.deletingAccount = false;
         this.showDeleteModal = false;
         this.toast.show(response.message || 'Demande de suppression envoyée', 'success');
-        
-        // Déconnexion après 2 secondes
-        setTimeout(() => {
-          this.authService.logout();
-        }, 2000);
+        this.authService.logout();
       },
       error: (err) => {
         this.deletingAccount = false;
