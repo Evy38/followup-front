@@ -44,12 +44,10 @@ export class ForgotPasswordComponent {
           'success'
         );
       },
-      error: () => {
+      error: (err: any) => {
         this.loading = false;
-        this.toast.show(
-          'Impossible d’envoyer l’email',
-          'error'
-        );
+        const msg: string = err?.error?.message ?? "Impossible d'envoyer l'email.";
+        this.toast.show(msg, 'error');
       },
 
       complete: () => {

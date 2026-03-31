@@ -26,6 +26,19 @@
       <span>ou</span>
     </div>
 
+    @if (rateLimitMessage) {
+    <div class="verify-box">
+      <div class="verify-icon">⏳</div>
+      <div class="verify-content">
+        <p class="verify-title">Trop de tentatives</p>
+        <p class="verify-text">{{ rateLimitMessage }}</p>
+        <a class="verify-btn" [routerLink]="['/', { outlets: { overlay: ['forgot-password'] } }]">
+          Réinitialiser mon mot de passe
+        </a>
+      </div>
+    </div>
+    }
+
     @if (notVerifiedMessage) {
     <div class="verify-box">
       <div class="verify-icon">📩</div>
