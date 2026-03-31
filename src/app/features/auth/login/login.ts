@@ -44,13 +44,14 @@ export class LoginComponent implements OnInit {
   showWelcome = false;
 
   // --------- LOGIN ---------
-  email = '';   
+  email = '';
   password = '';
   loading = false;
   message = '';
   notVerifiedMessage: string | null = null;
   showResendButton = false;
   lastTriedEmail: string | null = null;
+  rateLimitMessage: string | null = null;
 
   ngOnInit() {
     this.auth.authError$
@@ -110,6 +111,7 @@ export class LoginComponent implements OnInit {
   login() {
     this.loading = true;
     this.message = '';
+    this.rateLimitMessage = null;
 
     this.auth.login(this.email, this.password).subscribe({
       next: () => {
@@ -170,9 +172,18 @@ export class LoginComponent implements OnInit {
           }
         });
       },
-      error: () => {
+      error: (err: any) => {
         this.loading = false;
-        this.message = 'Identifiants invalides ❌';
+        const errMsg: string = err?.error?.message ?? err?.error?.detail ?? '';
+        const isRateLimited = err.status === 429
+          || errMsg.toLowerCase().includes('too many')
+          || errMsg.toLowerCase().includes('trop de tentatives');
+
+        if (isRateLimited) {
+          this.rateLimitMessage = 'Trop de tentatives de connexion. Réessayez dans quelques minutes.';
+        } else {
+          this.message = 'Identifiants invalides ❌';
+        }
       }
     });
   }
@@ -213,12 +224,10 @@ export class LoginComponent implements OnInit {
           'success'
         );
       },
-      error: () => {
+      error: (err: any) => {
         this.loading = false;
-        this.toast.show(
-          'Erreur lors de l’envoi de l’email',
-          'error'
-        );
+        const msg: string = err?.error?.message ?? "Erreur lors de l'envoi de l'email.";
+        this.toast.show(msg, 'error');
       }
     });
   }

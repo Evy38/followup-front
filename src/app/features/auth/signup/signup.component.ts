@@ -103,8 +103,8 @@ export class SignupComponent {
         },
         error: (err: any) => {
           this.loading = false;
-          console.error('Erreur inscription', err);
           this.error =
+            err?.error?.message ??
             err?.error?.error ??
             'Erreur lors de la création du compte. Réessayez plus tard.';
         },
