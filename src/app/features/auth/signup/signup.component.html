@@ -16,8 +16,8 @@
       placeholder="mon.email@exemple.com" autocomplete="email" />
 
     <label for="signup-password">Mot de passe :</label>
-    <input id="signup-password" name="password" type="password" [(ngModel)]="password" required minlength="8"
-      autocomplete="new-password" />
+    <input id="signup-password" name="password" type="password" [(ngModel)]="password" required minlength="12"
+      pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{12,}$" autocomplete="new-password" />
 
     <label for="signup-confirm">Confirmer le mot de passe :</label>
     <input id="signup-confirm" name="confirmPassword" type="password" [(ngModel)]="confirmPassword" required
