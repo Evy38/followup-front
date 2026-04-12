@@ -23,16 +23,6 @@ export interface EntrepriseApi {
 }
 
 /**
- * Représentation d'un statut de candidature dans l'API
- * 
- * @interface StatutApi
- */
-export interface StatutApi {
-	/** Libellé du statut (ex: "En attente", "Refusée") */
-	libelle: string;
-}
-
-/**
  * Représentation d'un entretien dans l'API
  * 
  * @interface EntretienApi
@@ -105,9 +95,6 @@ export interface Candidature {
 
 	/** Entreprise associée à la candidature */
 	entreprise: EntrepriseApi | null;
-
-	/** Statut actuel de la candidature */
-	statut: StatutApi;
 
 	/** Liste des relances programmées ou effectuées */
 	relances: Relance[];
