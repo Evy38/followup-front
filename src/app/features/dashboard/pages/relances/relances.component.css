@@ -563,3 +563,94 @@
       max-width: 1400px;
     }
   }
+/* =========================================================
+   ARCHIVE
+========================================================= */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.card-actions {
+  flex-shrink: 0;
+}
+
+.btn-archive,
+.btn-unarchive {
+  background: none;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 0.25rem 0.6rem;
+  font-size: 0.75rem;
+  color: #6b7280;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+
+.btn-archive:hover {
+  background: #f3f4f6;
+  border-color: #9ca3af;
+  color: #374151;
+}
+
+.btn-unarchive {
+  color: #6d5dfc;
+  border-color: #c4b5fd;
+}
+
+.btn-unarchive:hover {
+  background: #f5f3ff;
+  border-color: #6d5dfc;
+}
+
+.btn-archive-toggle {
+  background: none;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 0.35rem 0.8rem;
+  font-size: 0.82rem;
+  color: #6b7280;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.btn-archive-toggle.active {
+  background: #f5f3ff;
+  border-color: #6d5dfc;
+  color: #6d5dfc;
+}
+
+/* =========================================================
+   VUE ARCHIVES — INFO CARTE
+========================================================= */
+.archived-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+  flex-wrap: wrap;
+}
+
+.archived-date {
+  font-size: 0.82rem;
+  color: #9ca3af;
+}
+
+.archived-statut {
+  font-size: 0.75rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 20px;
+  font-weight: 600;
+  text-transform: capitalize;
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.archived-statut--negative  { background: #fee2e2; color: #dc2626; }
+.archived-statut--engage    { background: #d1fae5; color: #059669; }
+.archived-statut--echanges  { background: #dbeafe; color: #2563eb; }
+.archived-statut--entretien { background: #ede9fe; color: #7c3aed; }
+.archived-statut--attente   { background: #f3f4f6; color: #6b7280; }

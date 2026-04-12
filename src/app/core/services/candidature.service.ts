@@ -16,7 +16,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
-import { tap, catchError } from 'rxjs/operators';
 import { Candidature } from '../models/candidature.model';
 import { environment } from '../../../environments/environment';
 
@@ -123,7 +122,6 @@ export class CandidatureService {
    * pour mettre à jour les listes affichées
    */
   notifyRefresh(): void {
-    console.log('🔄 [CandidatureService] Notification refresh');
     this.refresh$.next();
   }
 
@@ -134,54 +132,38 @@ export class CandidatureService {
    * @endpoint PATCH /api/candidatures/{id}/statut-reponse
    * 
    * @param candidatureIri IRI de la candidature (ex: "/api/candidatures/42")
-   * @param statut Nouveau statut ('attente', 'echanges', 'entretien', 'negative', 'engage', 'annule')
+   * @param statut Nouveau statut ('attente', 'echanges', 'entretien', 'negative', 'engage')
    * @returns Observable<any>
    * 
    * @throws Error si l'IRI est invalide ou le statut non autorisé
    */
-  updateStatutReponse(candidatureIri: string, statut: string): Observable<any> {
-    // Validation de l'IRI
+  updateStatutReponse(candidatureIri: string, statut: string): Observable<Candidature> {
     if (!candidatureIri) {
       throw new Error('[CandidatureService] candidatureIri manquant');
     }
 
-    // Extraction de l'ID depuis l'IRI
     const id = candidatureIri.split('/').pop();
     if (!id) {
       throw new Error('[CandidatureService] Impossible d\'extraire l\'ID depuis l\'IRI');
     }
 
-    // Liste stricte des statuts acceptés par le backend
-    const statutsValides = ['attente', 'echanges', 'entretien', 'negative', 'engage', 'annule'];
+    const statutsValides = ['attente', 'echanges', 'entretien', 'negative', 'engage'];
     if (!statutsValides.includes(statut)) {
-      throw new Error(
-        `[CandidatureService] Statut non autorisé: "${statut}". ` +
-        `Autorisés: ${statutsValides.join(', ')}`
-      );
+      throw new Error(`[CandidatureService] Statut non autorisé: "${statut}".`);
     }
 
-    console.log(`✏️ [CandidatureService] Mise à jour statut candidature #${id}:`, statut);
-
-    return this.http.patch<any>(
+    return this.http.patch<Candidature>(
       `${this.apiUrl}/candidatures/${id}/statut-reponse`,
       { statutReponse: statut },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }
-    ).pipe(
-      tap((response) => {
-        console.log('✅ [CandidatureService] Statut mis à jour avec succès');
-        console.log('   Réponse:', response);
-      }),
-      catchError((error) => {
-        console.error('❌ [CandidatureService] Erreur mise à jour statut');
-        console.error('   ID candidature:', id);
-        console.error('   Statut demandé:', statut);
-        console.error('   Erreur:', error.error?.message || error.message);
-        throw error;
-      })
+      { headers: { 'Content-Type': 'application/json' } }
     );
+  }
+
+  archive(id: string): Observable<Candidature> {
+    return this.http.post<Candidature>(`${this.apiUrl}/candidatures/${id}/archive`, {});
+  }
+
+  unarchive(id: string): Observable<Candidature> {
+    return this.http.post<Candidature>(`${this.apiUrl}/candidatures/${id}/unarchive`, {});
   }
 }
