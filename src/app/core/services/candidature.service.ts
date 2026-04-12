@@ -3,9 +3,10 @@
  *
  * Centralise les appels HTTP vers l'API candidatures :
  * - Création depuis une offre externe (Adzuna) — idempotent (200 si existante, 201 si nouvelle)
- * - Récupération de la liste de l'utilisateur connecté
+ * - Récupération de la liste de l'utilisateur connecté (actives ou archivées)
  * - Suppression d'une candidature par son IRI
- * - Mise à jour du statut de réponse (`attente`, `echanges`, `entretien`, `negative`, `engage`, `annule`)
+ * - Mise à jour du statut de réponse (`attente`, `echanges`, `entretien`, `negative`, `engage`)
+ * - Archivage / désarchivage d'une candidature
  *
  * Expose `refreshNeeded$` (Subject) pour notifier les composants
  * qu'un rechargement de données est nécessaire après une mutation.
@@ -73,18 +74,11 @@ export class CandidatureService {
    * });
    * ```
    */
-  createFromOffer(payload: CreateCandidatureFromOfferPayload): Observable<any> {
-    console.log('📤 [CandidatureService] Création candidature depuis offre');
-    console.log('   Payload envoyé:', payload);
-
-    // Validation côté client (sécurité supplémentaire)
+  createFromOffer(payload: CreateCandidatureFromOfferPayload): Observable<Candidature> {
     if (!payload.externalId || !payload.company || !payload.redirectUrl) {
-      const error = new Error('Champs obligatoires manquants : externalId, company, redirectUrl');
-      console.error('❌ [CandidatureService] Validation échouée:', error);
-      throw error;
+      throw new Error('Champs obligatoires manquants : externalId, company, redirectUrl');
     }
 
-    // Construction du payload strictement conforme au backend
     const cleanPayload: CreateCandidatureFromOfferPayload = {
       externalId: String(payload.externalId).trim(),
       company: String(payload.company).trim(),
@@ -93,26 +87,10 @@ export class CandidatureService {
       location: payload.location ? String(payload.location).trim() : null,
     };
 
-    return this.http.post<any>(
+    return this.http.post<Candidature>(
       `${this.apiUrl}/candidatures/from-offer`,
       cleanPayload,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }
-    ).pipe(
-      tap((response) => {
-        console.log('✅ [CandidatureService] Candidature créée avec succès');
-        console.log('   Réponse serveur:', response);
-      }),
-      catchError((error) => {
-        console.error('❌ [CandidatureService] Erreur lors de la création');
-        console.error('   Status:', error.status);
-        console.error('   Message:', error.error?.message || error.message);
-        console.error('   Payload envoyé:', cleanPayload);
-        throw error; // Re-throw pour que le composant puisse gérer l'erreur
-      })
+      { headers: { 'Content-Type': 'application/json' } }
     );
   }
 
@@ -122,14 +100,9 @@ export class CandidatureService {
    * @endpoint GET /api/my-candidatures
    * @returns Observable<Candidature[]> Liste des candidatures
    */
-  getMyCandidatures(): Observable<Candidature[]> {
-    console.log('🔍 [CandidatureService] Récupération des candidatures');
-
-    return this.http.get<Candidature[]>(`${this.apiUrl}/my-candidatures`).pipe(
-      tap((candidatures) => {
-        console.log(`✅ [CandidatureService] ${candidatures.length} candidature(s) récupérée(s)`);
-      })
-    );
+  getMyCandidatures(archived = false): Observable<Candidature[]> {
+    const params = archived ? '?archived=true' : '';
+    return this.http.get<Candidature[]>(`${this.apiUrl}/my-candidatures${params}`);
   }
 
   /**
@@ -140,13 +113,7 @@ export class CandidatureService {
    * @returns Observable<void>
    */
   deleteCandidatureByIri(candidatureIri: string): Observable<void> {
-    console.log('🗑️ [CandidatureService] Suppression candidature:', candidatureIri);
-
-    return this.http.delete<void>(`${this.apiUrl}${candidatureIri}`).pipe(
-      tap(() => {
-        console.log('✅ [CandidatureService] Candidature supprimée');
-      })
-    );
+    return this.http.delete<void>(`${this.apiUrl}${candidatureIri}`);
   }
 
   /**
