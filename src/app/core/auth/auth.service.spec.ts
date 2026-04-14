@@ -54,7 +54,7 @@ describe('AuthService', () => {
   it('isLogged() should return true after me() loads a user', (done) => {
     const mockUserResponse = {
       authenticated: true,
-      user: { id: '00000000-0000-0000-0000-000000000001', email: 'test@gmail.com', roles: ['ROLE_USER'] }
+      user: { id: '00000000-0000-0000-0000-000000000001', email: 'test@gmail.com', roles: ['ROLE_USER'], isVerified: true, consentRgpd: true }
     };
 
     service.me().subscribe(() => {
@@ -85,7 +85,7 @@ describe('AuthService', () => {
     // Simuler un utilisateur connecté
     const mockUserResponse = {
       authenticated: true,
-      user: { id: '00000000-0000-0000-0000-000000000001', email: 'test@gmail.com', roles: ['ROLE_USER'] }
+      user: { id: '00000000-0000-0000-0000-000000000001', email: 'test@gmail.com', roles: ['ROLE_USER'], isVerified: true, consentRgpd: true }
     };
     service.me().subscribe();
     httpMock.expectOne(`${environment.apiUrl}/me`).flush(mockUserResponse);
@@ -120,7 +120,7 @@ describe('AuthService', () => {
   it('me() should update currentUser on success', (done) => {
     const mockUserResponse = {
       authenticated: true,
-      user: { id: '00000000-0000-0000-0000-000000000001', email: 'test@gmail.com', roles: ['ROLE_USER'] }
+      user: { id: '00000000-0000-0000-0000-000000000001', email: 'test@gmail.com', roles: ['ROLE_USER'], isVerified: true, consentRgpd: true }
     };
 
     service.me().subscribe((res) => {
