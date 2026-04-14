@@ -61,13 +61,7 @@ export class SignupComponent {
       return;
     }
 
-    // Gmail obligatoire côté front aussi
     const emailTrimmed = this.email.trim().toLowerCase();
-    if (!emailTrimmed.endsWith('@gmail.com')) {
-      this.error =
-        "L'adresse doit être un Gmail (ex : monjob.followup@gmail.com).";
-      return;
-    }
 
     if (this.password !== this.confirmPassword) {
       this.error = 'Les mots de passe ne correspondent pas.';

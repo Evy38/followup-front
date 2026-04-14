@@ -23,16 +23,6 @@ export interface EntrepriseApi {
 }
 
 /**
- * Représentation d'un statut de candidature dans l'API
- * 
- * @interface StatutApi
- */
-export interface StatutApi {
-	/** Libellé du statut (ex: "En attente", "Refusée") */
-	libelle: string;
-}
-
-/**
  * Représentation d'un entretien dans l'API
  * 
  * @interface EntretienApi
@@ -106,31 +96,24 @@ export interface Candidature {
 	/** Entreprise associée à la candidature */
 	entreprise: EntrepriseApi | null;
 
-	/** Statut actuel de la candidature */
-	statut: StatutApi;
-
 	/** Liste des relances programmées ou effectuées */
 	relances: Relance[];
 
 	/**
 	 * Statut de la réponse de l'entreprise
-	 * 
+	 *
 	 * Valeurs possibles :
-	 * - 'attente' : En attente de réponse
-	 * - 'negative' : Réponse négative reçue
-	 * - 'echanges' : Échanges en cours avec l'entreprise
+	 * - 'attente'   : En attente de réponse
+	 * - 'echanges'  : Échanges en cours avec l'entreprise
 	 * - 'entretien' : Entretien programmé ou passé
-	 * - 'annule' : Candidature annulée
-	 * - 'engage' : Embauche confirmée
+	 * - 'negative'  : Réponse négative reçue
+	 * - 'engage'    : Embauche confirmée
 	 */
-	statutReponse?:
-	| 'attente'
-	| 'negative'
-	| 'echanges'
-	| 'entretien'
-	| 'annule'
-	| 'engage';
+	statutReponse?: 'attente' | 'echanges' | 'entretien' | 'negative' | 'engage';
 
 	/** Liste des entretiens programmés ou passés (optionnel) */
 	entretiens?: EntretienApi[];
+
+	/** Date d'archivage (null = candidature active) */
+	archivedAt?: string | null;
 }

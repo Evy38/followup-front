@@ -18,6 +18,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
+import { User } from '../models/user.model';
 
 export interface RegisterPayload {
   firstName: string;
@@ -34,7 +35,7 @@ export class AuthService {
 
   private readonly apiUrl = environment.apiUrl;
   private readonly backendUrl = environment.backendUrl;
-  private userSubject = new BehaviorSubject<any | null>(null);
+  private userSubject = new BehaviorSubject<User | null>(null);
   user$ = this.userSubject.asObservable();
 
   constructor(
@@ -46,15 +47,15 @@ export class AuthService {
     return !!this.userSubject.value;
   }
 
-  login(email: string, password: string): Observable<any> {
+  login(email: string, password: string): Observable<unknown> {
     return this.http.post(`${this.apiUrl}/login_check`, { email, password });
   }
 
-  register(payload: RegisterPayload): Observable<any> {
+  register(payload: RegisterPayload): Observable<unknown> {
     return this.http.post(`${this.apiUrl}/register`, payload);
   }
 
-  forgotPassword(email: string): Observable<any> {
+  forgotPassword(email: string): Observable<unknown> {
     return this.http.post(`${this.apiUrl}/password/request`, { email });
   }
 
@@ -79,11 +80,11 @@ export class AuthService {
     // Le cookie est posé par le backend avant la redirection — rien à faire ici
   }
 
-  me() {
-    return this.http.get<any>(`${this.apiUrl}/me`).pipe(
+  me(): Observable<{ authenticated: boolean; verified?: boolean; user?: User }> {
+    return this.http.get<{ authenticated: boolean; verified?: boolean; user?: User }>(`${this.apiUrl}/me`).pipe(
       tap((res) => {
         if (res?.authenticated) {
-          this.userSubject.next(res.user);
+          this.userSubject.next(res.user ?? null);
         } else {
           this.userSubject.next(null);
         }
@@ -114,7 +115,7 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/me/consent`, {});
   }
 
-  updateUserInMemory(user: any): void {
+  updateUserInMemory(user: User): void {
     this.userSubject.next(user);
   }
 }

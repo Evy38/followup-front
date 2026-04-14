@@ -33,7 +33,7 @@ export class ToastService {
   private toastSubject = new BehaviorSubject<Toast | null>(null);
   toast$ = this.toastSubject.asObservable();
 
-  private timeoutId: any;
+  private timeoutId: ReturnType<typeof setTimeout> | null = null;
 
   /**
    * Affiche un toast et le masque automatiquement après 4 secondes.

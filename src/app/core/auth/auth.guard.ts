@@ -19,7 +19,7 @@ export const authGuard: CanActivateFn = () => {
   const router = inject(Router);
 
   return auth.me().pipe(
-    map((res: { authenticated: boolean; verified: boolean }) => {
+    map((res: { authenticated: boolean; verified?: boolean }) => {
       if (!res?.authenticated || !res?.verified) {
         return redirectToLogin(router);
       }

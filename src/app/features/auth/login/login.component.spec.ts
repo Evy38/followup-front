@@ -77,7 +77,7 @@ describe('LoginComponent', () => {
   it('should call authService.login() when login is submitted', () => {
     const mockUser = {
       authenticated: true,
-      user: { id: '00000000-0000-0000-0000-000000000001', email: 'test@gmail.com', isVerified: true, roles: ['ROLE_USER'] }
+      user: { id: '00000000-0000-0000-0000-000000000001', email: 'test@gmail.com', isVerified: true, roles: ['ROLE_USER'], consentRgpd: true }
     };
 
     authService.login.and.returnValue(of({ token: 'fake-jwt-token' }));
@@ -128,7 +128,8 @@ describe('LoginComponent', () => {
         id: '00000000-0000-0000-0000-000000000001',
         email: 'test@gmail.com',
         isVerified: false,
-        roles: ['ROLE_USER']
+        roles: ['ROLE_USER'],
+        consentRgpd: true
       }
     };
 

@@ -38,9 +38,7 @@ export class VerifyEmailComponent implements OnInit {
     }
 
     this.http
-      .get<{ message?: string }>(`${environment.apiUrl}/verify-email`, {
-        params: { token }
-      })
+      .post<{ message?: string }>(`${environment.apiUrl}/verify-email`, { token })
       .subscribe({
         next: (res) => {
           console.log('Réponse reçue', res);

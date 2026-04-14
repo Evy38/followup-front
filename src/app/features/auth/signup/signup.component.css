@@ -158,6 +158,12 @@ button {
 }
 
 /* ============ MESSAGES ============ */
+.password-hint {
+  color: #6b7280;
+  font-size: 0.78rem;
+  margin-top: -0.4rem;
+}
+
 .error {
   color: #d93025;
   font-size: 0.8rem;

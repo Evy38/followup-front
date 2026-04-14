@@ -50,8 +50,7 @@ export class CandidaturesComponent implements OnInit {
         this.loading = false;
         this.cdr.detectChanges();
       },
-      error: (err) => {
-        console.error('Erreur API candidatures', err);
+      error: () => {
         this.error = 'Impossible de charger vos candidatures';
         this.loading = false;
         this.cdr.detectChanges();

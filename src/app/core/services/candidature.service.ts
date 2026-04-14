@@ -3,9 +3,10 @@
  *
  * Centralise les appels HTTP vers l'API candidatures :
  * - Création depuis une offre externe (Adzuna) — idempotent (200 si existante, 201 si nouvelle)
- * - Récupération de la liste de l'utilisateur connecté
+ * - Récupération de la liste de l'utilisateur connecté (actives ou archivées)
  * - Suppression d'une candidature par son IRI
- * - Mise à jour du statut de réponse (`attente`, `echanges`, `entretien`, `negative`, `engage`, `annule`)
+ * - Mise à jour du statut de réponse (`attente`, `echanges`, `entretien`, `negative`, `engage`)
+ * - Archivage / désarchivage d'une candidature
  *
  * Expose `refreshNeeded$` (Subject) pour notifier les composants
  * qu'un rechargement de données est nécessaire après une mutation.
@@ -15,7 +16,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
-import { tap, catchError } from 'rxjs/operators';
 import { Candidature } from '../models/candidature.model';
 import { environment } from '../../../environments/environment';
 
@@ -73,18 +73,11 @@ export class CandidatureService {
    * });
    * ```
    */
-  createFromOffer(payload: CreateCandidatureFromOfferPayload): Observable<any> {
-    console.log('📤 [CandidatureService] Création candidature depuis offre');
-    console.log('   Payload envoyé:', payload);
-
-    // Validation côté client (sécurité supplémentaire)
+  createFromOffer(payload: CreateCandidatureFromOfferPayload): Observable<Candidature> {
     if (!payload.externalId || !payload.company || !payload.redirectUrl) {
-      const error = new Error('Champs obligatoires manquants : externalId, company, redirectUrl');
-      console.error('❌ [CandidatureService] Validation échouée:', error);
-      throw error;
+      throw new Error('Champs obligatoires manquants : externalId, company, redirectUrl');
     }
 
-    // Construction du payload strictement conforme au backend
     const cleanPayload: CreateCandidatureFromOfferPayload = {
       externalId: String(payload.externalId).trim(),
       company: String(payload.company).trim(),
@@ -93,26 +86,10 @@ export class CandidatureService {
       location: payload.location ? String(payload.location).trim() : null,
     };
 
-    return this.http.post<any>(
+    return this.http.post<Candidature>(
       `${this.apiUrl}/candidatures/from-offer`,
       cleanPayload,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }
-    ).pipe(
-      tap((response) => {
-        console.log('✅ [CandidatureService] Candidature créée avec succès');
-        console.log('   Réponse serveur:', response);
-      }),
-      catchError((error) => {
-        console.error('❌ [CandidatureService] Erreur lors de la création');
-        console.error('   Status:', error.status);
-        console.error('   Message:', error.error?.message || error.message);
-        console.error('   Payload envoyé:', cleanPayload);
-        throw error; // Re-throw pour que le composant puisse gérer l'erreur
-      })
+      { headers: { 'Content-Type': 'application/json' } }
     );
   }
 
@@ -122,14 +99,9 @@ export class CandidatureService {
    * @endpoint GET /api/my-candidatures
    * @returns Observable<Candidature[]> Liste des candidatures
    */
-  getMyCandidatures(): Observable<Candidature[]> {
-    console.log('🔍 [CandidatureService] Récupération des candidatures');
-
-    return this.http.get<Candidature[]>(`${this.apiUrl}/my-candidatures`).pipe(
-      tap((candidatures) => {
-        console.log(`✅ [CandidatureService] ${candidatures.length} candidature(s) récupérée(s)`);
-      })
-    );
+  getMyCandidatures(archived = false): Observable<Candidature[]> {
+    const params = archived ? '?archived=true' : '';
+    return this.http.get<Candidature[]>(`${this.apiUrl}/my-candidatures${params}`);
   }
 
   /**
@@ -140,13 +112,7 @@ export class CandidatureService {
    * @returns Observable<void>
    */
   deleteCandidatureByIri(candidatureIri: string): Observable<void> {
-    console.log('🗑️ [CandidatureService] Suppression candidature:', candidatureIri);
-
-    return this.http.delete<void>(`${this.apiUrl}${candidatureIri}`).pipe(
-      tap(() => {
-        console.log('✅ [CandidatureService] Candidature supprimée');
-      })
-    );
+    return this.http.delete<void>(`${this.apiUrl}${candidatureIri}`);
   }
 
   /**
@@ -156,7 +122,6 @@ export class CandidatureService {
    * pour mettre à jour les listes affichées
    */
   notifyRefresh(): void {
-    console.log('🔄 [CandidatureService] Notification refresh');
     this.refresh$.next();
   }
 
@@ -167,54 +132,38 @@ export class CandidatureService {
    * @endpoint PATCH /api/candidatures/{id}/statut-reponse
    * 
    * @param candidatureIri IRI de la candidature (ex: "/api/candidatures/42")
-   * @param statut Nouveau statut ('attente', 'echanges', 'entretien', 'negative', 'engage', 'annule')
+   * @param statut Nouveau statut ('attente', 'echanges', 'entretien', 'negative', 'engage')
    * @returns Observable<any>
    * 
    * @throws Error si l'IRI est invalide ou le statut non autorisé
    */
-  updateStatutReponse(candidatureIri: string, statut: string): Observable<any> {
-    // Validation de l'IRI
+  updateStatutReponse(candidatureIri: string, statut: string): Observable<Candidature> {
     if (!candidatureIri) {
       throw new Error('[CandidatureService] candidatureIri manquant');
     }
 
-    // Extraction de l'ID depuis l'IRI
     const id = candidatureIri.split('/').pop();
     if (!id) {
       throw new Error('[CandidatureService] Impossible d\'extraire l\'ID depuis l\'IRI');
     }
 
-    // Liste stricte des statuts acceptés par le backend
-    const statutsValides = ['attente', 'echanges', 'entretien', 'negative', 'engage', 'annule'];
+    const statutsValides = ['attente', 'echanges', 'entretien', 'negative', 'engage'];
     if (!statutsValides.includes(statut)) {
-      throw new Error(
-        `[CandidatureService] Statut non autorisé: "${statut}". ` +
-        `Autorisés: ${statutsValides.join(', ')}`
-      );
+      throw new Error(`[CandidatureService] Statut non autorisé: "${statut}".`);
     }
 
-    console.log(`✏️ [CandidatureService] Mise à jour statut candidature #${id}:`, statut);
-
-    return this.http.patch<any>(
+    return this.http.patch<Candidature>(
       `${this.apiUrl}/candidatures/${id}/statut-reponse`,
       { statutReponse: statut },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }
-    ).pipe(
-      tap((response) => {
-        console.log('✅ [CandidatureService] Statut mis à jour avec succès');
-        console.log('   Réponse:', response);
-      }),
-      catchError((error) => {
-        console.error('❌ [CandidatureService] Erreur mise à jour statut');
-        console.error('   ID candidature:', id);
-        console.error('   Statut demandé:', statut);
-        console.error('   Erreur:', error.error?.message || error.message);
-        throw error;
-      })
+      { headers: { 'Content-Type': 'application/json' } }
     );
+  }
+
+  archive(id: string): Observable<Candidature> {
+    return this.http.post<Candidature>(`${this.apiUrl}/candidatures/${id}/archive`, {});
+  }
+
+  unarchive(id: string): Observable<Candidature> {
+    return this.http.post<Candidature>(`${this.apiUrl}/candidatures/${id}/unarchive`, {});
   }
 }

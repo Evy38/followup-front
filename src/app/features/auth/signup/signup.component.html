@@ -11,13 +11,14 @@
     <input id="signup-firstName" name="firstName" type="text" [(ngModel)]="firstName" required
       autocomplete="given-name" />
 
-    <label for="signup-email">Adresse Gmail :</label>
+    <label for="signup-email">Adresse email :</label>
     <input id="signup-email" name="email" type="email" [(ngModel)]="email" required
-      placeholder="monjob.followup@gmail.com" autocomplete="email" />
+      placeholder="mon.email@exemple.com" autocomplete="email" />
 
     <label for="signup-password">Mot de passe :</label>
-    <input id="signup-password" name="password" type="password" [(ngModel)]="password" required minlength="8"
-      autocomplete="new-password" />
+    <input id="signup-password" name="password" type="password" [(ngModel)]="password" required minlength="12"
+      pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{12,}$" autocomplete="new-password" />
+    <p class="password-hint">12 caractères minimum,  1 majuscule, 1 chiffre, 1 caractère spécial</p>
 
     <label for="signup-confirm">Confirmer le mot de passe :</label>
     <input id="signup-confirm" name="confirmPassword" type="password" [(ngModel)]="confirmPassword" required

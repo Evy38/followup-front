@@ -11,6 +11,7 @@
 import {
   Component,
   OnInit,
+  OnDestroy,
   ChangeDetectionStrategy,
   inject,
 } from '@angular/core';
@@ -42,11 +43,12 @@ import * as RelancesHelpers from './helpers/relances.helpers';
   templateUrl: './relances.component.html',
   styleUrls: ['./relances.component.css'],
 })
-export class RelancesComponent implements OnInit {
+export class RelancesComponent implements OnInit, OnDestroy {
   private facade = inject(RelancesFacade);
 
   readonly candidatures$ = this.facade.candidatures$;
   readonly stats$ = this.facade.stats$;
+  readonly showArchived$ = this.facade.showArchived$;
 
   filterStatus: 'relances' | 'reponses' = 'relances';
 
@@ -57,7 +59,12 @@ export class RelancesComponent implements OnInit {
   helpers = RelancesHelpers;
 
   ngOnInit(): void {
+    this.facade.resetArchiveView();
     this.facade.load();
+  }
+
+  ngOnDestroy(): void {
+    this.facade.resetArchiveView();
   }
 
   // =========================
@@ -118,4 +125,29 @@ deleteEntretien(c: Candidature, e: any, event: MouseEvent) {
   event.stopPropagation();
   this.facade.deleteEntretien(c, e);
 }
+
+  // =========================
+  // ARCHIVE
+  // =========================
+  selectTab(tab: 'relances' | 'reponses'): void {
+    if (this.facade.isShowingArchived) {
+      this.facade.resetArchiveView();
+      this.facade.load();
+    }
+    this.filterStatus = tab;
+  }
+
+  toggleArchiveView(): void {
+    this.facade.toggleArchiveView();
+  }
+
+  archiveCandidature(c: Candidature, event: MouseEvent): void {
+    event.stopPropagation();
+    this.facade.archiveCandidature(c);
+  }
+
+  unarchiveCandidature(c: Candidature, event: MouseEvent): void {
+    event.stopPropagation();
+    this.facade.unarchiveCandidature(c);
+  }
 }

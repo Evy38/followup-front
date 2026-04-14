@@ -1,85 +1,85 @@
 <section class="annonces" (scroll)="onScroll($event)">
-  @if (loading) {
+  @if (loading()) {
     <p class="state">Chargement des annonces…</p>
   }
-  @if (error) {
-    <p class="state error">{{ error }}</p>
+  @if (error()) {
+    <p class="state error">{{ error() }}</p>
   }
 
-  @if (!loading && !error && jobs.length === 0) {
+  @if (!loading() && !error() && jobs().length === 0) {
     <div class="no-results">
-      <p>Aucune annonce ne correspondent à vos critères de recherche.</p>
+      <p>Aucune annonce ne correspond à vos critères de recherche.</p>
       <p class="hint">Essayez de modifier vos filtres ou d'élargir votre recherche.</p>
     </div>
   }
 
-  @if (!loading && !error && jobs.length > 0) {
+  @if (!loading() && !error() && jobs().length > 0) {
     <p class="results-count">
-      {{ jobs.length }} annonce(s) trouvée(s)
+      {{ jobs().length }} annonce(s) trouvée(s)
     </p>
   }
 
-  @if (!loading && !error) {
+  @if (!loading() && !error()) {
     <ul class="job-list">
-      @for (job of jobs; track job.externalId) {
+      @for (job of jobs(); track job.externalId) {
         <li class="job-card">
 
-      <header class="job-header">
-        <h3 class="job-title">{{ job.title }}</h3>
+          <header class="job-header">
+            <h3 class="job-title">{{ job.title }}</h3>
 
-        @if (job.contractType && job.contractType !== 'Non spécifié') {
-          <span
-            class="contract-badge"
-            [class.badge-cdi]="job.contractType === 'CDI'"
-            [class.badge-cdd]="job.contractType === 'CDD'"
-            [class.badge-interim]="job.contractType === 'Intérim'"
-          >
-            {{ job.contractType }}
-          </span>
-        }
-      </header>
+            @if (job.contractType && job.contractType !== 'Non spécifié') {
+              <span
+                class="contract-badge"
+                [class.badge-cdi]="job.contractType === 'CDI'"
+                [class.badge-cdd]="job.contractType === 'CDD'"
+                [class.badge-interim]="job.contractType === 'Intérim'"
+              >
+                {{ job.contractType }}
+              </span>
+            }
+          </header>
 
-      <p class="company"><strong>{{ job.company }}</strong></p>
-      <p class="location">{{ job.location }}</p>
+          <p class="company"><strong>{{ job.company }}</strong></p>
+          <p class="location">{{ job.location }}</p>
 
-      @if (job.salaryMin || job.salaryMax) {
-        <p class="salary">
-          💰 Salaire :
-          {{ job.salaryMin ?? '—' }} € – {{ job.salaryMax ?? '—' }} €
-        </p>
-      }
+          @if (job.salaryMin || job.salaryMax) {
+            <p class="salary">
+              💰 Salaire :
+              {{ job.salaryMin ?? '—' }} € – {{ job.salaryMax ?? '—' }} €
+            </p>
+          }
 
-      <div class="job-actions">
-        <a
-          [href]="job.redirectUrl"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="link"
-        >
-          Voir l'annonce
-        </a>
+          <div class="job-actions">
+            <a
+              [href]="job.redirectUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="link"
+            >
+              Voir l'annonce
+            </a>
 
-        <button
-          (click)="onCandidated(job)"
-          [disabled]="job._candidated"
-        >
-          {{ job._candidated ? 'Déjà candidaté' : 'J’ai candidaté' }}
-        </button>
-      </div>
+            <button
+              (click)="onCandidated(job)"
+              [disabled]="job._candidated"
+            >
+              {{ job._candidated ? 'Déjà candidaté' : "J'ai candidaté" }}
+            </button>
+          </div>
         </li>
       }
     </ul>
   }
 
   <!-- Indicateur de chargement de la page suivante -->
-  @if (loadingMore) {
+  @if (loadingMore()) {
     <div class="loading-more">
       <p class="state">Chargement d'autres annonces…</p>
     </div>
   }
 
   <!-- Message de fin de pagination -->
-  @if (!loading && !loadingMore && jobs.length > 0 && !hasMore) {
+  @if (!loading() && !loadingMore() && jobs().length > 0 && !hasMore()) {
     <div class="end-of-list">
       <p class="hint">Vous avez atteint la fin des résultats</p>
     </div>

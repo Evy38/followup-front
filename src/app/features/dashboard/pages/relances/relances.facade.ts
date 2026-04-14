@@ -5,10 +5,11 @@
  * {@link CandidatureService}, {@link RelanceService} et {@link EntretienService}.
  *
  * Responsabilités :
- * - Chargement et exposition des candidatures via `candidatures$`
+ * - Chargement et exposition des candidatures via `candidatures$` (actives ou archivées)
  * - Calcul des stats agrégées via `stats$` (total, relances en attente, faites)
  * - Marquage des relances (fait / à faire) avec optimistic update
  * - Mise à jour du statut de réponse avec toggle et rollback en cas d'erreur
+ * - Archivage / désarchivage des candidatures
  * - Création et suppression d'entretiens avec synchronisation UI locale
  *
  * Les composants ne doivent interagir qu'avec cette façade, jamais directement
@@ -38,10 +39,15 @@ export class RelancesFacade {
     private entretienService = inject(EntretienService);
     private toastService = inject(ToastService);
 
-    private readonly candidaturesSubject =
-        new BehaviorSubject<Candidature[]>([]);
+    private readonly candidaturesSubject = new BehaviorSubject<Candidature[]>([]);
+    private readonly showArchivedSubject = new BehaviorSubject<boolean>(false);
 
     readonly candidatures$ = this.candidaturesSubject.asObservable();
+    readonly showArchived$ = this.showArchivedSubject.asObservable();
+
+    get isShowingArchived(): boolean {
+        return this.showArchivedSubject.getValue();
+    }
 
     readonly stats$ = this.candidatures$.pipe(
         map((candidatures) => ({
@@ -55,7 +61,8 @@ export class RelancesFacade {
     // LOAD
     // =========================
     load(): void {
-        this.candidatureService.getMyCandidatures().subscribe({
+        const archived = this.showArchivedSubject.getValue();
+        this.candidatureService.getMyCandidatures(archived).subscribe({
             next: (data) => this.candidaturesSubject.next(data),
             error: () =>
                 this.toastService.show(
@@ -63,6 +70,15 @@ export class RelancesFacade {
                     'error'
                 ),
         });
+    }
+
+    toggleArchiveView(): void {
+        this.showArchivedSubject.next(!this.showArchivedSubject.getValue());
+        this.load();
+    }
+
+    resetArchiveView(): void {
+        this.showArchivedSubject.next(false);
     }
 
     // =========================
@@ -142,6 +158,33 @@ export class RelancesFacade {
     }
 
     // =========================
+    // ARCHIVE
+    // =========================
+    archiveCandidature(candidature: Candidature): void {
+        this.candidatureService.archive(candidature.id).subscribe({
+            next: () => {
+                this.candidaturesSubject.next(
+                    this.candidaturesSubject.getValue().filter(c => c.id !== candidature.id)
+                );
+                this.toastService.show('Candidature archivée', 'success');
+            },
+            error: () => this.toastService.show('Erreur lors de l\'archivage', 'error'),
+        });
+    }
+
+    unarchiveCandidature(candidature: Candidature): void {
+        this.candidatureService.unarchive(candidature.id).subscribe({
+            next: () => {
+                this.candidaturesSubject.next(
+                    this.candidaturesSubject.getValue().filter(c => c.id !== candidature.id)
+                );
+                this.toastService.show('Candidature restaurée', 'success');
+            },
+            error: () => this.toastService.show('Erreur lors de la restauration', 'error'),
+        });
+    }
+
+    // =========================
     // ENTRETIENS
     // =========================
     createEntretien(
@@ -197,9 +240,7 @@ export class RelancesFacade {
             entretienIri = `/api/entretiens/${entretien.id}`;
         }
 
-        // ❌ Si toujours pas d'identifiant, on abandonne
         if (!entretienIri) {
-            console.error('❌ Pas d\'identifiant pour cet entretien:', entretien);
             this.toastService.show(
                 'Impossible de supprimer cet entretien (identifiant manquant)',
                 'error'
@@ -218,8 +259,7 @@ export class RelancesFacade {
 
                 this.toastService.show('Entretien supprimé', 'success');
             },
-            error: (err) => {
-                console.error('❌ Erreur suppression backend:', err);
+            error: () => {
                 this.toastService.show(
                     "Erreur lors de la suppression de l'entretien",
                     'error'

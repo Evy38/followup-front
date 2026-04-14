@@ -8,8 +8,12 @@
  * de filtre et recharger la liste depuis la page 1.
  * Permet à l'utilisateur de candidater directement depuis une annonce
  * (via {@link CandidatureService.createFromOffer}).
+ *
+ * @note Ce composant utilise des WritableSignal pour la compatibilité avec
+ * provideZonelessChangeDetection() — les signaux déclenchent automatiquement
+ * le rendu sans Zone.js.
  */
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { JobService } from '../../../../core/services/job.service';
 import { Job } from '../../../../core/models/job.model';
 import { CandidatureService } from '../../../../core/services/candidature.service';
@@ -27,31 +31,33 @@ import { takeUntil } from 'rxjs/operators';
 })
 export class AnnoncesComponent implements OnInit {
   private destroy$ = new Subject<void>();
-  jobs: Job[] = [];
+
+  // Signaux — déclenchent automatiquement le rendu dans le mode zoneless
+  readonly jobs = signal<Job[]>([]);
+  readonly loading = signal(true);
+  readonly error = signal<string | null>(null);
+  readonly hasMore = signal(false);
+  readonly loadingMore = signal(false);
 
   villes: string[] = [];
   postes: string[] = [];
-  loading = true;
-  error: string | null = null;
 
   // Pagination
   currentPage = 1;
-  hasMore = false;
-  loadingMore = false;
   currentFilter: { ville: string; poste: string } | undefined = undefined;
+
+  // IDs des candidatures créées ou confirmées dans cette session
+  private readonly candidatedIds = new Set<string>();
 
   constructor(
     private jobService: JobService,
     private candidatureService: CandidatureService,
-    private cdr: ChangeDetectorRef,
     private annonceFilterService: AnnonceFilterService,
   ) { }
 
   ngOnInit(): void {
-    // Charger les annonces au démarrage avec les filtres par défaut
-    this.loadJobs({ ville: '', poste: '' });
-
-    // Puis s'abonner aux changements de filtres
+    // filter$ est un BehaviorSubject : il émet la valeur courante immédiatement à la souscription,
+    // ce qui déclenche le premier loadJobs automatiquement — pas besoin d'un appel explicite.
     this.annonceFilterService.filter$
       .pipe(takeUntil(this.destroy$))
       .subscribe((filter) => this.loadJobs(filter));
@@ -67,44 +73,32 @@ export class AnnoncesComponent implements OnInit {
   }
 
   loadJobs(filtre?: { ville: string; poste: string }) {
-    this.loading = true;
+    this.loading.set(true);
+    this.error.set(null);
     this.currentPage = 1;
-    this.jobs = []; // Réinitialise la liste
+    this.jobs.set([]);
     this.currentFilter = filtre;
 
-    const cleanFilter: any = {};
-
-    if (filtre?.ville?.trim()) {
-      cleanFilter.ville = filtre.ville.trim();
-    }
-
-    if (filtre?.poste?.trim()) {
-      cleanFilter.poste = filtre.poste.trim();
-    }
+    const cleanFilter: Record<string, string> = {};
+    if (filtre?.ville?.trim()) cleanFilter['ville'] = filtre.ville.trim();
+    if (filtre?.poste?.trim()) cleanFilter['poste'] = filtre.poste.trim();
 
     this.jobService.getJobs(cleanFilter, this.currentPage).subscribe({
       next: (response) => {
-        // Support ancien format (tableau direct) et nouveau format (JobsResponse)
         const jobs = Array.isArray(response) ? response : response.jobs || [];
         const hasMore = Array.isArray(response) ? false : (response.hasMore ?? false);
 
-        this.jobs = jobs;
-        this.hasMore = hasMore;
+        this.villes = Array.from(new Set(jobs.map((j) => j.location).filter(Boolean)));
+        this.postes = Array.from(new Set(jobs.map((j) => j.title).filter(Boolean)));
 
-        this.villes = Array.from(
-          new Set(jobs.map((j) => j.location).filter(Boolean))
-        );
-        this.postes = Array.from(
-          new Set(jobs.map((j) => j.title).filter(Boolean))
-        );
-
-        this.loading = false;
+        this.jobs.set(jobs);
+        this.hasMore.set(hasMore);
+        this.loading.set(false);
         this.loadCandidatures();
       },
-      error: (err) => {
-        console.error('Erreur API jobs:', err);
-        this.error = 'Impossible de charger les annonces';
-        this.loading = false;
+      error: () => {
+        this.error.set('Impossible de charger les annonces');
+        this.loading.set(false);
       },
     });
   }
@@ -113,60 +107,43 @@ export class AnnoncesComponent implements OnInit {
    * Charge la page suivante (infinite scroll)
    */
   loadNextPage() {
-    if (this.loadingMore || !this.hasMore) {
-      return;
-    }
+    if (this.loadingMore() || !this.hasMore()) return;
 
-    this.loadingMore = true;
+    this.loadingMore.set(true);
     this.currentPage++;
 
-    const cleanFilter: any = {};
-
-    if (this.currentFilter?.ville?.trim()) {
-      cleanFilter.ville = this.currentFilter.ville.trim();
-    }
-
-    if (this.currentFilter?.poste?.trim()) {
-      cleanFilter.poste = this.currentFilter.poste.trim();
-    }
+    const cleanFilter: Record<string, string> = {};
+    if (this.currentFilter?.ville?.trim()) cleanFilter['ville'] = this.currentFilter.ville.trim();
+    if (this.currentFilter?.poste?.trim()) cleanFilter['poste'] = this.currentFilter.poste.trim();
 
     this.jobService.getJobs(cleanFilter, this.currentPage).subscribe({
       next: (response) => {
-        // Support ancien format (tableau direct) et nouveau format (JobsResponse)
         const jobs = Array.isArray(response) ? response : response.jobs || [];
         const hasMore = Array.isArray(response) ? false : (response.hasMore ?? false);
 
-        this.jobs = [...this.jobs, ...jobs]; // Concaténation
-        this.hasMore = hasMore;
-        this.loadingMore = false;
-        
-        // Rafraîchir l'état de candidature pour les nouvelles annonces
+        this.jobs.update(current => [...current, ...jobs]);
+        this.hasMore.set(hasMore);
+        this.loadingMore.set(false);
         this.loadCandidatures();
       },
-      error: (err) => {
-        console.error('Erreur chargement page suivante:', err);
-        this.loadingMore = false;
-        this.currentPage--; // Rollback en cas d'erreur
+      error: () => {
+        this.loadingMore.set(false);
+        this.currentPage--;
       },
     });
   }
 
   /**
    * Gère la candidature à une offre
-   * 
+   *
    * @conformité REAC CDA : Envoi de données structurées vers l'API
-   * 
+   *
    * IMPORTANT : On ne transmet QUE les champs attendus par le backend
    * pour éviter les erreurs 400 Bad Request
    */
   onCandidated(job: Job) {
-    // Vérification : déjà candidaté ?
-    if (job._candidated) {
-      console.warn('⚠️ Candidature déjà effectuée pour cette offre');
-      return;
-    }
+    if (job._candidated) return;
 
-    // Construction du payload conforme à l'API backend
     const candidaturePayload = {
       externalId: job.externalId,
       company: job.company,
@@ -175,22 +152,19 @@ export class AnnoncesComponent implements OnInit {
       location: job.location,
     };
 
-    console.log('📤 [AnnoncesComponent] Envoi candidature :', candidaturePayload);
-
-    // Envoi de la candidature
     this.candidatureService.createFromOffer(candidaturePayload).subscribe({
-      next: (response) => {
-        console.log('✅ [AnnoncesComponent] Candidature créée avec succès', response);
-        this.loadCandidatures(); // Rafraîchit la liste pour marquer comme "candidaté"
+      next: () => {
+        this.candidatedIds.add(job.externalId);
+        // signal.update() déclenche automatiquement le rendu (zoneless-safe)
+        this.jobs.update(jobs =>
+          jobs.map(j => ({
+            ...j,
+            _candidated: j._candidated || this.candidatedIds.has(j.externalId),
+          }))
+        );
       },
-      error: (err) => {
-        console.error('❌ [AnnoncesComponent] Erreur lors de la candidature', err);
-
-        // Affichage d'un message utilisateur (optionnel)
-        if (err.status === 400) {
-          console.error('Erreur 400 : Données invalides envoyées au serveur');
-          console.error('Payload envoyé :', candidaturePayload);
-        }
+      error: () => {
+        // Erreur silencieuse — le bouton reste actif
       },
     });
   }
@@ -204,12 +178,9 @@ export class AnnoncesComponent implements OnInit {
    */
   onScroll(event: Event) {
     const element = event.target as HTMLElement;
-    const threshold = 200; // Déclenche le chargement 200px avant la fin
-    
+    const threshold = 200;
     const atBottom = element.scrollHeight - element.scrollTop - element.clientHeight < threshold;
-    
-    if (atBottom && this.hasMore && !this.loadingMore && !this.loading) {
-      console.log('🔄 [AnnoncesComponent] Chargement page suivante...');
+    if (atBottom && this.hasMore() && !this.loadingMore() && !this.loading()) {
       this.loadNextPage();
     }
   }
@@ -217,14 +188,14 @@ export class AnnoncesComponent implements OnInit {
   loadCandidatures() {
     this.candidatureService.getMyCandidatures().subscribe({
       next: (candidatures) => {
-        const candidatedIds = new Set(
-          candidatures.map((c) => c.externalOfferId)
+        candidatures.forEach(c => this.candidatedIds.add(c.externalOfferId));
+        // signal.update() déclenche automatiquement le rendu (zoneless-safe)
+        this.jobs.update(jobs =>
+          jobs.map(job => ({
+            ...job,
+            _candidated: this.candidatedIds.has(job.externalId),
+          }))
         );
-        this.jobs = this.jobs.map((job) => ({
-          ...job,
-          _candidated: candidatedIds.has(job.externalId),
-        }));
-        this.cdr.detectChanges();
       },
     });
   }
