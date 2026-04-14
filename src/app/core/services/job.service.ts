@@ -19,10 +19,10 @@ import { environment } from '../../../environments/environment';
 export interface JobsResponse {
   /** Liste des annonces de la page courante */
   jobs: Job[];
-  
+
   /** Indicateur de présence d'autres pages */
   hasMore: boolean;
-  
+
   /** Nombre total d'annonces disponibles (optionnel) */
   total?: number;
 }
@@ -44,62 +44,66 @@ export class JobService {
 
   /**
    * Récupère les offres d'emploi avec pagination
-   * 
+   *
    * @param filtre Filtres de recherche (ville, poste)
    * @param page Numéro de page (commence à 1)
    * @returns Observable contenant les jobs et l'indicateur hasMore
    */
   getJobs(filtre?: { ville?: string; poste?: string }, page: number = 1): Observable<JobsResponse> {
-    const params: any = { page: page.toString() };
+    const params: Record<string, string> = { page: page.toString() };
 
-    if (filtre?.ville) params.ville = filtre.ville;
-    if (filtre?.poste) params.poste = filtre.poste;
+    if (filtre?.ville) params['ville'] = filtre.ville;
+    if (filtre?.poste) params['poste'] = filtre.poste;
 
-    return this.http.get<any>(this.API_URL, { params }).pipe(
+    return this.http.get<unknown>(this.API_URL, { params }).pipe(
       map((response) => this.normalizeJobsResponse(response))
     );
   }
 
-  private normalizeJobsResponse(response: any): JobsResponse {
+  private normalizeJobsResponse(response: unknown): JobsResponse {
     if (Array.isArray(response)) {
       return { jobs: this.normalizeJobs(response), hasMore: false };
     }
 
-    if (response?.data) {
+    const r = response as Record<string, unknown>;
+
+    if (r?.['data']) {
+      const pagination = r['pagination'] as Record<string, unknown> | undefined;
       return {
-        jobs: this.normalizeJobs(response.data),
-        hasMore: response.pagination?.hasMore ?? false,
-        total: response.pagination?.total ?? response.total,
+        jobs: this.normalizeJobs(r['data'] as unknown[]),
+        hasMore: (pagination?.['hasMore'] as boolean) ?? false,
+        total: (pagination?.['total'] ?? r['total']) as number | undefined,
       };
     }
 
-    if (response?.jobs) {
+    if (r?.['jobs']) {
       return {
-        jobs: this.normalizeJobs(response.jobs),
-        hasMore: response.hasMore ?? false,
-        total: response.total,
+        jobs: this.normalizeJobs(r['jobs'] as unknown[]),
+        hasMore: (r['hasMore'] as boolean) ?? false,
+        total: r['total'] as number | undefined,
       };
     }
 
     return { jobs: [], hasMore: false };
   }
 
-  private normalizeJobs(list: any[]): Job[] {
-    return (list ?? []).map((raw) => this.normalizeJob(raw));
+  private normalizeJobs(list: unknown[]): Job[] {
+    return (list ?? []).map((raw) => this.normalizeJob(raw as Record<string, unknown>));
   }
 
-  private normalizeJob(raw: any): Job {
-    const externalId = raw?.externalId ?? raw?.id ?? raw?.external_id ?? '';
-    const title = raw?.title ?? '';
-    const company = raw?.company?.name ?? raw?.company ?? '';
-    const location = raw?.location ?? raw?.city ?? '';
-    const contractType = raw?.contractType ?? raw?.job_type ?? raw?.contract_type ?? 'Non spécifié';
-    const salaryMin = raw?.salaryMin ?? raw?.salary_min ?? null;
-    const salaryMax = raw?.salaryMax ?? raw?.salary_max ?? null;
-    const redirectUrl = raw?.redirectUrl ?? raw?.redirect_url ?? '';
+  private normalizeJob(raw: Record<string, unknown>): Job {
+    const externalId = raw?.['externalId'] ?? raw?.['id'] ?? raw?.['external_id'] ?? '';
+    const title = (raw?.['title'] as string) ?? '';
+    const companyRaw = raw?.['company'];
+    const company = (companyRaw as { name?: string })?.name ?? (companyRaw as string) ?? '';
+    const location = (raw?.['location'] as string) ?? (raw?.['city'] as string) ?? '';
+    const contractType = ((raw?.['contractType'] ?? raw?.['job_type'] ?? raw?.['contract_type'] ?? 'Non spécifié') as string);
+    const salaryMin = (raw?.['salaryMin'] ?? raw?.['salary_min'] ?? null) as number | null;
+    const salaryMax = (raw?.['salaryMax'] ?? raw?.['salary_max'] ?? null) as number | null;
+    const redirectUrl = ((raw?.['redirectUrl'] ?? raw?.['redirect_url'] ?? '') as string);
 
     return {
-      ...raw,
+      ...(raw as Partial<Job>),
       externalId: String(externalId),
       title,
       company,

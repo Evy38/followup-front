@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -39,8 +39,9 @@ export class ForgotPasswordComponent {
     this.auth.forgotPassword(email).subscribe({
       next: (response) => {
         this.loading = false;
+        const res = response as { message?: string } | null;
         this.toast.show(
-          response?.message ?? 'Email envoyé si le compte existe',
+          res?.message ?? 'Email envoyé si le compte existe',
           'success'
         );
       },
@@ -50,9 +51,7 @@ export class ForgotPasswordComponent {
         this.toast.show(msg, 'error');
       },
 
-      complete: () => {
-        console.log('🏁 Observable complete');
-      }
+
     });
   }
 

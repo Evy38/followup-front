@@ -139,8 +139,6 @@ export class LoginComponent implements OnInit {
               setTimeout(() => {
                 //Vérifier le rôle de l'utilisateur (structure variable selon la réponse)
                 const roles = user?.user?.roles ?? [];
-                console.log('🔍 [Login] me() response:', user);
-                console.log('🔍 [Login] roles:', roles);
                 const hasAdminRole = roles.includes('ROLE_ADMIN');
 
                 if (hasAdminRole) {
