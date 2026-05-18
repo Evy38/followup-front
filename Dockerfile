@@ -1,13 +1,11 @@
 # ===============================================
 # Dockerfile Production - FollowUp Frontend
 # ===============================================
-# Lance le serveur Angular SSR (rendu côté serveur via Express).
-# Sans ce fichier, seuls les fichiers statiques seraient servis —
-# le SSR ne fonctionnerait pas.
+# Compile Angular en mode static et sert les fichiers avec nginx.
 #
 # Multi-stage build :
 #   - Stage "builder" : compile Angular en production
-#   - Stage "runtime" : image allégée qui lance uniquement le serveur Node
+#   - Stage "runtime" : nginx sert les fichiers statiques
 
 # -----------------------------------------------
 # Stage 1: Builder (compilation Angular)
@@ -16,28 +14,30 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Copier les fichiers de dépendances en premier (optimise le cache Docker)
 COPY package*.json ./
 RUN npm ci
 
-# Copier le reste du code et compiler
 COPY . .
 RUN npm run build -- --configuration=production
 
 # -----------------------------------------------
-# Stage 2: Runtime (serveur Node SSR)
+# Stage 2: Runtime (nginx)
 # -----------------------------------------------
-FROM node:20-alpine AS runtime
+FROM nginx:alpine AS runtime
 
-WORKDIR /app
+# Copier le build Angular (outputMode: static → browser/)
+COPY --from=builder /app/dist/followup-front/browser /usr/share/nginx/html
 
-# Copier uniquement le résultat du build et les dépendances runtime
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/node_modules ./node_modules
+# Config nginx : toutes les routes → index.html (SPA routing)
+RUN printf 'server {\n\
+    listen 80;\n\
+    root /usr/share/nginx/html;\n\
+    index index.html;\n\
+    location / {\n\
+        try_files $uri $uri/ /index.html;\n\
+    }\n\
+}\n' > /etc/nginx/conf.d/default.conf
 
-# Railway injecte automatiquement PORT, mais on définit une valeur par défaut
-ENV PORT=4000
-EXPOSE 4000
+EXPOSE 80
 
-# Démarrer le serveur Express SSR généré par Angular
-CMD ["node", "dist/followup-front/server/server.mjs"]
+CMD ["nginx", "-g", "daemon off;"]
