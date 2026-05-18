@@ -1,134 +1,57 @@
-name: CD - Continuous Deployment
+name: CD Frontend - Railway
 
-# Pipeline de déploiement continu : construit et déploie l'application après merge sur main.
-# Étapes : build production → déploiement sur Render (via deploy hook sécurisé).
-# Supporte aussi un déclenchement manuel pour cibler SIT ou UAT (environnements simulés).
+# Déploiement automatique sur Railway après validation du CI.
+# Se déclenche uniquement si le CI frontend passe avec succès sur main.
+# Peut aussi être déclenché manuellement depuis l'onglet Actions sur GitHub.
+#
+# Prérequis — secrets GitHub à configurer (Settings → Secrets → Actions) :
+#   RAILWAY_DEPLOY_HOOK_FRONTEND : URL du deploy hook du service "frontend" sur Railway
+#
+# Comment obtenir un deploy hook Railway :
+#   Dashboard Railway → ton projet → service frontend → Settings → Deploy Hooks → Generate
 
-# Déclenchement manuel ou automatique après merge sur main
 on:
-  # Déclenchement manuel avec choix de l'environnement
+  # Déclenchement automatique quand le CI passe sur main
+  workflow_run:
+    workflows: ["CI - Continuous Integration"]
+    types: [completed]
+    branches: [main]
+
+  # Déclenchement manuel depuis GitHub Actions
   workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Environnement cible'
-        required: true
-        type: choice
-        options:
-          - production
-          - uat
-          - sit
-  
-  # Déclenchement automatique sur push vers main (production uniquement)
-  push:
-    branches:
-      - main
 
 jobs:
-  # Job 1 : Build de production
-  build-production:
-    name: Build Production
+  deploy:
+    name: Déployer sur Railway
     runs-on: ubuntu-latest
-    # N'exécuter que si c'est un push sur main OU un workflow_dispatch vers production
-    if: github.event_name == 'push' || github.event.inputs.environment == 'production'
-    
+
+    # En automatique : ne déploie que si le CI a réussi
+    # En manuel : toujours déployer
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      github.event.workflow_run.conclusion == 'success'
+
+    env:
+      HOOK_FRONTEND: ${{ secrets.RAILWAY_DEPLOY_HOOK_FRONTEND }}
+
     steps:
-      - name: 📥 Checkout code
-        uses: actions/checkout@v4
-      
-      - name: 🟢 Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20.x'
-          cache: 'npm'
-      
-      - name: 📦 Install dependencies
-        run: npm ci
-      
-      - name: 🔨 Build Production
-        run: npm run build -- --configuration=production
-      
-      - name: 📤 Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: production-build
-          path: dist/followup-front/browser
-          retention-days: 30
-      
-      - name: 📊 Build Summary
+      - name: Vérifier la présence du secret
         run: |
-          echo "✅ Build Production terminé"
-          echo "📏 Taille: $(du -sh dist/followup-front/browser | cut -f1)"
-          echo "📦 Fichiers: $(find dist/followup-front/browser -type f | wc -l) fichiers"
-  
-  # Job 2 : Déploiement sur Render
-  deploy-render:
-    name: Déployer sur Render
-    needs: build-production
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: 📥 Download build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: production-build
-          path: dist/followup-front/browser
-      
-      - name: 🚀 Trigger Render deployment
-        env:
-          RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
-        run: |
-          if [ -z "$RENDER_DEPLOY_HOOK" ]; then
-            echo "⚠️  RENDER_DEPLOY_HOOK non configuré"
-            echo "ℹ️  Le déploiement se fera automatiquement via Render après le push"
-          else
-            echo "🚀 Déclenchement du déploiement Render..."
-            curl -X POST "$RENDER_DEPLOY_HOOK"
-            echo "✅ Déploiement déclenché avec succès"
+          if [ -z "$HOOK_FRONTEND" ]; then
+            echo "RAILWAY_DEPLOY_HOOK_FRONTEND manquant."
+            echo "Va dans Railway → service frontend → Settings → Deploy Hooks"
+            echo "Copie l'URL et ajoute-la dans GitHub → Settings → Secrets → Actions"
+            exit 1
           fi
-      
-      - name: 📋 Post-deployment checklist
+
+      - name: Déployer le frontend
         run: |
-          echo "📝 Checklist post-déploiement:"
-          echo "  ☑️  Build uploadé"
-          echo "  ☑️  Render notifié"
-          echo "  ⏳ Attendre 2-3 minutes pour que Render déploie"
-          echo "  🔍 Vérifier: https://followup-frontend.onrender.com"
-  
-  # Job 3 : Simulation SIT/UAT (pour la documentation)
-  simulate-sit-uat:
-    name: Simulation ${{ github.event.inputs.environment }}
-    runs-on: ubuntu-latest
-    if: github.event.inputs.environment == 'sit' || github.event.inputs.environment == 'uat'
-    
-    steps:
-      - name: 📥 Checkout code
-        uses: actions/checkout@v4
-      
-      - name: 🟢 Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20.x'
-          cache: 'npm'
-      
-      - name: 📦 Install dependencies
-        run: npm ci
-      
-      - name: 🔨 Build ${{ github.event.inputs.environment }}
-        run: npm run build -- --configuration=${{ github.event.inputs.environment }}
-      
-      - name: 📤 Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ github.event.inputs.environment }}-build
-          path: dist/followup-front/browser
-          retention-days: 7
-      
-      - name: ℹ️  Information déploiement
+          echo "Déclenchement du déploiement frontend..."
+          curl --fail --silent --show-error -X POST "$HOOK_FRONTEND"
+          echo "Frontend : déploiement déclenché."
+
+      - name: Résumé
         run: |
-          echo "ℹ️  Environnement ${{ github.event.inputs.environment }}"
-          echo "📝 Dans un contexte réel d'entreprise, ce build serait déployé sur:"
-          echo "    - SIT: Serveur de tests d'intégration"
-          echo "    - UAT: Serveur de validation client"
-          echo ""
-          echo "🎓 Pour le projet CDA, ces environnements sont documentés"
-          echo "   mais seul PROD est déployé sur Render (plan gratuit)"
+          echo "Le service frontend a été envoyé en déploiement sur Railway."
+          echo "Surveille l'avancement ici : https://railway.app/dashboard"
+          echo "Les logs sont accessibles dans le service frontend → onglet Deployments."
